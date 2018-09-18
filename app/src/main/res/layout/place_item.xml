@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/place_item_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="15dp"
+        android:src="@mipmap/unselected"
+        android:visibility="gone"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/place_item_layout"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/place_item_background">
+
+        <TextView
+            android:id="@+id/place_item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:textSize="25sp"
+            android:textColor="#505050" />
+
+        <TextView
+            android:id="@+id/place_item_week"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/place_item_name"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="15sp"
+            android:textColor="#505050" />
+
+        <TextView
+            android:id="@+id/place_item_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/place_item_name"
+            android:layout_toRightOf="@id/place_item_week"
+            android:layout_marginTop="8dp"
+            android:textSize="15sp"
+            android:textColor="#505050" />
+
+        <TextView
+            android:id="@+id/place_item_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textSize="40sp"
+            android:layout_toLeftOf="@id/temp_sign"
+            android:textColor="#505050" />
+
+        <TextView
+            android:id="@+id/temp_sign"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:text="°"
+            android:textSize="30sp"
+            android:layout_alignParentRight="true"/>
+
+        <ImageView
+            android:id="@+id/place_item_icon"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_toLeftOf="@id/place_item_temp"/>
+
+        <TextView
+            android:id="@+id/place_item_forecast"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/place_item_temp"
+            android:layout_marginRight="10dp"
+            android:textColor="#505050"
+            android:textSize="15sp"
+            android:layout_alignParentRight="true" />
+
+    </RelativeLayout>
+
+</LinearLayout>
