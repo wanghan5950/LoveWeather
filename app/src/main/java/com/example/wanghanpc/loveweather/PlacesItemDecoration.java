@@ -63,7 +63,7 @@ public class PlacesItemDecoration extends RecyclerView.ItemDecoration {
         this.orientation = orientation;
     }
 
-    public void drawVertical(Canvas canvas, RecyclerView parent){
+    private void drawVertical(Canvas canvas, RecyclerView parent){
         final int left = parent.getPaddingLeft();
         final int right = parent.getWidth() - parent.getPaddingRight();
 
@@ -77,7 +77,7 @@ public class PlacesItemDecoration extends RecyclerView.ItemDecoration {
             placeDrawable.draw(canvas);
         }
     }
-    public void drawHorizontal(Canvas canvas, RecyclerView parent){
+    private void drawHorizontal(Canvas canvas, RecyclerView parent){
         final int top = parent.getPaddingTop();
         final int bottom = parent.getHeight() - parent.getPaddingBottom();
 

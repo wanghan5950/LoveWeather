@@ -5,14 +5,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.wanghanpc.loveweather.weatherGson.Weather;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder>{
+public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder> implements PlaceItemTouchCallback.ItemTouchAdapter {
 
     private static final int PLACES_MODE_CHECK = 0;
     private int editMode = PLACES_MODE_CHECK;
@@ -54,6 +57,29 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder
     }
 
     @Override
+    public void onMove(int fromPosition, int toPosition) {
+        if (fromPosition == weatherList.size() - 1 || toPosition == weatherList.size() - 1){
+            return;
+        }
+        if (fromPosition < toPosition){
+            for (int i = fromPosition; i < toPosition; i++){
+                Collections.swap(weatherList, i, i + 1);
+            }
+        }else if (fromPosition > toPosition){
+            for (int i = fromPosition; i > toPosition; i++){
+                Collections.swap(weatherList, i, i - 1);
+            }
+        }else {
+            return;
+        }
+        notifyItemMoved(fromPosition,toPosition);
+    }
+
+    @Override
+    public void onSwiped(int position) {
+    }
+
+    @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent,int viewType){
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.place_item,parent,false);
         return new ViewHolder(view);
@@ -92,6 +118,13 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder
                 placeOnItemClickListener.onItemClickListener(holder.getAdapterPosition(),weatherList);
             }
         });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                placeOnItemClickListener.onItemLongClickListener(holder.getAdapterPosition(),weatherList);
+                return false;
+            }
+        });
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener){
@@ -100,6 +133,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder
 
     public interface OnItemClickListener{
         void onItemClickListener(int position, List<Weather> weatherList);
+        void onItemLongClickListener(int position, List<Weather> weatherList);
     }
 
     @Override

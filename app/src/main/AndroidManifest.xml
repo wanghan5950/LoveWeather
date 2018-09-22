@@ -40,7 +40,19 @@
 
         <activity android:name=".SettingActivity" />
         <activity android:name=".SearchActivity" />
-        <activity android:name=".MapActivity"></activity>
+        <activity android:name=".MapActivity" />
+
+        <service
+            android:name=".service.AutoUpdateInformationService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".AboutActivity" />
+
+        <service
+            android:name=".service.NotificationService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

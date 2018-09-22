@@ -30,13 +30,14 @@ import com.example.wanghanpc.loveweather.weatherGson.Weather;
 import com.example.wanghanpc.loveweather.util.Utility;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private LocationClient locationClient;
     private int pagePosition = 0;
-    private String location;
+    private static String location;
     private List<String> placeNameList = new ArrayList<>();
     private List<Weather> weatherList = new ArrayList<>();
     private TextView toolbarTitle;
@@ -141,17 +142,30 @@ public class MainActivity extends AppCompatActivity {
         weatherList.add(position,weather);
         pagerAdapter.notifyDataSetChanged();
         swipeRefreshLayout.setRefreshing(false);
+        initToolbarInformation(position);
     }
 
     /**
      * 判断PlaceNameList中的内容
      */
-    private void judgeListInformation(String locationForUse){
+    private void judgeListInformation(){
+        progressBar.setVisibility(View.VISIBLE);
         getPlaceNameListFromShared();
-        if (placeNameList.size() == 0 || !placeNameList.get(0).equals(locationForUse)){
-            placeNameList.add(0,locationForUse);
+        if (placeNameList.size() == 0) {
+            if (location != null){
+                placeNameList.add(0,location);
+                judgeWeatherInformation();
+            }else {
+                return;
+            }
+        }else {
+            if (location != null){
+                if (!placeNameList.contains(location)){
+                    placeNameList.add(0,location);
+                }
+            }
+            judgeWeatherInformation();
         }
-        judgeWeatherInformation();
         setPlaceNameListToShared();
     }
 
@@ -185,7 +199,6 @@ public class MainActivity extends AppCompatActivity {
      * 判断是否有天气缓存，有就直接解析并添加到列表中，没有就去查询
      */
     private void judgeWeatherInformation(){
-        progressBar.setVisibility(View.VISIBLE);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         weatherList.clear();
         for (String placeName : placeNameList) {
@@ -250,7 +263,8 @@ public class MainActivity extends AppCompatActivity {
             }else {
                 locationForUse = locationCounty;
             }
-            judgeListInformation(locationForUse);
+            MainActivity.location = locationForUse;
+            judgeListInformation();
             initToolbarInformation(0);
         }
     }
@@ -308,6 +322,7 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this,permissions,1);
         }else {
             requestLocation();
+            judgeListInformation();
         }
     }
 
@@ -372,6 +387,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                     requestLocation();
+                    judgeListInformation();
                 }else {
                     Toast.makeText(this,"发生未知错误",Toast.LENGTH_SHORT).show();
                     finish();

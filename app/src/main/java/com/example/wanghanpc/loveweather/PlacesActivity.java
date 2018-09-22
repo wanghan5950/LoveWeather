@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +34,8 @@ public class PlacesActivity extends AppCompatActivity implements PlacesAdapter.O
     private RecyclerView recyclerView;
     private PlacesAdapter placesAdapter;
     private LinearLayoutManager layoutManager;
+    private ItemTouchHelper itemTouchHelper;
+    private PlaceItemTouchCallback placeItemTouchCallback;
     private Toolbar toolbar;
     private TextView deleteTextButton;
     private TextView placeToolbarTitle;
@@ -54,13 +57,17 @@ public class PlacesActivity extends AppCompatActivity implements PlacesAdapter.O
         placesAdapter = new PlacesAdapter(weatherList);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        PlacesItemDecoration itemDecoration = new PlacesItemDecoration(this,PlacesItemDecoration.VERTICAL_LIST);
-        itemDecoration.setPlaceDrawable(ContextCompat.getDrawable(this,R.drawable.place_main_bg_heigth_1));
-        recyclerView.addItemDecoration(itemDecoration);
+//        PlacesItemDecoration itemDecoration = new PlacesItemDecoration(this,PlacesItemDecoration.VERTICAL_LIST);
+//        itemDecoration.setPlaceDrawable(ContextCompat.getDrawable(this,R.drawable.place_main_bg_heigth_1));
+//        recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setAdapter(placesAdapter);
         deleteTextButton = (TextView) findViewById(R.id.delete_text_button);
         placeToolbarTitle = (TextView) findViewById(R.id.place_toolbar_title);
         actionButton = (FloatingActionButton) findViewById(R.id.place_add_button);
+
+        placeItemTouchCallback = new PlaceItemTouchCallback(placesAdapter);
+        itemTouchHelper = new ItemTouchHelper(placeItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
 
         initToolbar();
 
@@ -154,21 +161,13 @@ public class PlacesActivity extends AppCompatActivity implements PlacesAdapter.O
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.edit:
-                        //编辑功能
-                        editStatus = true;
-                        initNavigationIcon(editStatus,allSelected);
-                        placeToolbarTitle.setText(String.valueOf(index));
-                        invalidateOptionsMenu();//刷新toolbar的menu按钮
-                        editMode = PLACE_MODE_EDIT;
-                        placesAdapter.setEditMode(editMode);
-                        setDeleteButtonVisible(index);
+                        startToEdit();
                         break;
                     case R.id.settings:
                         Intent intent1 = new Intent(PlacesActivity.this,SettingActivity.class);
                         startActivity(intent1);
                         break;
                     case R.id.share:
-                        //分享功能
 
                         break;
                     default:
@@ -204,6 +203,20 @@ public class PlacesActivity extends AppCompatActivity implements PlacesAdapter.O
             menu.setGroupVisible(0,true);
         }
         return true;
+    }
+
+    /**
+     * 进入编辑模式
+     */
+    private void startToEdit(){
+        editStatus = true;
+        initNavigationIcon(editStatus,allSelected);
+        placeToolbarTitle.setText(String.valueOf(index));
+        invalidateOptionsMenu();//刷新toolbar的menu按钮
+        editMode = PLACE_MODE_EDIT;
+        placesAdapter.setEditMode(editMode);
+        placeItemTouchCallback.setEditMode(editMode);
+        setDeleteButtonVisible(index);
     }
 
     /**
@@ -312,6 +325,13 @@ public class PlacesActivity extends AppCompatActivity implements PlacesAdapter.O
         }
     }
 
+    @Override
+    public void onItemLongClickListener(int position, List<Weather> weatherList) {
+        if (!editStatus){
+            startToEdit();
+        }
+    }
+
     /**
      * 返回键点击事件
      */
@@ -348,5 +368,6 @@ public class PlacesActivity extends AppCompatActivity implements PlacesAdapter.O
         setDeleteButtonVisible(index);
         editMode = PLACE_MODE_CHECK;
         placesAdapter.setEditMode(editMode);
+        placeItemTouchCallback.setEditMode(editMode);
     }
 }
