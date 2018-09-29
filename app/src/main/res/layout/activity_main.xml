@@ -4,29 +4,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
-    android:id="@+id/main_layout">
-
-    <ImageView
-        android:id="@+id/main_theme_background"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    android:background="@drawable/sunny_background"
+    android:id="@+id/main_layout"
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="110dp"
         android:background="#00ffffff">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:minHeight="60dp"
-            app:layout_scrollFlags="scroll|enterAlways|exitUntilCollapsed"
-            android:theme="@style/mainToolbarStyle"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            android:background="#00ffffff">
+            android:layout_height="match_parent"
+            app:contentScrim="#00ffffff"
+            android:theme="@style/AppTheme"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:toolbarId="@id/toolbar">
 
             <RelativeLayout
                 android:layout_gravity="center"
@@ -57,13 +51,6 @@
                         android:textColor="#ffffff"
                         android:textSize="15sp" />
 
-                    <!--<TextView-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:text=","-->
-                        <!--android:textSize="15sp"-->
-                        <!--android:textColor="#fff"/>-->
-
                     <TextView
                         android:id="@+id/toolbar_time"
                         android:layout_width="wrap_content"
@@ -71,18 +58,21 @@
                         android:textColor="#ffffff"
                         android:textSize="15sp" />
 
-                    <!--<TextView-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:text="更新"-->
-                        <!--android:textColor="#fff"-->
-                        <!--android:textSize="15sp"/>-->
-
                 </LinearLayout>
 
             </RelativeLayout>
 
-        </android.support.v7.widget.Toolbar>
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:theme="@style/mainToolbarStyle"
+                app:layout_collapseMode="pin"
+                android:background="#00ffffff">
+
+            </android.support.v7.widget.Toolbar>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
 
@@ -92,14 +82,69 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/main_view_pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
 
-        </android.support.v4.view.ViewPager>
+                    <ImageView
+                        android:id="@+id/last_page_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="40dp"
+                        android:src="@mipmap/last_page"
+                        android:visibility="gone"/>
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_below="@id/last_page_button"
+                        android:layout_marginTop="600dp"
+                        android:background="#00ffffff"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true">
+
+                    <ImageView
+                        android:id="@+id/next_page_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginTop="40dp"
+                        android:src="@mipmap/next_page"
+                        android:visibility="gone"/>
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_below="@id/next_page_button"
+                        android:layout_marginTop="600dp"
+                        android:background="#00ffffff"/>
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/main_view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </android.support.v4.view.ViewPager>
+
+        </FrameLayout>
 
     </com.example.wanghanpc.loveweather.OtherEntityClass.MySwipeRefreshLayout>
 
@@ -107,6 +152,7 @@
         android:id="@+id/main_progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:visibility="visible"/>
 
 </android.support.design.widget.CoordinatorLayout>

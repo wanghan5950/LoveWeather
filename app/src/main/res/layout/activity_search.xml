@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SearchActivity"
-    android:background="#fff">
+    android:background="#fff"
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -47,11 +48,271 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <LinearLayout
+        android:id="@+id/allTextVIew_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:visibility="visible">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="热门城市 :"
+            android:textSize="18sp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"/>
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:layout_marginTop="2dp"-->
+            <!--android:layout_marginLeft="15dp"-->
+            <!--android:layout_marginRight="15dp"-->
+            <!--android:background="#19000000">-->
+
+        <!--</LinearLayout>-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/hotCity_item_1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="5dp"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:background="@drawable/button_shape_unselected"
+                android:theme="@style/AppTheme"/>
+            <TextView
+                android:id="@+id/hotCity_item_2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:layout_margin="5dp"
+                android:background="@drawable/button_shape_unselected" />
+            <TextView
+                android:id="@+id/hotCity_item_3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:layout_margin="5dp"
+                android:background="@drawable/button_shape_unselected"/>
+            <TextView
+                android:id="@+id/hotCity_item_4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:layout_margin="5dp"
+                android:background="@drawable/button_shape_unselected"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/hotCity_item_5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:layout_margin="5dp"
+                android:background="@drawable/button_shape_unselected"/>
+            <TextView
+                android:id="@+id/hotCity_item_6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:layout_margin="5dp"
+                android:background="@drawable/button_shape_unselected"/>
+            <TextView
+                android:id="@+id/hotCity_item_7"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:layout_margin="5dp"
+                android:background="@drawable/button_shape_unselected"/>
+            <TextView
+                android:id="@+id/hotCity_item_8"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:layout_margin="5dp"
+                android:background="@drawable/button_shape_unselected"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/hotCity_item_9"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:layout_margin="5dp"
+                android:background="@drawable/button_shape_unselected"/>
+            <TextView
+                android:id="@+id/hotCity_item_10"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:layout_margin="5dp"
+                android:background="@drawable/button_shape_unselected"/>
+            <TextView
+                android:id="@+id/hotCity_item_11"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:layout_margin="5dp"
+                android:background="@drawable/button_shape_unselected"/>
+            <TextView
+                android:id="@+id/hotCity_item_12"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:layout_margin="5dp"
+                android:background="@drawable/button_shape_unselected"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/hotCity_item_13"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:layout_margin="5dp"
+                android:background="@drawable/button_shape_unselected"/>
+            <TextView
+                android:id="@+id/hotCity_item_14"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:layout_margin="5dp"
+                android:background="@drawable/button_shape_unselected"/>
+            <TextView
+                android:id="@+id/hotCity_item_15"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:layout_margin="5dp"
+                android:background="@drawable/button_shape_unselected"/>
+            <TextView
+                android:id="@+id/hotCity_item_16"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:layout_margin="5dp"
+                android:background="@drawable/button_shape_unselected"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/hotCity_item_17"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:layout_margin="5dp"
+                android:background="@drawable/button_shape_unselected"/>
+            <TextView
+                android:id="@+id/hotCity_item_18"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:layout_margin="5dp"
+                android:background="@drawable/button_shape_unselected"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:layout_margin="5dp"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:layout_margin="5dp"/>
+
+        </LinearLayout>
+        <!--<com.zhy.view.flowlayout.TagFlowLayout-->
+            <!--android:id="@+id/search_flowLayout"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:padding="20dp"-->
+            <!--app:max_select="1">-->
+
+        <!--</com.zhy.view.flowlayout.TagFlowLayout>-->
+
+    </LinearLayout>
+
     <ListView
         android:id="@+id/search_listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:visibility="gone">
 
     </ListView>
 

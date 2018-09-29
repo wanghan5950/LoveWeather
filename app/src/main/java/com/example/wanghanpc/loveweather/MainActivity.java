@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -30,10 +31,9 @@ import com.example.wanghanpc.loveweather.weatherGson.Weather;
 import com.example.wanghanpc.loveweather.util.Utility;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private LocationClient locationClient;
     private int pagePosition = 0;
@@ -43,13 +43,14 @@ public class MainActivity extends AppCompatActivity {
     private TextView toolbarTitle;
     private TextView toolbarWeek;
     private TextView toolbarTime;
+    private ImageView lastPage;
+    private ImageView nextPage;
     private MySwipeRefreshLayout swipeRefreshLayout;
-    private ImageView backgroundImage;
+    private CoordinatorLayout backgroundImage;
     private ViewPager viewPager;
     private MainPagerAdapter pagerAdapter;
     private Toolbar toolbar;
     private ProgressBar progressBar;
-    private boolean hasBeenOnRestart = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,9 +61,11 @@ public class MainActivity extends AppCompatActivity {
         toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
         toolbarWeek = (TextView) findViewById(R.id.toolbar_week);
         toolbarTime = (TextView) findViewById(R.id.toolbar_time);
+        lastPage = (ImageView) findViewById(R.id.last_page_button);
+        nextPage = (ImageView) findViewById(R.id.next_page_button);
         swipeRefreshLayout = (MySwipeRefreshLayout) findViewById(R.id.refresh_layout);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
-        backgroundImage = (ImageView) findViewById(R.id.main_theme_background);
+        backgroundImage = (CoordinatorLayout) findViewById(R.id.main_layout);
         viewPager = (ViewPager) findViewById(R.id.main_view_pager);
         progressBar = (ProgressBar) findViewById(R.id.main_progress_bar);
 
@@ -73,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         locationClient = new LocationClient(getApplicationContext());
         locationClient.registerLocationListener(new MyLocationListener());
 
+        progressBar.setVisibility(View.VISIBLE);
         judgePermission();
         //手动刷新内容
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -117,6 +121,12 @@ public class MainActivity extends AppCompatActivity {
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                if (positionOffsetPixels == 0){
+                    setPageButtonState(pagePosition);
+                }else {
+                    lastPage.setVisibility(View.INVISIBLE);
+                    nextPage.setVisibility(View.INVISIBLE);
+                }
             }
             @Override
             public void onPageSelected(int position) {
@@ -135,21 +145,40 @@ public class MainActivity extends AppCompatActivity {
      */
     private void updateCurrentPositionWeather(int position){
         Utility.requestWeather(placeNameList.get(position),MainActivity.this);
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String weatherString = preferences.getString(placeNameList.get(position),null);
-        Weather weather = Utility.handleWeatherResponse(weatherString);
+        Weather weather;
+        while (true){
+            if (Utility.isRequestDoneOrNot()){
+                weather = Utility.getWeather();
+                break;
+            }
+        }
         weatherList.remove(position);
         weatherList.add(position,weather);
         pagerAdapter.notifyDataSetChanged();
-        swipeRefreshLayout.setRefreshing(false);
         initToolbarInformation(position);
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
+    /**
+     * 页面按钮的显示和隐藏
+     */
+    private void setPageButtonState(int pagePosition){
+        if (pagePosition == 0){
+            lastPage.setVisibility(View.INVISIBLE);
+            nextPage.setVisibility(View.VISIBLE);
+        }else if (pagePosition == weatherList.size() - 1){
+            lastPage.setVisibility(View.VISIBLE);
+            nextPage.setVisibility(View.INVISIBLE);
+        }else {
+            lastPage.setVisibility(View.VISIBLE);
+            nextPage.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
      * 判断PlaceNameList中的内容
      */
     private void judgeListInformation(){
-        progressBar.setVisibility(View.VISIBLE);
         getPlaceNameListFromShared();
         if (placeNameList.size() == 0) {
             if (location != null){
@@ -167,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
             judgeWeatherInformation();
         }
         setPlaceNameListToShared();
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -219,7 +249,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         setUpPagerAdapter();
-        progressBar.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -235,6 +264,20 @@ public class MainActivity extends AppCompatActivity {
         toolbarTime.setText(time);
         toolbarTitle.setText(title);
         backgroundImage.setBackgroundResource(changeMainBackground(weatherId));
+    }
+
+    /**
+     * 其他按钮点击事件
+     * @param v
+     */
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.last_page_button:
+                viewPager.setCurrentItem(pagePosition - 1);
+            case R.id.next_page_button:
+                viewPager.setCurrentItem(pagePosition + 1);
+        }
     }
 
     /**

@@ -6,13 +6,23 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
-    <style name="mainToolbarStyle" parent="Theme.AppCompat.NoActionBar">
+    <style name="mainToolbarStyle" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="overlapAnchor">false</item>
+        <item name="android:colorControlNormal">#fff</item>
     </style>
     <style name="placeToolbarStyle" parent="Theme.AppCompat.NoActionBar">
         <item name="overlapAnchor">false</item>
         <item name="android:colorControlNormal">#3c3c3c</item>
+    </style>
+    <style name="WelcomeTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@drawable/sunny_background</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
 </resources>

@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import com.example.wanghanpc.loveweather.cityGson.CityBackResult;
+import com.example.wanghanpc.loveweather.cityGson.HotCityBackResult;
 import com.example.wanghanpc.loveweather.weatherGson.Weather;
 import com.google.gson.Gson;
 
@@ -13,8 +14,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -26,10 +25,8 @@ import okhttp3.Response;
 
 public class Utility {
 
-    private static final int UPDATE_WEATHER = 1;
+    private static boolean requestDone = false;
     private static Weather weather;
-    private static List<String> publicPlaceNameList = new ArrayList<>();
-    private static List<Weather> publicWeatherList = new ArrayList<>();
 
     /**
      * 将返回的JSON数据解析成Weather实体类
@@ -60,9 +57,25 @@ public class Utility {
     }
 
     /**
+     * 解析返回的热门城市数据
+     */
+    public static HotCityBackResult handleHotCityResponse(String response){
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray jsonArray = jsonObject.getJSONArray("HeWeather6");
+            String hotCityContent = jsonArray.getJSONObject(0).toString();
+            return new Gson().fromJson(hotCityContent,HotCityBackResult.class);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
      * 请求天气数据并保存
      */
     public static void requestWeather(final String placeName, final Context context){
+        requestDone = false;
         String weatherUrl = "http://v.juhe.cn/weather/index?cityname=" + placeName + "&key=f6aaf579c3b72065ce65d74591c1614e";
         HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
             @Override
@@ -80,6 +93,7 @@ public class Utility {
                     SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
                     editor.putString(placeName,responseText);
                     editor.apply();
+                    requestDone = true;
                 }else {
                     Toast.makeText(context,"获取天气失败02",Toast.LENGTH_SHORT).show();
                 }
@@ -91,32 +105,7 @@ public class Utility {
         return weather;
     }
 
-    public static List<Weather> getPublicWeatherList() {
-        return publicWeatherList;
-    }
-
-    public static void addPublicWeather(Weather weather) {
-        if (!publicWeatherList.contains(weather)){
-            publicWeatherList.add(weather);
-        }
-    }
-
-    public static List<String> getPlaceNameList() {
-        return publicPlaceNameList;
-    }
-
-    public static void setPlaceName(String place) {
-        if (!publicPlaceNameList.contains(place)) {
-            publicPlaceNameList.add(place);
-        }
-    }
-
-    public static void addPlaceName(String place, boolean isLocation){
-        if (!publicPlaceNameList.contains(place) && isLocation){
-            publicPlaceNameList.remove(0);
-            publicPlaceNameList.add(0,place);
-        }else if (!publicPlaceNameList.contains(place) && !isLocation){
-            publicPlaceNameList.add(place);
-        }
+    public static boolean isRequestDoneOrNot(){
+        return requestDone;
     }
 }

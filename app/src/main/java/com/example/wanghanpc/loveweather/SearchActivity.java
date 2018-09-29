@@ -1,5 +1,7 @@
 package com.example.wanghanpc.loveweather;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -7,25 +9,37 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.wanghanpc.loveweather.cityGson.City;
 import com.example.wanghanpc.loveweather.cityGson.CityBackResult;
+import com.example.wanghanpc.loveweather.cityGson.HotCityBackResult;
 import com.example.wanghanpc.loveweather.util.HttpUtil;
 import com.example.wanghanpc.loveweather.util.Utility;
 import com.example.wanghanpc.loveweather.weatherGson.Weather;
+import com.zhy.view.flowlayout.FlowLayout;
+import com.zhy.view.flowlayout.TagAdapter;
+import com.zhy.view.flowlayout.TagFlowLayout;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.FormatFlagsConversionMismatchException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,18 +48,41 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements View.OnClickListener{
 
     private Toolbar toolbar;
     private EditText editText;
     private static CityBackResult cityBackResult;
     private ListView listView;
     private List<String> cityNameList = new ArrayList<>();
+    private List<City> hotCitiesList = new ArrayList<>();
     private List<String> placeNameList = new ArrayList<>();
-    private List<Weather> weatherList = new ArrayList<>();
     private ArrayAdapter<String> adapter;
     private String cityText;
     private ProgressBar progressBar;
+    private TextView item1;
+    private TextView item2;
+    private TextView item3;
+    private TextView item4;
+    private TextView item5;
+    private TextView item6;
+    private TextView item7;
+    private TextView item8;
+    private TextView item9;
+    private TextView item10;
+    private TextView item11;
+    private TextView item12;
+    private TextView item13;
+    private TextView item14;
+    private TextView item15;
+    private TextView item16;
+    private TextView item17;
+    private TextView item18;
+    private LinearLayout linearLayout;
+    private List<TextView> textViewList = new ArrayList<>();
+//    private TagFlowLayout flowLayout;
+//    private MyFlowLayoutAdapter flowLayoutAdapter;
+//    private TagAdapter<String> tagAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +90,9 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
 
         getPlaceNameListFromShared();
+        prepareAllTextView();
 
+        linearLayout = (LinearLayout) findViewById(R.id.allTextVIew_layout);
         listView = (ListView) findViewById(R.id.search_listView);
         editText = (EditText) findViewById(R.id.search_edit_text);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
@@ -62,7 +101,10 @@ public class SearchActivity extends AppCompatActivity {
         prepareListViewListener();
         prepareEditTextListener();
         initToolbar();
+        requestHotCity();
+//        flowLayout = (TagFlowLayout) findViewById(R.id.search_flowLayout);
         progressBar.setVisibility(View.GONE);
+        prepareTextViewListener();
     }
 
     /**
@@ -147,6 +189,11 @@ public class SearchActivity extends AppCompatActivity {
                     if (matcher.matches()){
                         requestCityList(cityText);
                     }
+                    linearLayout.setVisibility(View.GONE);
+                    listView.setVisibility(View.VISIBLE);
+                }else {
+                    linearLayout.setVisibility(View.VISIBLE);
+                    listView.setVisibility(View.GONE);
                 }
             }
 
@@ -169,7 +216,7 @@ public class SearchActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(SearchActivity.this,"获取城市失败1",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SearchActivity.this,"获取城市列表失败1",Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -184,7 +231,43 @@ public class SearchActivity extends AppCompatActivity {
                             SearchActivity.cityBackResult = cityBackResult;
                             showCityList();
                         }else {
-                            Toast.makeText(SearchActivity.this,"获取城市失败2",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SearchActivity.this,"获取城市列表失败2",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * 请求热门城市搜索数据
+     */
+    private void requestHotCity(){
+        String hotCityUrl = "https://search.heweather.com/top?&group=cn&key=e7b4b21007f048a9a4fe2cb236ce5569&number=18";
+        HttpUtil.sendOkHttpRequest(hotCityUrl, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(SearchActivity.this,"获取热门城市失败1",Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String responseText = response.body().string();
+                final HotCityBackResult hotCityBackResult = Utility.handleHotCityResponse(responseText);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (hotCityBackResult != null && "ok".equals(hotCityBackResult.status)){
+                            hotCitiesList = hotCityBackResult.hotCityList;
+                            showHotCities();
+                        }else {
+                            Toast.makeText(SearchActivity.this,"获取热门城市失败2",Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -203,6 +286,29 @@ public class SearchActivity extends AppCompatActivity {
             }
         }
         adapter.notifyDataSetChanged();
+    }
+
+    private void showHotCities(){
+//        String[] hotCities = hotCitiesList.toArray(new String[0]);
+//        final LayoutInflater inflater = LayoutInflater.from(SearchActivity.this);
+//        flowLayout.setAdapter(new TagAdapter<String>(hotCities) {
+//            @Override
+//            public View getView(FlowLayout parent, int position, String s) {
+//                TextView textView = (TextView) inflater.inflate(R.layout.place_text_item,flowLayout,false);
+//                textView.setText(s);
+//                return textView;
+//            }
+//        });
+//        flowLayout.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
+//            @Override
+//            public boolean onTagClick(View view, int position, FlowLayout parent) {
+//                prepareNewCityInformation(this.hotCities[position]);
+//                return true;
+//            }
+//        });
+        for (int i = 0; i < textViewList.size(); i++){
+            textViewList.get(i).setText(hotCitiesList.get(i).locationName);
+        }
     }
 
     /**
@@ -248,4 +354,163 @@ public class SearchActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.toolbar_search,menu);
         return true;
     }
+
+    /**
+     * 加载TextView布局
+     */
+    private void prepareAllTextView(){
+        item1 = (TextView) findViewById(R.id.hotCity_item_1);
+        item2 = (TextView) findViewById(R.id.hotCity_item_2);
+        item3 = (TextView) findViewById(R.id.hotCity_item_3);
+        item4 = (TextView) findViewById(R.id.hotCity_item_4);
+        item5 = (TextView) findViewById(R.id.hotCity_item_5);
+        item6 = (TextView) findViewById(R.id.hotCity_item_6);
+        item7 = (TextView) findViewById(R.id.hotCity_item_7);
+        item8 = (TextView) findViewById(R.id.hotCity_item_8);
+        item9 = (TextView) findViewById(R.id.hotCity_item_9);
+        item10 = (TextView) findViewById(R.id.hotCity_item_10);
+        item11 = (TextView) findViewById(R.id.hotCity_item_11);
+        item12 = (TextView) findViewById(R.id.hotCity_item_12);
+        item13 = (TextView) findViewById(R.id.hotCity_item_13);
+        item14 = (TextView) findViewById(R.id.hotCity_item_14);
+        item15 = (TextView) findViewById(R.id.hotCity_item_15);
+        item16 = (TextView) findViewById(R.id.hotCity_item_16);
+        item17 = (TextView) findViewById(R.id.hotCity_item_17);
+        item18 = (TextView) findViewById(R.id.hotCity_item_18);
+        textViewList.add(item1);
+        textViewList.add(item2);
+        textViewList.add(item3);
+        textViewList.add(item4);
+        textViewList.add(item5);
+        textViewList.add(item6);
+        textViewList.add(item7);
+        textViewList.add(item8);
+        textViewList.add(item9);
+        textViewList.add(item10);
+        textViewList.add(item11);
+        textViewList.add(item12);
+        textViewList.add(item13);
+        textViewList.add(item14);
+        textViewList.add(item15);
+        textViewList.add(item16);
+        textViewList.add(item17);
+        textViewList.add(item18);
+    }
+
+    private void prepareTextViewListener(){
+        for (TextView textView : textViewList){
+            textView.setOnClickListener(this);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        for (int i = 0; i < textViewList.size(); i++){
+            if (textViewList.get(i).equals(v)){
+                prepareNewCityInformation(hotCitiesList.get(i).locationName);
+            }
+        }
+//        switch (v.getId()){
+//            case R.id.hotCity_item_1:
+//                prepareNewCityInformation(hotCitiesList.get(0).locationName);
+//                break;
+//            case R.id.hotCity_item_2:
+//                prepareNewCityInformation(hotCitiesList.get(1).locationName);
+//                break;
+//            case R.id.hotCity_item_3:
+//                prepareNewCityInformation(hotCitiesList.get(2).locationName);
+//                break;
+//            case R.id.hotCity_item_4:
+//                prepareNewCityInformation(hotCitiesList.get(3).locationName);
+//                break;
+//            case R.id.hotCity_item_5:
+//                prepareNewCityInformation(hotCitiesList.get(4).locationName);
+//                break;
+//            case R.id.hotCity_item_6:
+//                prepareNewCityInformation(hotCitiesList.get(5).locationName);
+//                break;
+//            case R.id.hotCity_item_7:
+//                prepareNewCityInformation(hotCitiesList.get(6).locationName);
+//                break;
+//            case R.id.hotCity_item_8:
+//                prepareNewCityInformation(hotCitiesList.get(7).locationName);
+//                break;
+//            case R.id.hotCity_item_9:
+//                prepareNewCityInformation(hotCitiesList.get(8).locationName);
+//                break;
+//            case R.id.hotCity_item_10:
+//                prepareNewCityInformation(hotCitiesList.get(9).locationName);
+//                break;
+//            case R.id.hotCity_item_11:
+//                prepareNewCityInformation(hotCitiesList.get(10).locationName);
+//                break;
+//            case R.id.hotCity_item_12:
+//                prepareNewCityInformation(hotCitiesList.get(11).locationName);
+//                break;
+//            case R.id.hotCity_item_13:
+//                prepareNewCityInformation(hotCitiesList.get(12).locationName);
+//                break;
+//            case R.id.hotCity_item_14:
+//                prepareNewCityInformation(hotCitiesList.get(13).locationName);
+//                break;
+//            case R.id.hotCity_item_15:
+//                prepareNewCityInformation(hotCitiesList.get(14).locationName);
+//                break;
+//            case R.id.hotCity_item_16:
+//                prepareNewCityInformation(hotCitiesList.get(15).locationName);
+//                break;
+//            case R.id.hotCity_item_17:
+//                prepareNewCityInformation(hotCitiesList.get(16).locationName);
+//                break;
+//            case R.id.hotCity_item_18:
+//                prepareNewCityInformation(hotCitiesList.get(17).locationName);
+//                break;
+//        }
+    }
+
+    //    class MyFlowLayoutAdapter extends BaseAdapter{
+//
+//        private Context context;
+//        private List<City> hotCities;
+//
+//        public MyFlowLayoutAdapter(Context context, List<City> hotCities) {
+//            this.context = context;
+//            this.hotCities = hotCities;
+//        }
+//
+//        @Override
+//        public int getCount() {
+//            return hotCities.size();
+//        }
+//
+//        @Override
+//        public Object getItem(int position) {
+//            return hotCities.get(position);
+//        }
+//
+//        @Override
+//        public long getItemId(int position) {
+//            return position;
+//        }
+//
+//        @Override
+//        public View getView(int position, View convertView, ViewGroup parent) {
+//            City city = (City) getItem(position);
+//            ViewHolder viewHolder;
+//            if (convertView == null){
+//                convertView = LayoutInflater.from(context).inflate(R.layout.place_text_item,null);
+//                viewHolder = new ViewHolder();
+//                viewHolder.hotCItyText = (TextView) convertView.findViewById(R.id.hotCity_item_text);
+//                convertView.setTag(viewHolder);
+//            }else {
+//                viewHolder = (ViewHolder) convertView.getTag();
+//            }
+//            viewHolder.hotCItyText.setText(city.locationName);
+//            return null;
+//        }
+//
+//        class ViewHolder{
+//            TextView hotCItyText;
+//        }
+//    }
 }

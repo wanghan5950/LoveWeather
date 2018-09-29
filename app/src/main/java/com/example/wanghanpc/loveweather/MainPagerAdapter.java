@@ -96,4 +96,5 @@ public class MainPagerAdapter extends PagerAdapter {
             return POSITION_UNCHANGED;
         }
     }
+
 }

@@ -15,11 +15,11 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/love_weather_icon"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/WelcomeTheme">
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="Vo4Q5qjl9EGpzcnTZK6sob5GYaLE3aX1" />
@@ -31,28 +31,35 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".PlacesActivity" />
+        <activity android:name=".PlacesActivity"
+            android:theme="@style/AppTheme"/>
 
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
             android:process=":remote" />
 
-        <activity android:name=".SettingActivity" />
-        <activity android:name=".SearchActivity" />
-        <activity android:name=".MapActivity" />
+        <activity android:name=".SettingActivity"
+            android:theme="@style/AppTheme"/>
+        <activity android:name=".SearchActivity"
+            android:theme="@style/AppTheme"/>
+        <activity android:name=".MapActivity"
+            android:theme="@style/AppTheme"/>
 
         <service
             android:name=".service.AutoUpdateInformationService"
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".AboutActivity" />
+        <activity android:name=".AboutActivity"
+            android:theme="@style/AppTheme"/>
 
         <service
             android:name=".service.NotificationService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true">
+
+        </service>
     </application>
 
 </manifest>
