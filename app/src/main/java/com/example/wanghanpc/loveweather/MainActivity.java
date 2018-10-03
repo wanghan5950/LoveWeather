@@ -256,14 +256,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @param position
      */
     private void initToolbarInformation(int position){
-        String title = weatherList.get(position).result.today.city;
-        String week = weatherList.get(position).result.today.week+",";
-        String time = weatherList.get(position).result.sk.time+"更新";
-        String weatherId = weatherList.get(position).result.today.weatherChangeId.startWeather;
+        String title = weatherList.get(position).getBasic().getLocation();
+        String updateTime = weatherList.get(position).getUpdate().getLoc();
+        String date = updateTime.substring(0,10);
+        String time = updateTime.substring(11)+"更新";
+        String week = Utility.getWeek(date)+",";
+        String weatherId = weatherList.get(position).getNow().getCondCode();
         toolbarWeek.setText(week);
         toolbarTime.setText(time);
         toolbarTitle.setText(title);
-        backgroundImage.setBackgroundResource(changeMainBackground(weatherId));
+        backgroundImage.setBackgroundResource(ReadyIconAndBackground.getWeatherBackground(weatherId));
     }
 
     /**
@@ -310,37 +312,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             judgeListInformation();
             initToolbarInformation(0);
         }
-    }
-
-    /**
-     * 获取图标资源
-     * @param weatherId
-     * @return
-     */
-    public static int getWeatherIcon(String weatherId){
-        if (weatherId != null && ReadyIconAndBackground.weatherIconList.containsKey(weatherId)){
-            return ReadyIconAndBackground.weatherIconList.get(weatherId);
-        }
-        return R.drawable.unknown;
-    }
-
-    public static int getLargeWeatherIcon(String weatherId){
-        if (weatherId != null && ReadyIconAndBackground.largeWeatherIconList.containsKey(weatherId)){
-            return ReadyIconAndBackground.largeWeatherIconList.get(weatherId);
-        }
-        return R.drawable.unknown_l;
-    }
-
-    /**
-     * 加载背景颜色
-     * @param weatherId
-     * @return
-     */
-    private int changeMainBackground(String weatherId){
-        if (weatherId != null && ReadyIconAndBackground.backgroundList.containsKey(weatherId)){
-            return ReadyIconAndBackground.backgroundList.get(weatherId);
-        }
-        return R.drawable.sunny_background;
     }
 
     /**

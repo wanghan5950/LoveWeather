@@ -19,28 +19,28 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="30dp">
 
         <TextView
             android:id="@+id/date_text"
             android:layout_width="0dp"
-            android:layout_height="30dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:textSize="15sp"
             android:textColor="#ffffff"
-            android:gravity="left" />
+            android:gravity="center_vertical|left" />
 
         <ImageView
             android:id="@+id/weather_icon_1"
             android:layout_width="20dp"
-            android:layout_height="30dp"
+            android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:layout_weight="0.2"
             android:scaleType="fitCenter"/>
 
         <TextView
             android:layout_width="0dp"
-            android:layout_height="30dp"
+            android:layout_height="match_parent"
             android:layout_weight="0.2"
             android:textSize="15sp"
             android:textColor="#5affffff"
@@ -50,19 +50,19 @@
         <ImageView
             android:id="@+id/weather_icon_2"
             android:layout_width="20dp"
-            android:layout_height="30dp"
+            android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:layout_weight="0.2"
             android:scaleType="fitCenter"/>
 
         <TextView
-            android:id="@+id/future_item_temp_range"
+            android:id="@+id/daily_item_temp"
             android:layout_width="0dp"
-            android:layout_height="30dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:textSize="15sp"
             android:textColor="#ffffff"
-            android:gravity="right" />
+            android:gravity="center_vertical|right" />
 
     </LinearLayout>
 

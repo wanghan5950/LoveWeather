@@ -2,6 +2,8 @@ package com.example.wanghanpc.loveweather;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,11 +11,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.wanghanpc.loveweather.weatherGson.Future;
+import com.example.wanghanpc.loveweather.OtherEntityClass.ReadyIconAndBackground;
+import com.example.wanghanpc.loveweather.util.Utility;
+import com.example.wanghanpc.loveweather.weatherGson.DailyForecast;
+import com.example.wanghanpc.loveweather.weatherGson.Lifestyle;
 import com.example.wanghanpc.loveweather.weatherGson.Weather;
 
 import java.util.List;
-import java.util.Map;
 
 public class MainPagerAdapter extends PagerAdapter {
 
@@ -35,42 +39,51 @@ public class MainPagerAdapter extends PagerAdapter {
         View view = View.inflate(context,R.layout.page,null);
         view.setTag(position);
         //加载布局
-        LinearLayout futureLayout = (LinearLayout) view.findViewById(R.id.future_layout);
+        LinearLayout dailyForecastLayout = (LinearLayout) view.findViewById(R.id.dailyForecast_layout);
+        LinearLayout suggestionLayout = (LinearLayout) view.findViewById(R.id.suggestion_layout);
+
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.hour_recyclerView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        recyclerView.setLayoutManager(layoutManager);
+        MainHourlyAdapter hourlyAdapter = new MainHourlyAdapter(weathersList.get(position).getHourlyList());
+        recyclerView.setAdapter(hourlyAdapter);
+
         TextView degreeText = (TextView) view.findViewById(R.id.degree_text);
         ImageView nowDegreeIcon = (ImageView) view.findViewById(R.id.now_degree_icon);
-        TextView tempRange = (TextView) view.findViewById(R.id.temp_range);
+        TextView feelTemp = (TextView) view.findViewById(R.id.feel_temp);
         TextView weatherInfo = (TextView) view.findViewById(R.id.weather_info);
-        TextView dressingAdvice = (TextView) view.findViewById(R.id.dressing_index_text);
-        TextView wind = (TextView) view.findViewById(R.id.wind_text);
-        TextView washIndex = (TextView) view.findViewById(R.id.wash_index_text);
-        TextView travelIndex = (TextView) view.findViewById(R.id.travel_index_text);
-        TextView exerciseIndex = (TextView) view.findViewById(R.id.exercise_index_text);
-        TextView humidity = (TextView) view.findViewById(R.id.humidity_text);
-        TextView uvIndex = (TextView) view.findViewById(R.id.uv_index_text);
-        degreeText.setText(weathersList.get(position).result.sk.temp);
-        nowDegreeIcon.setImageResource(MainActivity.getLargeWeatherIcon(weathersList.get(position).result.today.weatherChangeId.startWeather));
-        tempRange.setText(weathersList.get(position).result.today.temperature);
-        weatherInfo.setText(weathersList.get(position).result.today.weather);
-        dressingAdvice.setText(weathersList.get(position).result.today.dressingAdvice);
-        wind.setText(weathersList.get(position).result.today.wind);
-        washIndex.setText(weathersList.get(position).result.today.washIndex);
-        travelIndex.setText(weathersList.get(position).result.today.travelIndex);
-        exerciseIndex.setText(weathersList.get(position).result.today.exerciseIndex);
-        humidity.setText(weathersList.get(position).result.sk.humidity);
-        uvIndex.setText(weathersList.get(position).result.today.uvIndex);
-        Map<String,Future> futureMap = weathersList.get(position).result.futureMap;
-        futureLayout.removeAllViews();
-        for (String key : futureMap.keySet()){
-            View futureView = LayoutInflater.from(context).inflate(R.layout.weather_future_item,futureLayout,false);
-            TextView futureItemDate = (TextView) futureView.findViewById(R.id.date_text);
-            ImageView weatherIcon1 = (ImageView) futureView.findViewById(R.id.weather_icon_1);
-            ImageView weatherIcon2 = (ImageView) futureView.findViewById(R.id.weather_icon_2);
-            TextView futureItemTempRang = (TextView) futureView.findViewById(R.id.future_item_temp_range);
-            futureItemDate.setText(futureMap.get(key).week);
-            weatherIcon1.setImageResource(MainActivity.getWeatherIcon(futureMap.get(key).futureWeatherId.startWeather));
-            weatherIcon2.setImageResource(MainActivity.getWeatherIcon(futureMap.get(key).futureWeatherId.lastWeather));
-            futureItemTempRang.setText(futureMap.get(key).temperature);
-            futureLayout.addView(futureView);
+        degreeText.setText(weathersList.get(position).getNow().getTmp());
+        nowDegreeIcon.setImageResource(ReadyIconAndBackground.getLargeWeatherIcon(weathersList.get(position).getNow().getCondCode()));
+        feelTemp.setText(weathersList.get(position).getNow().getFeelTemp());
+        weatherInfo.setText(weathersList.get(position).getNow().getCondTxt());
+
+        List<DailyForecast> dailyForecastList = weathersList.get(position).getDailyForecastList();
+        dailyForecastLayout.removeAllViews();
+        for (DailyForecast dailyForecast : dailyForecastList){
+            View dailyView = LayoutInflater.from(context).inflate(R.layout.weather_future_item,dailyForecastLayout,false);
+            TextView dailyItemDate = (TextView) dailyView.findViewById(R.id.date_text);
+            ImageView weatherIcon1 = (ImageView) dailyView.findViewById(R.id.weather_icon_1);
+            ImageView weatherIcon2 = (ImageView) dailyView.findViewById(R.id.weather_icon_2);
+            TextView dailyTemp = (TextView) dailyView.findViewById(R.id.daily_item_temp);
+            dailyItemDate.setText(Utility.getWeek(dailyForecast.getDate()));
+            weatherIcon1.setImageResource(ReadyIconAndBackground.getWeatherIcon(dailyForecast.getCondCodeDay()));
+            weatherIcon2.setImageResource(ReadyIconAndBackground.getWeatherIcon(dailyForecast.getCondCodeNight()));
+            String temp = dailyForecast.getTempMin()+" ~ "+dailyForecast.getTempMax();
+            dailyTemp.setText(temp);
+            dailyForecastLayout.addView(dailyView);
+        }
+        List<Lifestyle> lifestyleList = weathersList.get(position).getLifestyleList();
+        suggestionLayout.removeAllViews();
+        for (Lifestyle lifestyle : lifestyleList){
+            View lifeStyleView = LayoutInflater.from(context).inflate(R.layout.suggestion_item,suggestionLayout,false);
+            ImageView lifeStyleIcon = (ImageView) lifeStyleView.findViewById(R.id.suggestion_item_icon);
+            TextView lifeStyleName = (TextView) lifeStyleView.findViewById(R.id.suggestion_item_name);
+            TextView lifeStyleText = (TextView) lifeStyleView.findViewById(R.id.suggestion_item_text);
+            lifeStyleIcon.setImageResource(ReadyIconAndBackground.getLifeStyleIcon(lifestyle.getType()));
+            lifeStyleName.setText(ReadyIconAndBackground.getLisfeStyleText(lifestyle.getType()));
+            lifeStyleText.setText(lifestyle.getBrf());
+            suggestionLayout.addView(lifeStyleView);
         }
         container.addView(view);
         return view;
@@ -96,5 +109,4 @@ public class MainPagerAdapter extends PagerAdapter {
             return POSITION_UNCHANGED;
         }
     }
-
 }

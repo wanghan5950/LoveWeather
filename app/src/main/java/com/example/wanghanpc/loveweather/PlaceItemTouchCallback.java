@@ -52,23 +52,21 @@ public class PlaceItemTouchCallback extends ItemTouchHelper.Callback {
     @Override
     public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
         super.onSelectedChanged(viewHolder, actionState);
-        if (actionState == ItemTouchHelper.ACTION_STATE_DRAG){
-//            viewHolder.itemView.getBackground().setAlpha(100);
-
-
-        }
+//        if (actionState == ItemTouchHelper.ACTION_STATE_DRAG){
+////            viewHolder.itemView.getBackground().setAlpha(100);
+//        }
     }
 
     @Override
     public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
         super.clearView(recyclerView, viewHolder);
 //        viewHolder.itemView.getBackground().setAlpha(255);
-
     }
 
     public interface ItemTouchAdapter {
         void onMove(int fromPosition, int toPosition);
         void onSwiped(int position);
+        void saveWeatherList();
     }
 
     public void setEditMode(int editMode){

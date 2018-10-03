@@ -16,6 +16,8 @@
 
             <include layout="@layout/now"/>
 
+            <include layout="@layout/weather_hour"/>
+
             <include layout="@layout/weather_future"/>
 
             <include layout="@layout/suggestion"/>

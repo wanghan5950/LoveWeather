@@ -252,14 +252,14 @@ public class PlacesActivity extends AppCompatActivity implements PlacesAdapter.O
         if (placesAdapter == null) return;
         if (!allSelected){
             for (int i = 0; i < placesAdapter.getWeatherList().size(); i ++){
-                placesAdapter.getWeatherList().get(i).isSelected = true;
+                placesAdapter.getWeatherList().get(i).setSelected(true);
             }
             allSelected = true;
             index = placesAdapter.getWeatherList().size();
             placeToolbarTitle.setText(String.valueOf(index));
         }else {
             for (int i = 0; i < placesAdapter.getWeatherList().size(); i ++){
-                placesAdapter.getWeatherList().get(i).isSelected = false;
+                placesAdapter.getWeatherList().get(i).setSelected(false);
             }
             index = 0;
             placeToolbarTitle.setText(String.valueOf(index));
@@ -277,9 +277,9 @@ public class PlacesActivity extends AppCompatActivity implements PlacesAdapter.O
         needToDelete.clear();
         for (int i = placesAdapter.getWeatherList().size(); i > 0; i --){
             Weather weather = placesAdapter.getWeatherList().get(i-1);
-            if (weather.isSelected){
+            if (weather.getSelected()){
                 placesAdapter.getWeatherList().remove(weather);
-                needToDelete.add(weather.result.today.city);
+                needToDelete.add(weather.getBasic().getLocation());
             }
         }
         for (String city : needToDelete){
@@ -298,16 +298,16 @@ public class PlacesActivity extends AppCompatActivity implements PlacesAdapter.O
     public void onItemClickListener(int position, List<Weather> weatherList){
         if (editStatus){
             Weather weather = weatherList.get(position);
-            boolean isSelect = weather.isSelected;
+            boolean isSelect = weather.getSelected();
             if (!isSelect){
                 index ++;
-                weather.isSelected = true;
+                weather.setSelected(true);
                 if (index == weatherList.size()){
                     allSelected = true;
                     toolbar.setNavigationIcon(R.mipmap.selected_blue);
                 }
             }else {
-                weather.isSelected = false;
+                weather.setSelected(false);
                 index --;
                 allSelected = false;
                 toolbar.setNavigationIcon(R.mipmap.unselected);
@@ -366,6 +366,7 @@ public class PlacesActivity extends AppCompatActivity implements PlacesAdapter.O
         initNavigationIcon(editStatus,allSelected);
         invalidateOptionsMenu();
         setDeleteButtonVisible(index);
+
         editMode = PLACE_MODE_CHECK;
         placesAdapter.setEditMode(editMode);
         placeItemTouchCallback.setEditMode(editMode);

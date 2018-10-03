@@ -25,32 +25,53 @@
         android:background="@drawable/place_item_background">
 
         <TextView
-            android:id="@+id/place_item_name"
+            android:id="@+id/place_item_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:textSize="25sp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:textSize="22sp"
             android:textColor="#505050" />
+
+        <TextView
+            android:id="@+id/place_item_province"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="#505050"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="3dp"
+            android:layout_below="@id/place_item_location" />
+
+        <TextView
+            android:id="@+id/place_item_city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="#505050"
+            android:layout_below="@id/place_item_location"
+            android:layout_marginTop="3dp"
+            android:layout_toRightOf="@id/place_item_province" />
 
         <TextView
             android:id="@+id/place_item_week"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/place_item_name"
-            android:layout_marginTop="8dp"
+            android:layout_below="@id/place_item_province"
             android:layout_marginLeft="10dp"
+            android:layout_marginTop="3dp"
             android:layout_marginBottom="10dp"
-            android:textSize="15sp"
+            android:textSize="12sp"
             android:textColor="#505050" />
 
         <TextView
             android:id="@+id/place_item_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/place_item_name"
+            android:layout_below="@id/place_item_province"
             android:layout_toRightOf="@id/place_item_week"
-            android:layout_marginTop="8dp"
-            android:textSize="15sp"
+            android:layout_marginTop="3dp"
+            android:textSize="12sp"
             android:textColor="#505050" />
 
         <TextView
@@ -77,8 +98,8 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="20dp"
-            android:layout_toLeftOf="@id/place_item_temp"/>
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/place_item_temp" />
 
         <TextView
             android:id="@+id/place_item_forecast"
@@ -87,7 +108,7 @@
             android:layout_below="@id/place_item_temp"
             android:layout_marginRight="10dp"
             android:textColor="#505050"
-            android:textSize="15sp"
+            android:textSize="12sp"
             android:layout_alignParentRight="true" />
 
     </RelativeLayout>

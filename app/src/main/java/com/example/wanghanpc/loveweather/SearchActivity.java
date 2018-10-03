@@ -1,7 +1,5 @@
 package com.example.wanghanpc.loveweather;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -9,16 +7,11 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -31,15 +24,9 @@ import com.example.wanghanpc.loveweather.cityGson.CityBackResult;
 import com.example.wanghanpc.loveweather.cityGson.HotCityBackResult;
 import com.example.wanghanpc.loveweather.util.HttpUtil;
 import com.example.wanghanpc.loveweather.util.Utility;
-import com.example.wanghanpc.loveweather.weatherGson.Weather;
-import com.zhy.view.flowlayout.FlowLayout;
-import com.zhy.view.flowlayout.TagAdapter;
-import com.zhy.view.flowlayout.TagFlowLayout;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.FormatFlagsConversionMismatchException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -80,9 +67,6 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     private TextView item18;
     private LinearLayout linearLayout;
     private List<TextView> textViewList = new ArrayList<>();
-//    private TagFlowLayout flowLayout;
-//    private MyFlowLayoutAdapter flowLayoutAdapter;
-//    private TagAdapter<String> tagAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +86,6 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         prepareEditTextListener();
         initToolbar();
         requestHotCity();
-//        flowLayout = (TagFlowLayout) findViewById(R.id.search_flowLayout);
         progressBar.setVisibility(View.GONE);
         prepareTextViewListener();
     }
@@ -132,7 +115,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
             setPlaceNameListToShared();
             Utility.requestWeather(city,this);
             while (true){
-                if (Utility.getWeather() != null && Utility.getWeather().result.today.city.equals(city)){
+                if (Utility.getWeather() != null && Utility.getWeather().getBasic().getLocation().equals(city)){
                     break;
                 }
             }
@@ -289,23 +272,6 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void showHotCities(){
-//        String[] hotCities = hotCitiesList.toArray(new String[0]);
-//        final LayoutInflater inflater = LayoutInflater.from(SearchActivity.this);
-//        flowLayout.setAdapter(new TagAdapter<String>(hotCities) {
-//            @Override
-//            public View getView(FlowLayout parent, int position, String s) {
-//                TextView textView = (TextView) inflater.inflate(R.layout.place_text_item,flowLayout,false);
-//                textView.setText(s);
-//                return textView;
-//            }
-//        });
-//        flowLayout.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
-//            @Override
-//            public boolean onTagClick(View view, int position, FlowLayout parent) {
-//                prepareNewCityInformation(this.hotCities[position]);
-//                return true;
-//            }
-//        });
         for (int i = 0; i < textViewList.size(); i++){
             textViewList.get(i).setText(hotCitiesList.get(i).locationName);
         }
@@ -410,107 +376,5 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                 prepareNewCityInformation(hotCitiesList.get(i).locationName);
             }
         }
-//        switch (v.getId()){
-//            case R.id.hotCity_item_1:
-//                prepareNewCityInformation(hotCitiesList.get(0).locationName);
-//                break;
-//            case R.id.hotCity_item_2:
-//                prepareNewCityInformation(hotCitiesList.get(1).locationName);
-//                break;
-//            case R.id.hotCity_item_3:
-//                prepareNewCityInformation(hotCitiesList.get(2).locationName);
-//                break;
-//            case R.id.hotCity_item_4:
-//                prepareNewCityInformation(hotCitiesList.get(3).locationName);
-//                break;
-//            case R.id.hotCity_item_5:
-//                prepareNewCityInformation(hotCitiesList.get(4).locationName);
-//                break;
-//            case R.id.hotCity_item_6:
-//                prepareNewCityInformation(hotCitiesList.get(5).locationName);
-//                break;
-//            case R.id.hotCity_item_7:
-//                prepareNewCityInformation(hotCitiesList.get(6).locationName);
-//                break;
-//            case R.id.hotCity_item_8:
-//                prepareNewCityInformation(hotCitiesList.get(7).locationName);
-//                break;
-//            case R.id.hotCity_item_9:
-//                prepareNewCityInformation(hotCitiesList.get(8).locationName);
-//                break;
-//            case R.id.hotCity_item_10:
-//                prepareNewCityInformation(hotCitiesList.get(9).locationName);
-//                break;
-//            case R.id.hotCity_item_11:
-//                prepareNewCityInformation(hotCitiesList.get(10).locationName);
-//                break;
-//            case R.id.hotCity_item_12:
-//                prepareNewCityInformation(hotCitiesList.get(11).locationName);
-//                break;
-//            case R.id.hotCity_item_13:
-//                prepareNewCityInformation(hotCitiesList.get(12).locationName);
-//                break;
-//            case R.id.hotCity_item_14:
-//                prepareNewCityInformation(hotCitiesList.get(13).locationName);
-//                break;
-//            case R.id.hotCity_item_15:
-//                prepareNewCityInformation(hotCitiesList.get(14).locationName);
-//                break;
-//            case R.id.hotCity_item_16:
-//                prepareNewCityInformation(hotCitiesList.get(15).locationName);
-//                break;
-//            case R.id.hotCity_item_17:
-//                prepareNewCityInformation(hotCitiesList.get(16).locationName);
-//                break;
-//            case R.id.hotCity_item_18:
-//                prepareNewCityInformation(hotCitiesList.get(17).locationName);
-//                break;
-//        }
     }
-
-    //    class MyFlowLayoutAdapter extends BaseAdapter{
-//
-//        private Context context;
-//        private List<City> hotCities;
-//
-//        public MyFlowLayoutAdapter(Context context, List<City> hotCities) {
-//            this.context = context;
-//            this.hotCities = hotCities;
-//        }
-//
-//        @Override
-//        public int getCount() {
-//            return hotCities.size();
-//        }
-//
-//        @Override
-//        public Object getItem(int position) {
-//            return hotCities.get(position);
-//        }
-//
-//        @Override
-//        public long getItemId(int position) {
-//            return position;
-//        }
-//
-//        @Override
-//        public View getView(int position, View convertView, ViewGroup parent) {
-//            City city = (City) getItem(position);
-//            ViewHolder viewHolder;
-//            if (convertView == null){
-//                convertView = LayoutInflater.from(context).inflate(R.layout.place_text_item,null);
-//                viewHolder = new ViewHolder();
-//                viewHolder.hotCItyText = (TextView) convertView.findViewById(R.id.hotCity_item_text);
-//                convertView.setTag(viewHolder);
-//            }else {
-//                viewHolder = (ViewHolder) convertView.getTag();
-//            }
-//            viewHolder.hotCItyText.setText(city.locationName);
-//            return null;
-//        }
-//
-//        class ViewHolder{
-//            TextView hotCItyText;
-//        }
-//    }
 }

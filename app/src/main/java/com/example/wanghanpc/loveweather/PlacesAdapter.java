@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.wanghanpc.loveweather.OtherEntityClass.ReadyIconAndBackground;
+import com.example.wanghanpc.loveweather.util.Utility;
 import com.example.wanghanpc.loveweather.weatherGson.Weather;
 
 import java.util.ArrayList;
@@ -23,7 +25,9 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder
 
     static class ViewHolder extends RecyclerView.ViewHolder{
 
-        TextView placeItemName;
+        TextView placeItemLocation;
+        TextView placeItemProvince;
+        TextView placeItemCity;
         TextView placeItemWeek;
         TextView placeItemTime;
         TextView placeItemTemp;
@@ -31,9 +35,11 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder
         ImageView placeItemIcon;
         ImageView placeCheckBox;
 
-        public ViewHolder(View view){
+        private ViewHolder(View view){
             super(view);
-            placeItemName = (TextView) view.findViewById(R.id.place_item_name);
+            placeItemLocation = (TextView) view.findViewById(R.id.place_item_location);
+            placeItemProvince = (TextView) view.findViewById(R.id.place_item_province);
+            placeItemCity = (TextView) view.findViewById(R.id.place_item_city);
             placeItemWeek = (TextView) view.findViewById(R.id.place_item_week);
             placeItemTime = (TextView) view.findViewById(R.id.place_item_time);
             placeItemTemp = (TextView) view.findViewById(R.id.place_item_temp);
@@ -64,7 +70,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder
                 Collections.swap(weatherList, i, i + 1);
             }
         }else if (fromPosition > toPosition){
-            for (int i = fromPosition; i > toPosition; i++){
+            for (int i = fromPosition; i > toPosition; i--){
                 Collections.swap(weatherList, i, i - 1);
             }
         }else {
@@ -78,6 +84,11 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder
     }
 
     @Override
+    public void saveWeatherList() {
+
+    }
+
+    @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent,int viewType){
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.place_item,parent,false);
         return new ViewHolder(view);
@@ -87,24 +98,33 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder
     public void onBindViewHolder(final ViewHolder holder, int position){
         final Weather weather = weatherList.get(holder.getAdapterPosition());
 
-        String city = weather.result.today.city;
-        String week = weather.result.today.week+",";
-        String time = weather.result.sk.time+"更新";
-        String temp = weather.result.sk.temp;
-        String forecast = weather.result.today.weather;
-        int iconId = MainActivity.getLargeWeatherIcon(weather.result.today.weatherChangeId.startWeather);
-        holder.placeItemName.setText(city);
+        String location = weather.getBasic().getLocation();
+        String province = weather.getBasic().getAdminArea();
+        String city = ","+weather.getBasic().getParentCity();
+        String date = weather.getUpdate().getLoc().substring(0,10);
+        String time = weather.getUpdate().getLoc().substring(11) + "更新";
+        String week = Utility.getWeek(date)+",";
+        String temp = weather.getNow().getTmp();
+        String weatherInfo = weather.getNow().getCondTxt();
+        int iconId = ReadyIconAndBackground.getLargeWeatherIcon(weather.getNow().getCondCode());
+        holder.placeItemLocation.setText(location);
+        if (!weather.getBasic().getAdminArea().equals(weather.getBasic().getParentCity())){
+            holder.placeItemProvince.setText(province);
+            holder.placeItemCity.setText(city);
+        }else {
+            holder.placeItemProvince.setText(province);
+        }
         holder.placeItemWeek.setText(week);
         holder.placeItemTime.setText(time);
         holder.placeItemTemp.setText(temp);
-        holder.placeItemForecast.setText(forecast);
+        holder.placeItemForecast.setText(weatherInfo);
         holder.placeItemIcon.setImageResource(iconId);
 
         if (editMode == PLACES_MODE_CHECK){
             holder.placeCheckBox.setVisibility(View.GONE);
         }else {
             holder.placeCheckBox.setVisibility(View.VISIBLE);
-            if (weather.isSelected){
+            if (weather.getSelected()){
                 holder.placeCheckBox.setImageResource(R.mipmap.selected_blue);
             }else {
                 holder.placeCheckBox.setImageResource(R.mipmap.unselected);

@@ -15,6 +15,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.example.wanghanpc.loveweather.MainActivity;
+import com.example.wanghanpc.loveweather.OtherEntityClass.ReadyIconAndBackground;
 import com.example.wanghanpc.loveweather.R;
 import com.example.wanghanpc.loveweather.util.Utility;
 import com.example.wanghanpc.loveweather.weatherGson.Weather;
@@ -75,11 +76,11 @@ public class NotificationService extends Service {
         public void onReceive(Context context, Intent intent) {
             getWeatherForNotification();
             try {
-                int weatherIcon = MainActivity.getWeatherIcon(weatherForNotification.result.today.weatherChangeId.startWeather);
+                int weatherIcon = ReadyIconAndBackground.getWeatherIcon(weatherForNotification.getNow().getCondCode());
                 NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                 Notification notification = new NotificationCompat.Builder(context,"default")
-                        .setContentTitle(weatherForNotification.result.today.city)
-                        .setContentText(weatherForNotification.result.today.weather)
+                        .setContentTitle(weatherForNotification.getBasic().getLocation())
+                        .setContentText(weatherForNotification.getNow().getCondTxt())
                         .setWhen(System.currentTimeMillis())
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setLargeIcon(BitmapFactory.decodeResource(getResources(),weatherIcon))

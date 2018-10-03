@@ -14,6 +14,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -33,8 +36,10 @@ public class Utility {
      */
     public static Weather handleWeatherResponse(String response){
         try {
-            Gson gson = new Gson();
-            return gson.fromJson(response,Weather.class);
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray jsonArray = jsonObject.getJSONArray("HeWeather6");
+            String weatherContent = jsonArray.getJSONObject(0).toString();
+            return new Gson().fromJson(weatherContent,Weather.class);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -72,11 +77,11 @@ public class Utility {
     }
 
     /**
-     * 请求天气数据并保存
+     * 根据城市名请求天气数据并保存
      */
-    public static void requestWeather(final String placeName, final Context context){
+    public static void requestWeather(final String location, final Context context){
         requestDone = false;
-        String weatherUrl = "http://v.juhe.cn/weather/index?cityname=" + placeName + "&key=f6aaf579c3b72065ce65d74591c1614e";
+        final String weatherUrl = "https://free-api.heweather.com/s6/weather?location=" + location + "&key=e7b4b21007f048a9a4fe2cb236ce5569";
         HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -88,10 +93,10 @@ public class Utility {
             public void onResponse(Call call, Response response) throws IOException {
                 final String responseText = response.body().string();
                 final Weather weather = handleWeatherResponse(responseText);
-                if (weather != null && "200".equals(weather.resultCode)){
+                if (weather != null && "ok".equals(weather.getStatus())){
                     Utility.weather = weather;
                     SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-                    editor.putString(placeName,responseText);
+                    editor.putString(location,responseText);
                     editor.apply();
                     requestDone = true;
                 }else {
@@ -107,5 +112,41 @@ public class Utility {
 
     public static boolean isRequestDoneOrNot(){
         return requestDone;
+    }
+
+    public static String getWeek(String time){
+        String Week = "";
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar c = Calendar.getInstance();
+        try {
+            c.setTime(format.parse(time));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        int wek=c.get(Calendar.DAY_OF_WEEK);
+
+        if (wek == 1) {
+            Week += "星期日";
+        }
+        if (wek == 2) {
+            Week += "星期一";
+        }
+        if (wek == 3) {
+            Week += "星期二";
+        }
+        if (wek == 4) {
+            Week += "星期三";
+        }
+        if (wek == 5) {
+            Week += "星期四";
+        }
+        if (wek == 6) {
+            Week += "星期五";
+        }
+        if (wek == 7) {
+            Week += "星期六";
+        }
+        return Week;
     }
 }
