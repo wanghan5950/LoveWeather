@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -54,7 +53,7 @@ public class PlacesActivity extends AppCompatActivity implements PlacesAdapter.O
         getPlaceNameListFromShared();
         getWeatherListFromShared();
         recyclerView = (RecyclerView) findViewById(R.id.place_item_recyclerView);
-        placesAdapter = new PlacesAdapter(weatherList);
+        placesAdapter = new PlacesAdapter(weatherList,placeNameList);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 //        PlacesItemDecoration itemDecoration = new PlacesItemDecoration(this,PlacesItemDecoration.VERTICAL_LIST);
@@ -285,7 +284,6 @@ public class PlacesActivity extends AppCompatActivity implements PlacesAdapter.O
         for (String city : needToDelete){
             placeNameList.remove(city);
         }
-        setPlaceNameListToShared();
         exitEditMode();
     }
 
@@ -370,5 +368,7 @@ public class PlacesActivity extends AppCompatActivity implements PlacesAdapter.O
         editMode = PLACE_MODE_CHECK;
         placesAdapter.setEditMode(editMode);
         placeItemTouchCallback.setEditMode(editMode);
+        this.placeNameList = placesAdapter.getPlaceNameList();
+        setPlaceNameListToShared();
     }
 }

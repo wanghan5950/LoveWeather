@@ -16,7 +16,7 @@
         app:elevation="0dp">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/search_toolbar"
+            android:id="@+id/setting_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:theme="@style/placeToolbarStyle"
@@ -24,7 +24,7 @@
             app:navigationIcon="@mipmap/back">
 
             <TextView
-                android:id="@+id/place_toolbar_title"
+                android:id="@+id/setting_toolbar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="设置"
@@ -53,7 +53,8 @@
             android:id="@+id/setting_update_button"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:background="@drawable/ripple_button_background">
 
             <TextView
                 android:layout_width="0dp"
@@ -86,7 +87,8 @@
             android:id="@+id/setting_notice_button"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:background="@drawable/ripple_button_background">
 
             <TextView
                 android:layout_width="0dp"
@@ -119,7 +121,8 @@
             android:id="@+id/setting_about_button"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:background="@drawable/ripple_button_background">
 
             <TextView
                 android:layout_width="0dp"
@@ -152,7 +155,8 @@
             android:id="@+id/setting_feedback_button"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:background="@drawable/ripple_button_background">
 
             <TextView
                 android:layout_width="0dp"

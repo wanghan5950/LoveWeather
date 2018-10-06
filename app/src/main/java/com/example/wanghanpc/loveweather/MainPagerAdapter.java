@@ -42,23 +42,34 @@ public class MainPagerAdapter extends PagerAdapter {
         LinearLayout dailyForecastLayout = (LinearLayout) view.findViewById(R.id.dailyForecast_layout);
         LinearLayout suggestionLayout = (LinearLayout) view.findViewById(R.id.suggestion_layout);
 
+        Weather weather = weathersList.get(position);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.hour_recyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerView.setLayoutManager(layoutManager);
-        MainHourlyAdapter hourlyAdapter = new MainHourlyAdapter(weathersList.get(position).getHourlyList());
+        MainHourlyAdapter hourlyAdapter = new MainHourlyAdapter(weather.getHourlyList());
         recyclerView.setAdapter(hourlyAdapter);
 
         TextView degreeText = (TextView) view.findViewById(R.id.degree_text);
         ImageView nowDegreeIcon = (ImageView) view.findViewById(R.id.now_degree_icon);
         TextView feelTemp = (TextView) view.findViewById(R.id.feel_temp);
         TextView weatherInfo = (TextView) view.findViewById(R.id.weather_info);
-        degreeText.setText(weathersList.get(position).getNow().getTmp());
-        nowDegreeIcon.setImageResource(ReadyIconAndBackground.getLargeWeatherIcon(weathersList.get(position).getNow().getCondCode()));
-        feelTemp.setText(weathersList.get(position).getNow().getFeelTemp());
-        weatherInfo.setText(weathersList.get(position).getNow().getCondTxt());
+        degreeText.setText(weather.getNow().getTmp());
 
-        List<DailyForecast> dailyForecastList = weathersList.get(position).getDailyForecastList();
+        String weatherCode = weather.getNow().getCondCode();
+        if (ReadyIconAndBackground.weatherNightIconList.containsKey(weatherCode)){
+            if (judgeTimeIsDay(weather.getUpdate().getLoc())){
+                nowDegreeIcon.setImageResource(ReadyIconAndBackground.getLargeWeatherIcon(weatherCode));
+            }else {
+                nowDegreeIcon.setImageResource(ReadyIconAndBackground.getLargeNightIcon(weatherCode));
+            }
+        }else {
+            nowDegreeIcon.setImageResource(ReadyIconAndBackground.getLargeWeatherIcon(weatherCode));
+        }
+        feelTemp.setText(weather.getNow().getFeelTemp());
+        weatherInfo.setText(weather.getNow().getCondTxt());
+
+        List<DailyForecast> dailyForecastList = weather.getDailyForecastList();
         dailyForecastLayout.removeAllViews();
         for (DailyForecast dailyForecast : dailyForecastList){
             View dailyView = LayoutInflater.from(context).inflate(R.layout.weather_future_item,dailyForecastLayout,false);
@@ -73,7 +84,7 @@ public class MainPagerAdapter extends PagerAdapter {
             dailyTemp.setText(temp);
             dailyForecastLayout.addView(dailyView);
         }
-        List<Lifestyle> lifestyleList = weathersList.get(position).getLifestyleList();
+        List<Lifestyle> lifestyleList = weather.getLifestyleList();
         suggestionLayout.removeAllViews();
         for (Lifestyle lifestyle : lifestyleList){
             View lifeStyleView = LayoutInflater.from(context).inflate(R.layout.suggestion_item,suggestionLayout,false);
@@ -81,7 +92,7 @@ public class MainPagerAdapter extends PagerAdapter {
             TextView lifeStyleName = (TextView) lifeStyleView.findViewById(R.id.suggestion_item_name);
             TextView lifeStyleText = (TextView) lifeStyleView.findViewById(R.id.suggestion_item_text);
             lifeStyleIcon.setImageResource(ReadyIconAndBackground.getLifeStyleIcon(lifestyle.getType()));
-            lifeStyleName.setText(ReadyIconAndBackground.getLisfeStyleText(lifestyle.getType()));
+            lifeStyleName.setText(ReadyIconAndBackground.getLifeStyleText(lifestyle.getType()));
             lifeStyleText.setText(lifestyle.getBrf());
             suggestionLayout.addView(lifeStyleView);
         }
@@ -101,12 +112,25 @@ public class MainPagerAdapter extends PagerAdapter {
 
     @Override
     public int getItemPosition(Object object){
-        View view = (View)object;
-        int currentPage = ((MainActivity)context).getPagePosition();
-        if (currentPage == (Integer)view.getTag()){
-            return POSITION_NONE;
-        }else {
-            return POSITION_UNCHANGED;
+//        View view = (View)object;
+//        int currentPage = ((MainActivity)context).getPagePosition();
+//        if (currentPage == (Integer)view.getTag()){
+//            return POSITION_NONE;
+//        }else {
+//            return POSITION_UNCHANGED;
+//        }
+        return POSITION_NONE;
+    }
+
+    /**
+     * 判断时间是白天还是晚上
+     */
+    private boolean judgeTimeIsDay (String timeAndDate){
+        String time = timeAndDate.substring(11,13);
+        int timeInt = Integer.parseInt(time);
+        if (timeInt >= 6 && timeInt <= 19){
+            return true;
         }
+        return false;
     }
 }

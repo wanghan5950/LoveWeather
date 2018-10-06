@@ -21,6 +21,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder
     private int editMode = PLACES_MODE_CHECK;
 
     private List<Weather> weatherList;
+    private List<String> placeNameList;
     private OnItemClickListener placeOnItemClickListener;
 
     static class ViewHolder extends RecyclerView.ViewHolder{
@@ -49,29 +50,30 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder
         }
     }
 
-    public PlacesAdapter(List<Weather> weatherList){
+    public PlacesAdapter(List<Weather> weatherList, List<String> placeNameList){
         this.weatherList = weatherList;
+        this.placeNameList = placeNameList;
     }
 
     public List<Weather> getWeatherList(){
-        if (weatherList == null){
-            weatherList = new ArrayList<>();
-        }
         return weatherList;
+    }
+
+    public List<String> getPlaceNameList(){
+        return placeNameList;
     }
 
     @Override
     public void onMove(int fromPosition, int toPosition) {
-        if (fromPosition == weatherList.size() - 1 || toPosition == weatherList.size() - 1){
-            return;
-        }
         if (fromPosition < toPosition){
             for (int i = fromPosition; i < toPosition; i++){
                 Collections.swap(weatherList, i, i + 1);
+                Collections.swap(placeNameList,i, i + 1);
             }
         }else if (fromPosition > toPosition){
             for (int i = fromPosition; i > toPosition; i--){
                 Collections.swap(weatherList, i, i - 1);
+                Collections.swap(placeNameList,i, i - 1);
             }
         }else {
             return;

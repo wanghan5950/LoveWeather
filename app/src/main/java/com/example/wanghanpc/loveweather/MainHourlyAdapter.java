@@ -55,7 +55,16 @@ public class MainHourlyAdapter extends RecyclerView.Adapter<MainHourlyAdapter.Vi
         String time = hourly.getTime().substring(11);
         String hum = hourly.getrHumidity()+"%";
         holder.hourlyTime.setText(time);
-        holder.hourlyIcon.setImageResource(ReadyIconAndBackground.getWeatherIcon(hourly.getCondCode()));
+        String weatherCode = hourly.getCondCode();
+        if (ReadyIconAndBackground.weatherNightIconList.containsKey(weatherCode)){
+            if (judgeTimeIsDay(hourly.getTime())){
+                holder.hourlyIcon.setImageResource(ReadyIconAndBackground.getWeatherIcon(weatherCode));
+            }else {
+                holder.hourlyIcon.setImageResource(ReadyIconAndBackground.getWeatherNightIcon(weatherCode));
+            }
+        }else {
+            holder.hourlyIcon.setImageResource(ReadyIconAndBackground.getWeatherIcon(weatherCode));
+        }
         holder.hourlyHumText.setText(hum);
         holder.hourlyTemp.setText(hourly.getTmp());
         holder.hourlyWindIcon.setImageResource(ReadyIconAndBackground.getWindDirectionIcon(hourly.getWindDirection()));
@@ -65,5 +74,17 @@ public class MainHourlyAdapter extends RecyclerView.Adapter<MainHourlyAdapter.Vi
     @Override
     public int getItemCount() {
         return hourlyList.size();
+    }
+
+    /**
+     * 判断时间是白天还是晚上
+     */
+    private boolean judgeTimeIsDay (String timeAndDate){
+        String time = timeAndDate.substring(11,13);
+        int timeInt = Integer.parseInt(time);
+        if (timeInt >= 6 && timeInt <= 19){
+            return true;
+        }
+        return false;
     }
 }

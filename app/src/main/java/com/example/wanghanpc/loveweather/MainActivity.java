@@ -1,9 +1,16 @@
 package com.example.wanghanpc.loveweather;
 
 import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityCompat;
@@ -56,7 +63,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        ReadyIconAndBackground.initWeatherIconAndBackground();
+        setNotificationChannel();
         //初始化控件
         toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
         toolbarWeek = (TextView) findViewById(R.id.toolbar_week);
@@ -69,22 +77,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         viewPager = (ViewPager) findViewById(R.id.main_view_pager);
         progressBar = (ProgressBar) findViewById(R.id.main_progress_bar);
 
-        ReadyIconAndBackground.initWeatherIconAndBackground();
-
-        initToolbar();
-
         locationClient = new LocationClient(getApplicationContext());
         locationClient.registerLocationListener(new MyLocationListener());
 
         progressBar.setVisibility(View.VISIBLE);
         judgePermission();
-        //手动刷新内容
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                updateCurrentPositionWeather(pagePosition);
-            }
-        });
+        initToolbar();
+        setSwipeRefreshLayoutListener();
+        lastPage.setOnClickListener(this);
+        nextPage.setOnClickListener(this);
     }
 
     /**
@@ -108,7 +109,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
         }
         judgeWeatherInformation();
+        pagerAdapter.notifyDataSetChanged();
         viewPager.setCurrentItem(pagePosition);
+        initToolbarInformation(pagePosition);
+    }
+
+    /**
+     * 设置下拉刷新监听
+     */
+    private void setSwipeRefreshLayoutListener(){
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+                if (networkInfo != null && networkInfo.isAvailable()){
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(1000);
+                            }catch (InterruptedException e){
+                                e.printStackTrace();
+                            }
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    updateCurrentPositionWeather(pagePosition);
+                                }
+                            });
+                        }
+                    }).start();
+                }else {
+                    Toast.makeText(MainActivity.this,"请检查网络",Toast.LENGTH_SHORT).show();
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
     }
 
     /**
@@ -121,11 +158,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if (positionOffsetPixels == 0){
-                    setPageButtonState(pagePosition);
-                }else {
-                    lastPage.setVisibility(View.INVISIBLE);
-                    nextPage.setVisibility(View.INVISIBLE);
+                if (weatherList.size() > 1){
+                    if (positionOffsetPixels == 0){
+                        setPageButtonState(pagePosition);
+                    }else {
+                        lastPage.setVisibility(View.INVISIBLE);
+                        nextPage.setVisibility(View.INVISIBLE);
+                    }
                 }
             }
             @Override
@@ -184,6 +223,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (location != null){
                 placeNameList.add(0,location);
                 judgeWeatherInformation();
+                setUpPagerAdapter();
             }else {
                 return;
             }
@@ -194,6 +234,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
             judgeWeatherInformation();
+            setUpPagerAdapter();
         }
         setPlaceNameListToShared();
         progressBar.setVisibility(View.INVISIBLE);
@@ -248,7 +289,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         }
-        setUpPagerAdapter();
     }
 
     /**
@@ -323,10 +363,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 != PackageManager.PERMISSION_GRANTED){
             permissionList.add(Manifest.permission.ACCESS_FINE_LOCATION);
         }
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
-                != PackageManager.PERMISSION_GRANTED){
-            permissionList.add(Manifest.permission.READ_PHONE_STATE);
-        }
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED){
             permissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -335,8 +371,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String[] permissions = permissionList.toArray(new String[permissionList.size()]);
             ActivityCompat.requestPermissions(this,permissions,1);
         }else {
-            requestLocation();
-            judgeListInformation();
+            checkSystemNetworkState();
         }
     }
 
@@ -400,8 +435,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             return;
                         }
                     }
-                    requestLocation();
-                    judgeListInformation();
+                    checkSystemNetworkState();
                 }else {
                     Toast.makeText(this,"发生未知错误",Toast.LENGTH_SHORT).show();
                     finish();
@@ -409,6 +443,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             default:
         }
+    }
+
+    /**
+     * 检查当前网络状态
+     */
+    private void checkSystemNetworkState(){
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isAvailable()){
+            requestLocation();
+        }else {
+            Toast.makeText(this,"请检查网络",Toast.LENGTH_SHORT).show();
+        }
+        judgeListInformation();
     }
 
     /**
@@ -426,6 +474,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         LocationClientOption option = new LocationClientOption();
         option.setIsNeedAddress(true);
         locationClient.setLocOption(option);
+    }
+
+    /**
+     * 创建通知渠道
+     */
+    private void setNotificationChannel(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            String channelId = "weatherNotification";
+            String channelName = "天气推送";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            createNotificationChannel(channelId,channelName,importance);
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.O)
+    private void createNotificationChannel(String channelId, String channelName, int importance) {
+        NotificationChannel channel = new NotificationChannel(channelId,channelName, importance);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.createNotificationChannel(channel);
     }
 
     @Override

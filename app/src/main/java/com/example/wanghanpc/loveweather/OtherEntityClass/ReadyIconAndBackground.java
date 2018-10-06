@@ -8,7 +8,9 @@ import java.util.Map;
 public class ReadyIconAndBackground {
 
     private static Map<String,Integer> weatherIconList = new HashMap<>();
+    public static Map<String,Integer> weatherNightIconList = new HashMap<>();
     private static Map<String,Integer> largeWeatherIconList = new HashMap<>();
+    private static Map<String,Integer> largeNightIconList = new HashMap<>();
     private static Map<String,Integer> backgroundList = new HashMap<>();
     private static Map<String,Integer> suggestionIconList = new HashMap<>();
     private static Map<String,Integer> windDirectionIconList = new HashMap<>();
@@ -26,6 +28,13 @@ public class ReadyIconAndBackground {
         return R.drawable.unknown;
     }
 
+    public static int getWeatherNightIcon(String weatherId){
+        if (weatherId != null && weatherNightIconList.containsKey(weatherId)){
+            return weatherNightIconList.get(weatherId);
+        }
+        return R.drawable.unknown;
+    }
+
     /**
      * 获取大图标资源
      * @param weatherId
@@ -34,6 +43,13 @@ public class ReadyIconAndBackground {
     public static int getLargeWeatherIcon(String weatherId){
         if (weatherId != null && largeWeatherIconList.containsKey(weatherId)){
             return largeWeatherIconList.get(weatherId);
+        }
+        return R.drawable.unknown_l;
+    }
+
+    public static int getLargeNightIcon(String weatherId){
+        if (weatherId != null && largeNightIconList.containsKey(weatherId)){
+            return largeNightIconList.get(weatherId);
         }
         return R.drawable.unknown_l;
     }
@@ -75,7 +91,7 @@ public class ReadyIconAndBackground {
     /**
      * 获取生活指数描述
      */
-    public static String getLisfeStyleText(String lifeStyleType){
+    public static String getLifeStyleText(String lifeStyleType){
         if (!lifeStyleType.equals("") && lifeStyleTextList.containsKey(lifeStyleType)){
             return lifeStyleTextList.get(lifeStyleType);
         }
@@ -130,6 +146,16 @@ public class ReadyIconAndBackground {
         weatherIconList.put("511",R.drawable.icon_hoze);
         weatherIconList.put("512",R.drawable.icon_hoze);
         weatherIconList.put("513",R.drawable.icon_hoze);
+
+        weatherNightIconList.put("100",R.drawable.icon_sunny_night);
+        weatherNightIconList.put("101",R.drawable.icon_cloudy_night);
+        weatherNightIconList.put("102",R.drawable.icon_cloudy_night);
+        weatherNightIconList.put("103",R.drawable.icon_cloudy_night);
+
+        largeNightIconList.put("100",R.drawable.icon_sunny_night_l);
+        largeNightIconList.put("101",R.drawable.icon_cloudy_night_l);
+        largeNightIconList.put("102",R.drawable.icon_cloudy_night_l);
+        largeNightIconList.put("103",R.drawable.icon_cloudy_night_l);
 
         largeWeatherIconList.put("100", R.drawable.icon_sunny_l);
         largeWeatherIconList.put("101",R.drawable.icon_cloudy_l);

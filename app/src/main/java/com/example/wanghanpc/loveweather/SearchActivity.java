@@ -88,6 +88,9 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         requestHotCity();
         progressBar.setVisibility(View.GONE);
         prepareTextViewListener();
+        for (TextView textView : textViewList){
+            textView.setOnClickListener(this);
+        }
     }
 
     /**

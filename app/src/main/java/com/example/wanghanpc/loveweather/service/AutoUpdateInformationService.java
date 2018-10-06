@@ -17,7 +17,6 @@ import java.util.List;
 public class AutoUpdateInformationService extends Service {
 
     private List<String> placeNameList = new ArrayList<>();
-
     private LocalBroadcastManager localBroadcastManager;
 
     public AutoUpdateInformationService() {
@@ -31,12 +30,12 @@ public class AutoUpdateInformationService extends Service {
 
     @Override
     public void onCreate() {
-        localBroadcastManager = LocalBroadcastManager.getInstance(this);
         super.onCreate();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        localBroadcastManager = LocalBroadcastManager.getInstance(this);
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
         int hour = 8 * 60 * 60 * 1000;
         long triggerAtTime = SystemClock.elapsedRealtime() + hour;
@@ -45,7 +44,16 @@ public class AutoUpdateInformationService extends Service {
         manager.cancel(pendingIntent);
         manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,triggerAtTime,pendingIntent);
         autoUpdateWeather();
+        sendBroadcast();
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    /**
+     * 发出广播
+     */
+    private void sendBroadcast(){
+        Intent intent = new Intent("com.loveWeather.broadcast.weather.new");
+        localBroadcastManager.sendBroadcast(intent);
     }
 
     /**
@@ -56,8 +64,6 @@ public class AutoUpdateInformationService extends Service {
         for (String place : placeNameList){
             Utility.requestWeather(place,this);
         }
-        Intent intent = new Intent("com.example.wanghanpc.loveweather.SEND_NOTIFICATION");
-        localBroadcastManager.sendBroadcast(intent);
     }
 
     /**
