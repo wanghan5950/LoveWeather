@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -19,7 +18,7 @@ import android.widget.Toast;
 import com.example.wanghanpc.loveweather.service.AutoUpdateInformationService;
 import com.example.wanghanpc.loveweather.service.NotificationService;
 
-public class SettingActivity extends AppCompatActivity implements View.OnClickListener{
+public class SettingActivity extends BaseActivity implements View.OnClickListener{
 
     private Switch autoUpdateSwitch;
     private Switch allowNoticeSwitch;

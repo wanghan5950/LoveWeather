@@ -17,7 +17,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -40,7 +39,7 @@ import com.example.wanghanpc.loveweather.util.Utility;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends BaseActivity implements View.OnClickListener{
 
     private LocationClient locationClient;
     private int pagePosition = 0;
@@ -292,6 +291,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
+     * 分享文字内容
+     */
+    private void shareWeatherText(String title, String subject, String content){
+        if (content == null || "".equals(content)) {
+            return;
+        }
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        if (subject != null && !"".equals(subject)) {
+            intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        }
+        intent.putExtra(Intent.EXTRA_TEXT, content);
+        // 设置弹出框标题
+        if (title != null && !"".equals(title)) { // 自定义标题
+            startActivity(Intent.createChooser(intent, title));
+        } else { // 系统默认标题
+            startActivity(intent);
+        }
+    }
+
+    /**
      * 根据viewPager所在的页面更新toolbar上的内容和背景
      * @param position
      */
@@ -399,6 +419,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Intent intent2 = new Intent(MainActivity.this,PlacesActivity.class);
                         startActivityForResult(intent2,1);
                         break;
+                    case R.id.share:
+                        Weather weather = weatherList.get(pagePosition);
+                        String shareTitle = "分享";
+                        String shareSubject = "";
+                        String shareContent = weather.getBasic().getLocation()
+                                + "天气：" + "\n"
+                                + weather.getNow().getCondTxt() + "\n"
+                                + weather.getLifestyleList().get(0).getTxt() + "\n"
+                                + weather.getLifestyleList().get(1).getTxt() + "\n"
+                                + weather.getLifestyleList().get(2).getTxt();
+                        shareWeatherText(shareTitle,shareSubject,shareContent);
                     default:
                 }
                 return true;

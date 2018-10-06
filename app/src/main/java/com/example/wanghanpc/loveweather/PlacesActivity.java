@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,7 +21,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlacesActivity extends AppCompatActivity implements PlacesAdapter.OnItemClickListener {
+public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItemClickListener {
 
     private static final int PLACE_MODE_CHECK = 0;
     private static final int PLACE_MODE_EDIT = 1;
@@ -165,9 +164,6 @@ public class PlacesActivity extends AppCompatActivity implements PlacesAdapter.O
                     case R.id.settings:
                         Intent intent1 = new Intent(PlacesActivity.this,SettingActivity.class);
                         startActivity(intent1);
-                        break;
-                    case R.id.share:
-
                         break;
                     default:
                 }

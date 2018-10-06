@@ -2,7 +2,6 @@ package com.example.wanghanpc.loveweather;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -35,7 +34,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class SearchActivity extends AppCompatActivity implements View.OnClickListener{
+public class SearchActivity extends BaseActivity implements View.OnClickListener{
 
     private Toolbar toolbar;
     private EditText editText;
@@ -297,8 +296,9 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                         startActivity(intent);
                         break;
                     case R.id.map:
-                        Intent intent1 = new Intent(SearchActivity.this,MapActivity.class);
-                        startActivity(intent1);
+//                        Intent intent1 = new Intent(SearchActivity.this,MapActivity.class);
+//                        startActivity(intent1);
+                        Toast.makeText(SearchActivity.this,"开发中",Toast.LENGTH_SHORT).show();
                         break;
                     default:
                 }
