@@ -123,22 +123,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
                 NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
                 if (networkInfo != null && networkInfo.isAvailable()){
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Thread.sleep(1000);
-                            }catch (InterruptedException e){
-                                e.printStackTrace();
-                            }
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    updateCurrentPositionWeather(pagePosition);
-                                }
-                            });
-                        }
-                    }).start();
+                    updateCurrentPositionWeather(pagePosition);
                 }else {
                     Toast.makeText(MainActivity.this,"请检查网络",Toast.LENGTH_SHORT).show();
                     swipeRefreshLayout.setRefreshing(false);
@@ -153,6 +138,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     private void setUpPagerAdapter(){
         pagerAdapter = new MainPagerAdapter(MainActivity.this,weatherList);
         viewPager.setAdapter(pagerAdapter);
+        initToolbarInformation(pagePosition);
         //viewPager滚动监听
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -169,7 +155,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             @Override
             public void onPageSelected(int position) {
                 pagePosition = position;
-                initToolbarInformation(position);
+                initToolbarInformation(pagePosition);
             }
             @Override
             public void onPageScrollStateChanged(int state) {
@@ -181,7 +167,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
      * 根据当前的页面位置，刷新当前页的天气信息
      * @return
      */
-    private void updateCurrentPositionWeather(int position){
+    private void updateCurrentPositionWeather(final int position){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
+            }
+        }).start();
         Utility.requestWeather(placeNameList.get(position),MainActivity.this);
         Weather weather;
         while (true){
@@ -194,7 +196,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         weatherList.add(position,weather);
         pagerAdapter.notifyDataSetChanged();
         initToolbarInformation(position);
-        swipeRefreshLayout.setRefreshing(false);
     }
 
     /**
@@ -217,6 +218,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
      * 判断PlaceNameList中的内容
      */
     private void judgeListInformation(){
+//        MainActivity.location = "深圳";
         getPlaceNameListFromShared();
         if (placeNameList.size() == 0) {
             if (location != null){
@@ -369,6 +371,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 locationForUse = locationCounty;
             }
             MainActivity.location = locationForUse;
+            MainActivity.location = "深圳";
             judgeListInformation();
             initToolbarInformation(0);
         }

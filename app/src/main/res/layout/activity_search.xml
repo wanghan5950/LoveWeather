@@ -64,16 +64,6 @@
             android:layout_marginLeft="15dp"
             android:layout_marginTop="15dp"/>
 
-        <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="1dp"-->
-            <!--android:layout_marginTop="2dp"-->
-            <!--android:layout_marginLeft="15dp"-->
-            <!--android:layout_marginRight="15dp"-->
-            <!--android:background="#19000000">-->
-
-        <!--</LinearLayout>-->
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -88,6 +78,7 @@
                 android:layout_weight="1"
                 android:layout_margin="5dp"
                 android:textSize="15sp"
+                android:textColor="#000000"
                 android:gravity="center"
                 android:background="@drawable/button_shape_unselected"
                 android:theme="@style/AppTheme"/>
@@ -97,6 +88,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="15sp"
+                android:textColor="#000000"
                 android:gravity="center"
                 android:layout_margin="5dp"
                 android:background="@drawable/button_shape_unselected" />
@@ -106,6 +98,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="15sp"
+                android:textColor="#000000"
                 android:gravity="center"
                 android:layout_margin="5dp"
                 android:background="@drawable/button_shape_unselected"/>
@@ -115,6 +108,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="15sp"
+                android:textColor="#000000"
                 android:gravity="center"
                 android:layout_margin="5dp"
                 android:background="@drawable/button_shape_unselected"/>
@@ -133,6 +127,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="15sp"
+                android:textColor="#000000"
                 android:gravity="center"
                 android:layout_margin="5dp"
                 android:background="@drawable/button_shape_unselected"/>
@@ -142,6 +137,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="15sp"
+                android:textColor="#000000"
                 android:gravity="center"
                 android:layout_margin="5dp"
                 android:background="@drawable/button_shape_unselected"/>
@@ -151,6 +147,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="15sp"
+                android:textColor="#000000"
                 android:gravity="center"
                 android:layout_margin="5dp"
                 android:background="@drawable/button_shape_unselected"/>
@@ -160,6 +157,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="15sp"
+                android:textColor="#000000"
                 android:gravity="center"
                 android:layout_margin="5dp"
                 android:background="@drawable/button_shape_unselected"/>
@@ -178,6 +176,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="15sp"
+                android:textColor="#000000"
                 android:gravity="center"
                 android:layout_margin="5dp"
                 android:background="@drawable/button_shape_unselected"/>
@@ -187,6 +186,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="15sp"
+                android:textColor="#000000"
                 android:gravity="center"
                 android:layout_margin="5dp"
                 android:background="@drawable/button_shape_unselected"/>
@@ -196,6 +196,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="15sp"
+                android:textColor="#000000"
                 android:gravity="center"
                 android:layout_margin="5dp"
                 android:background="@drawable/button_shape_unselected"/>
@@ -205,6 +206,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="15sp"
+                android:textColor="#000000"
                 android:gravity="center"
                 android:layout_margin="5dp"
                 android:background="@drawable/button_shape_unselected"/>
@@ -223,6 +225,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="15sp"
+                android:textColor="#000000"
                 android:gravity="center"
                 android:layout_margin="5dp"
                 android:background="@drawable/button_shape_unselected"/>
@@ -232,6 +235,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="15sp"
+                android:textColor="#000000"
                 android:gravity="center"
                 android:layout_margin="5dp"
                 android:background="@drawable/button_shape_unselected"/>
@@ -241,6 +245,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="15sp"
+                android:textColor="#000000"
                 android:gravity="center"
                 android:layout_margin="5dp"
                 android:background="@drawable/button_shape_unselected"/>
@@ -250,6 +255,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="15sp"
+                android:textColor="#000000"
                 android:gravity="center"
                 android:layout_margin="5dp"
                 android:background="@drawable/button_shape_unselected"/>
@@ -268,6 +274,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="15sp"
+                android:textColor="#000000"
                 android:gravity="center"
                 android:layout_margin="5dp"
                 android:background="@drawable/button_shape_unselected"/>
@@ -277,6 +284,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="15sp"
+                android:textColor="#000000"
                 android:gravity="center"
                 android:layout_margin="5dp"
                 android:background="@drawable/button_shape_unselected"/>
@@ -285,6 +293,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="15sp"
+                android:textColor="#000000"
                 android:gravity="center"
                 android:layout_margin="5dp"/>
             <TextView
@@ -292,18 +301,11 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="15sp"
+                android:textColor="#000000"
                 android:gravity="center"
                 android:layout_margin="5dp"/>
 
         </LinearLayout>
-        <!--<com.zhy.view.flowlayout.TagFlowLayout-->
-            <!--android:id="@+id/search_flowLayout"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:padding="20dp"-->
-            <!--app:max_select="1">-->
-
-        <!--</com.zhy.view.flowlayout.TagFlowLayout>-->
 
     </LinearLayout>
 

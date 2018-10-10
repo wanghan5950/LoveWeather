@@ -21,6 +21,9 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="Vo4Q5qjl9EGpzcnTZK6sob5GYaLE3aX1" />
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="2.1"/>
 
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -60,9 +63,13 @@
         <service
             android:name=".service.NotificationService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true">
 
-        <activity android:name=".BaseActivity"></activity>
+        </service>
+
+        <activity android:name=".BaseActivity">
+
+        </activity>
     </application>
 
 </manifest>

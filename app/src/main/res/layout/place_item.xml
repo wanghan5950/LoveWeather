@@ -76,9 +76,10 @@
 
         <TextView
             android:id="@+id/place_item_temp"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:gravity="right"
             android:textSize="40sp"
             android:layout_toLeftOf="@id/temp_sign"
             android:textColor="#505050" />
@@ -91,6 +92,7 @@
             android:layout_marginRight="10dp"
             android:text="°"
             android:textSize="30sp"
+            android:textColor="#505050"
             android:layout_alignParentRight="true"/>
 
         <ImageView

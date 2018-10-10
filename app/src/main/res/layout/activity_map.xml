@@ -1,10 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MapActivity"
+    android:background="#fff"
     android:fitsSystemWindows="true">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#fff"
+        app:elevation="0dp">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/map_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="#00ffffff"
+            android:theme="@style/placeToolbarStyle"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:navigationIcon="@mipmap/back">
+
+            <EditText
+                android:id="@+id/map_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:background="@drawable/edit_text_background"
+                android:drawableLeft="@mipmap/search_gray"
+                android:drawablePadding="5dp"
+                android:hint="搜索城市"
+                android:textColorHint="#bfbfbf"
+                android:textColor="#000000"
+                android:singleLine="true"/>
+
+        </android.support.v7.widget.Toolbar>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#24000000">
+
+        </LinearLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <com.baidu.mapapi.map.MapView
+        android:id="@+id/map_mapView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    </com.baidu.mapapi.map.MapView>
+
+    <RelativeLayout
+        android:id="@+id/map_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/place_item_background_2"
+        android:layout_margin="10dp"
+        android:layout_gravity="bottom"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/map_bar_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="#505050"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="15dp" />
+
+        <TextView
+            android:id="@+id/map_bar_province"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="#505050"
+            android:layout_below="@id/map_bar_location"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="3dp" />
+
+        <TextView
+            android:id="@+id/map_bar_city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="#505050"
+            android:layout_below="@id/map_bar_location"
+            android:layout_toRightOf="@id/map_bar_province"
+            android:layout_marginTop="3dp" />
+
+        <TextView
+            android:id="@+id/map_bar_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="#505050"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="10dp"
+            android:layout_below="@id/map_bar_province" />
+
+        <TextView
+            android:id="@+id/map_bar_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="#505050"
+            android:layout_below="@id/map_bar_province"
+            android:layout_toRightOf="@id/map_bar_date"
+            android:layout_marginTop="3dp" />
+
+        <TextView
+            android:id="@+id/map_bar_temp"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="right"
+            android:textSize="40sp"
+            android:layout_toLeftOf="@id/map_temp_sign"
+            android:textColor="#505050" />
+
+        <TextView
+            android:id="@+id/map_temp_sign"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:text="°"
+            android:textSize="30sp"
+            android:textColor="#505050"
+            android:layout_alignParentRight="true"
+            android:visibility="visible"/>
+
+        <ImageView
+            android:id="@+id/map_bar_icon"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="5dp"
+            android:layout_toLeftOf="@id/map_bar_temp" />
+
+        <TextView
+            android:id="@+id/map_bar_forecast"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/map_bar_temp"
+            android:layout_marginRight="15dp"
+            android:textColor="#505050"
+            android:textSize="12sp"
+            android:layout_alignParentRight="true" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/map_progressBar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="bottom"
+        android:background="#e4e4e4"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/map_bar_progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

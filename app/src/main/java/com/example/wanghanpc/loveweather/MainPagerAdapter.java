@@ -128,7 +128,7 @@ public class MainPagerAdapter extends PagerAdapter {
     private boolean judgeTimeIsDay (String timeAndDate){
         String time = timeAndDate.substring(11,13);
         int timeInt = Integer.parseInt(time);
-        if (timeInt >= 6 && timeInt <= 19){
+        if (timeInt >= 6 && timeInt <= 18){
             return true;
         }
         return false;

@@ -45,7 +45,7 @@ public class MySwipeRefreshLayout extends SwipeRefreshLayout {
                 float distanceY = Math.abs(endY - startY);
                 float distanceX = Math.abs(endX - startX);
                 //如果X轴位移大于Y轴，那么将事件交给viewPager处理
-                if (distanceX > touchSlop && distanceX > distanceY){
+                if (distanceX > touchSlop && distanceX > distanceY / 2){
                     isMyDrag = true;
                     return false;
                 }

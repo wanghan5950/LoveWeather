@@ -101,8 +101,8 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder
         final Weather weather = weatherList.get(holder.getAdapterPosition());
 
         String location = weather.getBasic().getLocation();
-        String province = weather.getBasic().getAdminArea();
-        String city = ","+weather.getBasic().getParentCity();
+        String province = weather.getBasic().getAdminArea() + "省,";
+        String city = weather.getBasic().getParentCity() + "市";
         String date = weather.getUpdate().getLoc().substring(0,10);
         String time = weather.getUpdate().getLoc().substring(11) + "更新";
         String week = Utility.getWeek(date)+",";
@@ -110,11 +110,12 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder
         String weatherInfo = weather.getNow().getCondTxt();
         int iconId = ReadyIconAndBackground.getLargeWeatherIcon(weather.getNow().getCondCode());
         holder.placeItemLocation.setText(location);
-        if (!weather.getBasic().getAdminArea().equals(weather.getBasic().getParentCity())){
-            holder.placeItemProvince.setText(province);
+        if (weather.getBasic().getAdminArea().equals(weather.getBasic().getParentCity())
+                && weather.getBasic().getParentCity().equals(weather.getBasic().getLocation())){
             holder.placeItemCity.setText(city);
         }else {
             holder.placeItemProvince.setText(province);
+            holder.placeItemCity.setText(city);
         }
         holder.placeItemWeek.setText(week);
         holder.placeItemTime.setText(time);

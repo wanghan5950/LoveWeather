@@ -51,6 +51,7 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
 
         getPlaceNameListFromShared();
         getWeatherListFromShared();
+
         recyclerView = (RecyclerView) findViewById(R.id.place_item_recyclerView);
         placesAdapter = new PlacesAdapter(weatherList,placeNameList);
         layoutManager = new LinearLayoutManager(this);

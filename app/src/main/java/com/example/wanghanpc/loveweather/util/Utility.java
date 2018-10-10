@@ -2,8 +2,9 @@ package com.example.wanghanpc.loveweather.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Message;
 import android.preference.PreferenceManager;
-import android.widget.Toast;
+import android.util.Log;
 
 import com.example.wanghanpc.loveweather.cityGson.CityBackResult;
 import com.example.wanghanpc.loveweather.cityGson.HotCityBackResult;
@@ -86,7 +87,7 @@ public class Utility {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
-                Toast.makeText(context,"获取天气失败01",Toast.LENGTH_SHORT).show();
+                Log.d("Utility","--------------------获取天气失败1");
             }
 
             @Override
@@ -95,12 +96,13 @@ public class Utility {
                 final Weather weather = handleWeatherResponse(responseText);
                 if (weather != null && "ok".equals(weather.getStatus())){
                     Utility.weather = weather;
+                    String city = weather.getBasic().getLocation();
                     SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-                    editor.putString(location,responseText);
+                    editor.putString(city,responseText);
                     editor.apply();
                     requestDone = true;
                 }else {
-                    Toast.makeText(context,"获取天气失败02",Toast.LENGTH_SHORT).show();
+                    Log.d("Utility","--------------------获取天气失败2");
                 }
             }
         });
