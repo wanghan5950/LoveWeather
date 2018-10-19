@@ -5,6 +5,10 @@ import com.example.wanghanpc.loveweather.R;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 准备资源和获取资源，图标和文字
+ */
+
 public class ReadyIconAndBackground {
 
     private static Map<String,Integer> weatherIconList = new HashMap<>();
@@ -27,7 +31,6 @@ public class ReadyIconAndBackground {
         }
         return R.drawable.unknown;
     }
-
     public static int getWeatherNightIcon(String weatherId){
         if (weatherId != null && weatherNightIconList.containsKey(weatherId)){
             return weatherNightIconList.get(weatherId);
@@ -46,7 +49,6 @@ public class ReadyIconAndBackground {
         }
         return R.drawable.unknown_l;
     }
-
     public static int getLargeNightIcon(String weatherId){
         if (weatherId != null && largeNightIconList.containsKey(weatherId)){
             return largeNightIconList.get(weatherId);

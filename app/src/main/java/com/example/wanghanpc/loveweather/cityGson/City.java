@@ -5,27 +5,99 @@ import com.google.gson.annotations.SerializedName;
 public class City {
 
     @SerializedName("cid")
-    public String cityId;
+    private String cityId;
 
     @SerializedName("location")
-    public String locationName;
+    private String locationName;
 
     @SerializedName("parent_city")
-    public String parentCity;
+    private String parentCity;
 
     @SerializedName("admin_area")
-    public String adminArea;
+    private String adminArea;
 
-    public String cnty;
+    private String cnty;
 
-    public String lat;
+    private String lat;
 
-    public String lon;
+    private String lon;
 
     @SerializedName("tz")
-    public String timeArea;
+    private String timeArea;
 
     @SerializedName("type")
-    public String cityType;
+    private String cityType;
+
+    private String getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(String cityId) {
+        this.cityId = cityId;
+    }
+
+    public String getLocationName() {
+        return locationName;
+    }
+
+    public void setLocationName(String locationName) {
+        this.locationName = locationName;
+    }
+
+    public String getParentCity() {
+        return parentCity;
+    }
+
+    public void setParentCity(String parentCity) {
+        this.parentCity = parentCity;
+    }
+
+    public String getAdminArea() {
+        return adminArea;
+    }
+
+    public void setAdminArea(String adminArea) {
+        this.adminArea = adminArea;
+    }
+
+    public String getCnty() {
+        return cnty;
+    }
+
+    public void setCnty(String cnty) {
+        this.cnty = cnty;
+    }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public String getLon() {
+        return lon;
+    }
+
+    public void setLon(String lon) {
+        this.lon = lon;
+    }
+
+    public String getTimeArea() {
+        return timeArea;
+    }
+
+    public void setTimeArea(String timeArea) {
+        this.timeArea = timeArea;
+    }
+
+    public String getCityType() {
+        return cityType;
+    }
+
+    public void setCityType(String cityType) {
+        this.cityType = cityType;
+    }
 }
 

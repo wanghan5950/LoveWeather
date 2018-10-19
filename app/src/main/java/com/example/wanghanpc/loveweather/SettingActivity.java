@@ -15,18 +15,13 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.example.wanghanpc.loveweather.service.AutoUpdateInformationService;
+import com.example.wanghanpc.loveweather.service.AutoUpdateService;
 import com.example.wanghanpc.loveweather.service.NotificationService;
 
 public class SettingActivity extends BaseActivity implements View.OnClickListener{
 
     private Switch autoUpdateSwitch;
     private Switch allowNoticeSwitch;
-    private LinearLayout autoUpdateButton;
-    private LinearLayout allowNoticeButton;
-    private LinearLayout settingAboutButton;
-    private LinearLayout settingFeedbackButton;
-    private Toolbar toolbar;
     private boolean updateSwitchState = false;
     private boolean noticeSwitchState = false;
 
@@ -37,10 +32,10 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
 
         autoUpdateSwitch = (Switch) findViewById(R.id.setting_update_switch);
         allowNoticeSwitch = (Switch) findViewById(R.id.setting_notice_switch);
-        autoUpdateButton = (LinearLayout) findViewById(R.id.setting_update_button);
-        allowNoticeButton = (LinearLayout) findViewById(R.id.setting_notice_button);
-        settingAboutButton = (LinearLayout) findViewById(R.id.setting_about_button);
-        settingFeedbackButton = (LinearLayout) findViewById(R.id.setting_feedback_button);
+        LinearLayout autoUpdateButton = (LinearLayout) findViewById(R.id.setting_update_button);
+        LinearLayout allowNoticeButton = (LinearLayout) findViewById(R.id.setting_notice_button);
+        LinearLayout settingAboutButton = (LinearLayout) findViewById(R.id.setting_about_button);
+        LinearLayout settingFeedbackButton = (LinearLayout) findViewById(R.id.setting_feedback_button);
         toolbar = (Toolbar) findViewById(R.id.setting_toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,10 +83,10 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (buttonView.isChecked()){
-                    Intent starIntent = new Intent(SettingActivity.this, AutoUpdateInformationService.class);
+                    Intent starIntent = new Intent(SettingActivity.this, AutoUpdateService.class);
                     startService(starIntent);
                 }else {
-                    Intent stopIntent = new Intent(SettingActivity.this,AutoUpdateInformationService.class);
+                    Intent stopIntent = new Intent(SettingActivity.this,AutoUpdateService.class);
                     stopService(stopIntent);
                 }
                 SharedPreferences.Editor editor = getSharedPreferences("autoUpdateSwitchState",MODE_PRIVATE).edit();
@@ -125,13 +120,15 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     private void judgeSystemNotificationSwitch(){
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            NotificationChannel channel = manager.getNotificationChannel("weatherNotification");
-            if (channel.getImportance() == NotificationManager.IMPORTANCE_NONE){
-                Intent intent = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
-                intent.putExtra(Settings.EXTRA_APP_PACKAGE,getPackageName());
-                intent.putExtra(Settings.EXTRA_CHANNEL_ID,channel.getId());
-                startActivity(intent);
-                Toast.makeText(this,"请手动将通知打开",Toast.LENGTH_SHORT).show();
+            if (manager != null){
+                NotificationChannel channel = manager.getNotificationChannel("weatherNotification");
+                if (channel.getImportance() == NotificationManager.IMPORTANCE_NONE){
+                    Intent intent = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
+                    intent.putExtra(Settings.EXTRA_APP_PACKAGE,getPackageName());
+                    intent.putExtra(Settings.EXTRA_CHANNEL_ID,channel.getId());
+                    startActivity(intent);
+                    Toast.makeText(this,"请手动将通知打开",Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }

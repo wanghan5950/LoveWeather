@@ -19,6 +19,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,8 +30,6 @@ import android.widget.Toast;
 
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
 import com.example.wanghanpc.loveweather.OtherEntityClass.MySwipeRefreshLayout;
 import com.example.wanghanpc.loveweather.OtherEntityClass.ReadyIconAndBackground;
 import com.example.wanghanpc.loveweather.weatherGson.Weather;
@@ -41,11 +40,8 @@ import java.util.List;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener{
 
-    private LocationClient locationClient;
     private int pagePosition = 0;
     private static String location;
-    private List<String> placeNameList = new ArrayList<>();
-    private List<Weather> weatherList = new ArrayList<>();
     private TextView toolbarTitle;
     private TextView toolbarWeek;
     private TextView toolbarTime;
@@ -55,13 +51,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     private CoordinatorLayout backgroundImage;
     private ViewPager viewPager;
     private MainPagerAdapter pagerAdapter;
-    private Toolbar toolbar;
     private ProgressBar progressBar;
+    private Boolean viewPagerIsCreated = false;
+    private Boolean startRefresh = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         ReadyIconAndBackground.initWeatherIconAndBackground();
         setNotificationChannel();
         //初始化控件
@@ -76,10 +74,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         viewPager = (ViewPager) findViewById(R.id.main_view_pager);
         progressBar = (ProgressBar) findViewById(R.id.main_progress_bar);
 
-        locationClient = new LocationClient(getApplicationContext());
         locationClient.registerLocationListener(new MyLocationListener());
 
-        progressBar.setVisibility(View.VISIBLE);
         judgePermission();
         initToolbar();
         setSwipeRefreshLayoutListener();
@@ -98,19 +94,28 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         switch (requestCode){
             case 1:
                 if (resultCode == RESULT_OK){
-                    pagePosition = data.getIntExtra("position",0);
+                    pagePosition = data.getIntExtra("position",pagePosition);
                     placeNameList = (List<String>)data.getSerializableExtra("placeNameList");
                 }
             case 2:
                 if (resultCode == RESULT_OK){
-                    pagePosition = data.getIntExtra("position",0);
-                    getPlaceNameListFromShared();
+                    pagePosition = data.getIntExtra("position",pagePosition);
+                    getPlaceNameList();
                 }
         }
+        if (placeNameList.size() == 0){
+            requestLocation();
+            judgeListInformation();
+        }
         judgeWeatherInformation();
-        pagerAdapter.notifyDataSetChanged();
-        viewPager.setCurrentItem(pagePosition);
-        initToolbarInformation(pagePosition);
+        if (!viewPagerIsCreated){
+            setUpPagerAdapter();
+        }else {
+            pagerAdapter.notifyDataSetChanged();
+            viewPager.setCurrentItem(pagePosition);
+            initToolbarInformation(pagePosition);
+            progressBar.setVisibility(View.INVISIBLE);
+        }
     }
 
     /**
@@ -123,7 +128,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
                 NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
                 if (networkInfo != null && networkInfo.isAvailable()){
-                    updateCurrentPositionWeather(pagePosition);
+                    startRefresh = true;
+                    requestWeather(placeNameList.get(pagePosition));
                 }else {
                     Toast.makeText(MainActivity.this,"请检查网络",Toast.LENGTH_SHORT).show();
                     swipeRefreshLayout.setRefreshing(false);
@@ -136,20 +142,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
      * 设置viewPager适配器
      */
     private void setUpPagerAdapter(){
+        Log.d("MainActivity","------------------------开始设置viewPager适配器");
         pagerAdapter = new MainPagerAdapter(MainActivity.this,weatherList);
         viewPager.setAdapter(pagerAdapter);
+        viewPagerIsCreated = true;
         initToolbarInformation(pagePosition);
+        progressBar.setVisibility(View.INVISIBLE);
         //viewPager滚动监听
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if (weatherList.size() > 1){
-                    if (positionOffsetPixels == 0){
-                        setPageButtonState(pagePosition);
-                    }else {
-                        lastPage.setVisibility(View.INVISIBLE);
-                        nextPage.setVisibility(View.INVISIBLE);
-                    }
+                if (placeNameList.size() > 1 && positionOffsetPixels == 0){
+                    setPageButtonState(pagePosition);
+                }else {
+                    lastPage.setVisibility(View.INVISIBLE);
+                    nextPage.setVisibility(View.INVISIBLE);
                 }
             }
             @Override
@@ -163,39 +170,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         });
     }
 
-    /**
-     * 根据当前的页面位置，刷新当前页的天气信息
-     * @return
-     */
-    private void updateCurrentPositionWeather(final int position){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(1000);
-                }catch (InterruptedException e){
-                    e.printStackTrace();
-                }
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                });
+    @Override
+    protected void updateWeatherUI() {
+        Log.d("MainActivity","------------------------开始更新内容");
+        if (startRefresh){
+            weatherList.remove(pagePosition);
+            weatherList.add(pagePosition,weatherResult);
+            pagerAdapter.notifyDataSetChanged();
+            initToolbarInformation(pagePosition);
+            swipeRefreshLayout.setRefreshing(false);
+            startRefresh = false;
+        }else {
+            if (!weatherList.contains(weatherResult)){
+                weatherList.add(weatherResult);
             }
-        }).start();
-        Utility.requestWeather(placeNameList.get(position),MainActivity.this);
-        Weather weather;
-        while (true){
-            if (Utility.isRequestDoneOrNot()){
-                weather = Utility.getWeather();
-                break;
-            }
+            setUpPagerAdapter();
         }
-        weatherList.remove(position);
-        weatherList.add(position,weather);
-        pagerAdapter.notifyDataSetChanged();
-        initToolbarInformation(position);
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -218,52 +209,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
      * 判断PlaceNameList中的内容
      */
     private void judgeListInformation(){
-//        MainActivity.location = "深圳";
-        getPlaceNameListFromShared();
+        progressBar.setVisibility(View.VISIBLE);
+        getPlaceNameList();
         if (placeNameList.size() == 0) {
             if (location != null){
                 placeNameList.add(0,location);
+                Log.d("MainActivity","------------------------添加成功1");
                 judgeWeatherInformation();
-                setUpPagerAdapter();
-            }else {
-                return;
             }
         }else {
             if (location != null){
                 if (!placeNameList.contains(location)){
                     placeNameList.add(0,location);
+                    Log.d("MainActivity","------------------------添加成功2");
                 }
             }
             judgeWeatherInformation();
             setUpPagerAdapter();
-        }
-        setPlaceNameListToShared();
-        progressBar.setVisibility(View.INVISIBLE);
-    }
-
-    /**
-     * 保存城市名列表
-     */
-    private void setPlaceNameListToShared(){
-        SharedPreferences.Editor editor = getSharedPreferences("placeNameList",MODE_PRIVATE).edit();
-        editor.putInt("listSize",placeNameList.size());
-        for (int i = 0; i < placeNameList.size(); i++){
-            editor.putString("item_"+i,placeNameList.get(i));
-        }
-        editor.apply();
-    }
-
-    /**
-     * 获取城市名列表
-     */
-    private void getPlaceNameListFromShared(){
-        SharedPreferences preferences = getSharedPreferences("placeNameList",MODE_PRIVATE);
-        int index = preferences.getInt("listSize",0);
-        for (int i = 0; i < index; i++){
-            String place = preferences.getString("item_"+i,null);
-            if (!placeNameList.contains(place) && place != null) {
-                placeNameList.add(place);
-            }
         }
     }
 
@@ -279,15 +241,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 Weather weather = Utility.handleWeatherResponse(weatherString);
                 if (!weatherList.contains(weather)){
                     weatherList.add(weather);
+                    Log.d("MainActivity","------------------------天气添加成功");
                 }
             }else {
-                Utility.requestWeather(placeName,MainActivity.this);
-                while (true) {
-                    if (Utility.getWeather() != null && !weatherList.contains(Utility.getWeather())) {
-                        weatherList.add(Utility.getWeather());
-                        break;
-                    }
-                }
+                requestWeather(placeName);
+                Log.d("MainActivity","------------------------开始查询");
             }
         }
     }
@@ -345,13 +303,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     }
 
     /**
-     * 获取当前页面位置
-     */
-    public int getPagePosition(){
-        return this.pagePosition;
-    }
-
-    /**
      * 获取百度定位城市并保存
      */
     public class MyLocationListener extends BDAbstractLocationListener {
@@ -371,9 +322,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 locationForUse = locationCounty;
             }
             MainActivity.location = locationForUse;
-            MainActivity.location = "深圳";
+            Log.d("MainActivity","------------------------定位成功");
             judgeListInformation();
-            initToolbarInformation(0);
+        }
+
+        @Override
+        public void onLocDiagnosticMessage(int locType, int type, String message) {
+            super.onLocDiagnosticMessage(locType, type, message);
+//            if (type >= 1 && type <= 3){
+//                Log.d("MainActivity","-------------------"+String.valueOf(type));
+//                Toast.makeText(MainActivity.this, String.valueOf(type),Toast.LENGTH_SHORT).show();
+//            }
         }
     }
 
@@ -494,23 +453,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     }
 
     /**
-     * 百度定位，获取地址
-     */
-    private void requestLocation(){
-        getDetailedLocation();
-        locationClient.start();
-    }
-
-    /**
-     * 百度定位，允许详细地址
-     */
-    private void getDetailedLocation(){
-        LocationClientOption option = new LocationClientOption();
-        option.setIsNeedAddress(true);
-        locationClient.setLocOption(option);
-    }
-
-    /**
      * 创建通知渠道
      */
     private void setNotificationChannel(){
@@ -527,6 +469,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         NotificationChannel channel = new NotificationChannel(channelId,channelName, importance);
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.createNotificationChannel(channel);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        savePlaceNameList(placeNameList);
     }
 
     @Override

@@ -8,6 +8,10 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
+/**
+ * 自定义SwipeRefreshLayout，解决与ViewPager的滑动冲突问题
+ */
+
 public class MySwipeRefreshLayout extends SwipeRefreshLayout {
 
     private float startY;
@@ -45,7 +49,7 @@ public class MySwipeRefreshLayout extends SwipeRefreshLayout {
                 float distanceY = Math.abs(endY - startY);
                 float distanceX = Math.abs(endX - startX);
                 //如果X轴位移大于Y轴，那么将事件交给viewPager处理
-                if (distanceX > touchSlop && distanceX > distanceY / 2){
+                if (distanceX > touchSlop && distanceX > distanceY / 3){
                     isMyDrag = true;
                     return false;
                 }

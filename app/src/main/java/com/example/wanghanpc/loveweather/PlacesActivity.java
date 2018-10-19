@@ -26,15 +26,12 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
     private static final int PLACE_MODE_CHECK = 0;
     private static final int PLACE_MODE_EDIT = 1;
 
-    private List<Weather> weatherList = new ArrayList<>();
-    private List<String> placeNameList = new ArrayList<>();
     private List<String> needToDelete = new ArrayList<>();
     private RecyclerView recyclerView;
     private PlacesAdapter placesAdapter;
     private LinearLayoutManager layoutManager;
     private ItemTouchHelper itemTouchHelper;
     private PlaceItemTouchCallback placeItemTouchCallback;
-    private Toolbar toolbar;
     private TextView deleteTextButton;
     private TextView placeToolbarTitle;
     private FloatingActionButton actionButton;
@@ -49,16 +46,13 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_places);
 
-        getPlaceNameListFromShared();
+        getPlaceNameList();
         getWeatherListFromShared();
 
         recyclerView = (RecyclerView) findViewById(R.id.place_item_recyclerView);
         placesAdapter = new PlacesAdapter(weatherList,placeNameList);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-//        PlacesItemDecoration itemDecoration = new PlacesItemDecoration(this,PlacesItemDecoration.VERTICAL_LIST);
-//        itemDecoration.setPlaceDrawable(ContextCompat.getDrawable(this,R.drawable.place_main_bg_heigth_1));
-//        recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setAdapter(placesAdapter);
         deleteTextButton = (TextView) findViewById(R.id.delete_text_button);
         placeToolbarTitle = (TextView) findViewById(R.id.place_toolbar_title);
@@ -98,37 +92,11 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
     protected void onStart() {
         super.onStart();
         if (hasBeenOnRestart) {
-            getPlaceNameListFromShared();
+            getPlaceNameList();
             getWeatherListFromShared();
             placesAdapter.notifyDataSetChanged();
         }
         hasBeenOnRestart = false;
-    }
-
-    /**
-     * 将城市名列表保存到SharedPreference
-     */
-    private void setPlaceNameListToShared(){
-        SharedPreferences.Editor editor = getSharedPreferences("placeNameList",MODE_PRIVATE).edit();
-        editor.putInt("listSize",placeNameList.size());
-        for (int i = 0; i < placeNameList.size(); i++){
-            editor.putString("item_"+i,placeNameList.get(i));
-        }
-        editor.apply();
-    }
-
-    /**
-     * 从SharedPreference中获取城市名列表
-     */
-    private void getPlaceNameListFromShared(){
-        SharedPreferences preferences = getSharedPreferences("placeNameList",MODE_PRIVATE);
-        int index = preferences.getInt("listSize",0);
-        for (int i = 0; i < index; i++){
-            String place = preferences.getString("item_"+i,null);
-            if (!placeNameList.contains(place) && place != null) {
-                placeNameList.add(place);
-            }
-        }
     }
 
     /**
@@ -345,7 +313,6 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
      */
     private void setInformationForMain(){
         Intent intent = new Intent();
-//        intent.putExtra("position",0);
         intent.putExtra("placeNameList",(Serializable)placeNameList);
         setResult(RESULT_OK,intent);
     }
@@ -354,6 +321,9 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
      * 退出编辑模式
      */
     private void exitEditMode(){
+        for (int i = 0; i < placesAdapter.getWeatherList().size(); i ++){
+            placesAdapter.getWeatherList().get(i).setSelected(false);
+        }
         index = 0;
         editStatus = false;
         allSelected = false;
@@ -366,6 +336,11 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
         placesAdapter.setEditMode(editMode);
         placeItemTouchCallback.setEditMode(editMode);
         this.placeNameList = placesAdapter.getPlaceNameList();
-        setPlaceNameListToShared();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        savePlaceNameList(placeNameList);
     }
 }

@@ -10,15 +10,12 @@ import android.widget.TextView;
 
 public class AboutActivity extends BaseActivity {
 
-    private Toolbar toolbar;
-    private TextView versionText;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
-        versionText = (TextView) findViewById(R.id.about_version_text);
+        TextView versionText = (TextView) findViewById(R.id.about_version_text);
         toolbar = (Toolbar) findViewById(R.id.about_toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

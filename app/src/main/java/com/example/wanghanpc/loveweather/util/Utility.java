@@ -1,11 +1,5 @@
 package com.example.wanghanpc.loveweather.util;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Message;
-import android.preference.PreferenceManager;
-import android.util.Log;
-
 import com.example.wanghanpc.loveweather.cityGson.CityBackResult;
 import com.example.wanghanpc.loveweather.cityGson.HotCityBackResult;
 import com.example.wanghanpc.loveweather.weatherGson.Weather;
@@ -14,26 +8,18 @@ import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
-
 /**
- * 从服务器请求数据及解析数据
+ * 解析返回的数据数据
  */
 
 public class Utility {
 
-    private static boolean requestDone = false;
-    private static Weather weather;
-
     /**
-     * 将返回的JSON数据解析成Weather实体类
+     * 解析返回的天气数据
      */
     public static Weather handleWeatherResponse(String response){
         try {
@@ -78,44 +64,10 @@ public class Utility {
     }
 
     /**
-     * 根据城市名请求天气数据并保存
+     * 将日期转为星期
+     * @param time
+     * @return
      */
-    public static void requestWeather(final String location, final Context context){
-        requestDone = false;
-        final String weatherUrl = "https://free-api.heweather.com/s6/weather?location=" + location + "&key=e7b4b21007f048a9a4fe2cb236ce5569";
-        HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-                Log.d("Utility","--------------------获取天气失败1");
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                final String responseText = response.body().string();
-                final Weather weather = handleWeatherResponse(responseText);
-                if (weather != null && "ok".equals(weather.getStatus())){
-                    Utility.weather = weather;
-                    String city = weather.getBasic().getLocation();
-                    SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-                    editor.putString(city,responseText);
-                    editor.apply();
-                    requestDone = true;
-                }else {
-                    Log.d("Utility","--------------------获取天气失败2");
-                }
-            }
-        });
-    }
-
-    public static Weather getWeather(){
-        return weather;
-    }
-
-    public static boolean isRequestDoneOrNot(){
-        return requestDone;
-    }
-
     public static String getWeek(String time){
         String Week = "";
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");

@@ -25,6 +25,10 @@ import com.example.wanghanpc.loveweather.weatherGson.Weather;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 通知服务，接受自动更新服务的广播后推送通知
+ */
+
 public class NotificationService extends Service {
 
     private List<String> placeNameList = new ArrayList<>();

@@ -39,44 +39,25 @@ import okhttp3.Response;
 
 public class SearchActivity extends BaseActivity implements View.OnClickListener{
 
-    private Toolbar toolbar;
     private EditText editText;
     private static CityBackResult cityBackResult;
     private ListView listView;
     private List<String> cityNameList = new ArrayList<>();
     private List<String> hotCityNameList = new ArrayList<>();
     private List<City> hotCitiesList = new ArrayList<>();
-    private List<String> placeNameList = new ArrayList<>();
     private ArrayAdapter<String> adapter;
     private String cityText;
     private ProgressBar progressBar;
-    private TextView item1;
-    private TextView item2;
-    private TextView item3;
-    private TextView item4;
-    private TextView item5;
-    private TextView item6;
-    private TextView item7;
-    private TextView item8;
-    private TextView item9;
-    private TextView item10;
-    private TextView item11;
-    private TextView item12;
-    private TextView item13;
-    private TextView item14;
-    private TextView item15;
-    private TextView item16;
-    private TextView item17;
-    private TextView item18;
     private LinearLayout linearLayout;
     private List<TextView> textViewList = new ArrayList<>();
+    private boolean hasBeenOnRestart = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        getPlaceNameListFromShared();
+        getPlaceNameList();
         prepareAllTextView();
 
         linearLayout = (LinearLayout) findViewById(R.id.allTextVIew_layout);
@@ -96,6 +77,22 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         for (TextView textView : textViewList){
             textView.setOnClickListener(this);
         }
+    }
+
+    @Override
+    protected void onRestart(){
+        super.onRestart();
+        hasBeenOnRestart = true;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (hasBeenOnRestart) {
+            placeNameList.clear();
+            getPlaceNameList();
+        }
+        hasBeenOnRestart = false;
     }
 
     /**
@@ -123,48 +120,20 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
             if (networkInfo != null && networkInfo.isAvailable()){
                 progressBar.setVisibility(View.VISIBLE);
                 placeNameList.add(city);
-                setPlaceNameListToShared();
-                Utility.requestWeather(city,this);
-                while (true){
-                    if (Utility.getWeather() != null && Utility.getWeather().getBasic().getLocation().equals(city)){
-                        break;
-                    }
-                }
-                progressBar.setVisibility(View.INVISIBLE);
-                Intent intent = new Intent();
-                intent.putExtra("position",placeNameList.size() - 1);
-                setResult(RESULT_OK,intent);
-                finish();
+                requestWeather(city);
             }else {
                 Toast.makeText(SearchActivity.this,"请检查网络",Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    /**
-     * 将城市名列表保存到SharedPreference
-     */
-    private void setPlaceNameListToShared(){
-        SharedPreferences.Editor editor = getSharedPreferences("placeNameList",MODE_PRIVATE).edit();
-        editor.putInt("listSize",placeNameList.size());
-        for (int i = 0; i < placeNameList.size(); i++){
-            editor.putString("item_"+i,placeNameList.get(i));
-        }
-        editor.apply();
-    }
-
-    /**
-     * 从SharedPreference中获取城市名列表
-     */
-    private void getPlaceNameListFromShared(){
-        SharedPreferences preferences = getSharedPreferences("placeNameList",MODE_PRIVATE);
-        int index = preferences.getInt("listSize",0);
-        for (int i = 0; i < index; i++){
-            String place = preferences.getString("item_"+i,null);
-            if (!placeNameList.contains(place) && place != null) {
-                placeNameList.add(place);
-            }
-        }
+    @Override
+    protected void updateWeatherUI() {
+        progressBar.setVisibility(View.INVISIBLE);
+        Intent intent = new Intent();
+        intent.putExtra("position",placeNameList.size() - 1);
+        setResult(RESULT_OK,intent);
+        finish();
     }
 
     /**
@@ -179,7 +148,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 cityText = editText.getText().toString();
-                if (cityText != null && !cityText.equals("")) {
+                if (!cityText.equals("")) {
                     String cityTextHead = cityText.substring(0,1);
                     Pattern pattern = Pattern.compile("[\u4e00-\u9fa5]");//判断输入的内容是否为汉字
                     Matcher matcher = pattern.matcher(cityTextHead);
@@ -224,7 +193,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (cityBackResult != null && "ok".equals(cityBackResult.status)){
+                        if (cityBackResult != null && "ok".equals(cityBackResult.getStatus())){
                             SearchActivity.cityBackResult = cityBackResult;
                             showCityList();
                         }else {
@@ -260,8 +229,8 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (hotCityBackResult != null && "ok".equals(hotCityBackResult.status)){
-                            hotCitiesList = hotCityBackResult.hotCityList;
+                        if (hotCityBackResult != null && "ok".equals(hotCityBackResult.getStatus())){
+                            hotCitiesList = hotCityBackResult.getHotCityList();
                             setHotCityList();
                             showHotCities();
                         }else {
@@ -279,7 +248,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     private void setHotCityList(){
         hotCityNameList.clear();
         for (City city : hotCitiesList){
-            hotCityNameList.add(city.locationName);
+            hotCityNameList.add(city.getLocationName());
         }
         SharedPreferences.Editor editor = getSharedPreferences("hotCityNameList",MODE_PRIVATE).edit();
         editor.putInt("hotCityNameListSize",hotCityNameList.size());
@@ -308,9 +277,9 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
      */
     private void showCityList(){
         cityNameList.clear();
-        if (cityBackResult.cityList != null && cityBackResult.cityList.size() != 0) {
-            for (City city : cityBackResult.cityList) {
-                cityNameList.add(city.locationName);
+        if (cityBackResult.getCityList() != null && cityBackResult.getCityList().size() != 0) {
+            for (City city : cityBackResult.getCityList()) {
+                cityNameList.add(city.getLocationName());
             }
         }
         adapter.notifyDataSetChanged();
@@ -344,7 +313,6 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                     case R.id.map:
                         Intent intent1 = new Intent(SearchActivity.this,MapActivity.class);
                         startActivity(intent1);
-//                        Toast.makeText(SearchActivity.this,"开发中",Toast.LENGTH_SHORT).show();
                         break;
                     default:
                 }
@@ -354,7 +322,9 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setPlaceNameListToShared();
+                Intent intent = new Intent();
+                intent.putExtra("position",0);
+                setResult(RESULT_OK,intent);
                 finish();
             }
         });
@@ -383,24 +353,24 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
      * 加载TextView布局
      */
     private void prepareAllTextView(){
-        item1 = (TextView) findViewById(R.id.hotCity_item_1);
-        item2 = (TextView) findViewById(R.id.hotCity_item_2);
-        item3 = (TextView) findViewById(R.id.hotCity_item_3);
-        item4 = (TextView) findViewById(R.id.hotCity_item_4);
-        item5 = (TextView) findViewById(R.id.hotCity_item_5);
-        item6 = (TextView) findViewById(R.id.hotCity_item_6);
-        item7 = (TextView) findViewById(R.id.hotCity_item_7);
-        item8 = (TextView) findViewById(R.id.hotCity_item_8);
-        item9 = (TextView) findViewById(R.id.hotCity_item_9);
-        item10 = (TextView) findViewById(R.id.hotCity_item_10);
-        item11 = (TextView) findViewById(R.id.hotCity_item_11);
-        item12 = (TextView) findViewById(R.id.hotCity_item_12);
-        item13 = (TextView) findViewById(R.id.hotCity_item_13);
-        item14 = (TextView) findViewById(R.id.hotCity_item_14);
-        item15 = (TextView) findViewById(R.id.hotCity_item_15);
-        item16 = (TextView) findViewById(R.id.hotCity_item_16);
-        item17 = (TextView) findViewById(R.id.hotCity_item_17);
-        item18 = (TextView) findViewById(R.id.hotCity_item_18);
+        TextView item1 = (TextView) findViewById(R.id.hotCity_item_1);
+        TextView item2 = (TextView) findViewById(R.id.hotCity_item_2);
+        TextView item3 = (TextView) findViewById(R.id.hotCity_item_3);
+        TextView item4 = (TextView) findViewById(R.id.hotCity_item_4);
+        TextView item5 = (TextView) findViewById(R.id.hotCity_item_5);
+        TextView item6 = (TextView) findViewById(R.id.hotCity_item_6);
+        TextView item7 = (TextView) findViewById(R.id.hotCity_item_7);
+        TextView item8 = (TextView) findViewById(R.id.hotCity_item_8);
+        TextView item9 = (TextView) findViewById(R.id.hotCity_item_9);
+        TextView item10 = (TextView) findViewById(R.id.hotCity_item_10);
+        TextView item11 = (TextView) findViewById(R.id.hotCity_item_11);
+        TextView item12 = (TextView) findViewById(R.id.hotCity_item_12);
+        TextView item13 = (TextView) findViewById(R.id.hotCity_item_13);
+        TextView item14 = (TextView) findViewById(R.id.hotCity_item_14);
+        TextView item15 = (TextView) findViewById(R.id.hotCity_item_15);
+        TextView item16 = (TextView) findViewById(R.id.hotCity_item_16);
+        TextView item17 = (TextView) findViewById(R.id.hotCity_item_17);
+        TextView item18 = (TextView) findViewById(R.id.hotCity_item_18);
         textViewList.add(item1);
         textViewList.add(item2);
         textViewList.add(item3);
@@ -434,5 +404,11 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                 prepareNewCityInformation(hotCityNameList.get(i));
             }
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        savePlaceNameList(placeNameList);
     }
 }

@@ -11,7 +11,6 @@ import com.example.wanghanpc.loveweather.OtherEntityClass.ReadyIconAndBackground
 import com.example.wanghanpc.loveweather.util.Utility;
 import com.example.wanghanpc.loveweather.weatherGson.Weather;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

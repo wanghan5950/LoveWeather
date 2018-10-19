@@ -6,8 +6,24 @@ import java.util.List;
 
 public class HotCityBackResult {
 
-    public String status;
+    private String status;
 
     @SerializedName("basic")
-    public List<City> hotCityList;
+    private List<City> hotCityList;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public List<City> getHotCityList() {
+        return hotCityList;
+    }
+
+    public void setHotCityList(List<City> hotCityList) {
+        this.hotCityList = hotCityList;
+    }
 }
