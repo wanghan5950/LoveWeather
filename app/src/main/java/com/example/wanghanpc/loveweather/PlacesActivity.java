@@ -25,10 +25,10 @@ import java.util.List;
 
 public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItemClickListener {
 
-    private static final int PLACE_MODE_CHECK = 0;
-    private static final int PLACE_MODE_EDIT = 1;
-    private static final int PLACE_MODE_EDIT_CLICK = 2;
-    private static final int PLACE_MODE_BACK_TO_CHECK = 3;
+    private static final int PLACE_MODE_CHECK = 0;  //点击回到主页
+    private static final int PLACE_MODE_EDIT = 1;  //编辑状态
+    private static final int PLACE_MODE_EDIT_CLICK = 2;  //编辑状态被点击
+    private static final int PLACE_MODE_BACK_TO_CHECK = 3;  //退出编辑
 
     private List<String> needToDelete = new ArrayList<>();
     private PlacesAdapter placesAdapter;
@@ -112,7 +112,7 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
             getWeatherListFromShared();
             editMode = PLACE_MODE_CHECK;
             placesAdapter.setEditMode(editMode);
-            placesAdapter.notifyDataSetChanged();
+//            placesAdapter.notifyDataSetChanged();
         }
         hasBeenOnRestart = false;
     }
@@ -251,7 +251,7 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
         initNavigationIcon(editStatus,allSelected);
         setDeleteButtonVisible(index);
         placesAdapter.setEditMode(PLACE_MODE_EDIT_CLICK);
-        placesAdapter.notifyDataSetChanged();
+//        placesAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -298,7 +298,7 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
             setDeleteButtonVisible(index);
             placeToolbarTitle.setText(String.valueOf(index));
             placesAdapter.setEditMode(PLACE_MODE_EDIT_CLICK);
-            placesAdapter.notifyDataSetChanged();
+//            placesAdapter.notifyDataSetChanged();
         }else {
             //返回天气详情页面
             Intent intent = new Intent();
@@ -356,6 +356,7 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
         editMode = PLACE_MODE_BACK_TO_CHECK;
         actionButton.show();
         placesAdapter.setEditMode(editMode);
+//        placesAdapter.notifyDataSetChanged();
         placeItemTouchCallback.setEditMode(editMode);
         this.placeNameList = placesAdapter.getPlaceNameList();
     }

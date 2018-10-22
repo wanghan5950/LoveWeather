@@ -194,6 +194,9 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder
         }else if (editMode == PLACE_MODE_EDIT_CLICK){
             holder.placeItemLayout.setTranslationX(PxAndDp.dip2px(45));
             holder.placeCheckBox.setTranslationX(PxAndDp.dip2px(15));
+        }else {
+            holder.placeItemLayout.setTranslationX(PxAndDp.dip2px(0));
+            holder.placeCheckBox.setTranslationX(PxAndDp.dip2px(-40));
         }
         if (editMode == PLACE_MODE_CHECK){
             holder.placeCheckBox.setVisibility(View.INVISIBLE);
