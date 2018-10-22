@@ -19,7 +19,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.example.wanghanpc.loveweather.MainActivity;
 import com.example.wanghanpc.loveweather.OtherEntityClass.ReadyIconAndBackground;
 import com.example.wanghanpc.loveweather.R;
-import com.example.wanghanpc.loveweather.util.Utility;
+import com.example.wanghanpc.loveweather.tools.Utility;
 import com.example.wanghanpc.loveweather.weatherGson.Weather;
 
 import java.util.ArrayList;

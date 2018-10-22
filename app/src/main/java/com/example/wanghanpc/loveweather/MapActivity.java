@@ -34,8 +34,9 @@ import com.baidu.mapapi.model.LatLng;
 import com.example.wanghanpc.loveweather.OtherEntityClass.ReadyIconAndBackground;
 import com.example.wanghanpc.loveweather.cityGson.City;
 import com.example.wanghanpc.loveweather.cityGson.CityBackResult;
-import com.example.wanghanpc.loveweather.util.HttpUtil;
-import com.example.wanghanpc.loveweather.util.Utility;
+import com.example.wanghanpc.loveweather.tools.HttpUtil;
+import com.example.wanghanpc.loveweather.tools.Tools;
+import com.example.wanghanpc.loveweather.tools.Utility;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -280,7 +281,7 @@ public class MapActivity extends BaseActivity {
         String city = ","+weatherResult.getBasic().getParentCity() + "市";
         String date = weatherResult.getUpdate().getLoc().substring(0,10);
         String time = weatherResult.getUpdate().getLoc().substring(11) + "更新";
-        String week = Utility.getWeek(date)+",";
+        String week = Tools.getWeek(date)+",";
         String temp = weatherResult.getNow().getTmp();
         String forecast = weatherResult.getNow().getCondTxt();
         int iconId = ReadyIconAndBackground.getLargeWeatherIcon(weatherResult.getNow().getCondCode());

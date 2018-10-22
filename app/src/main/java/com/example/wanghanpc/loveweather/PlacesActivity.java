@@ -12,9 +12,11 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.wanghanpc.loveweather.util.Utility;
+import com.example.wanghanpc.loveweather.OtherEntityClass.ReadyIconAndBackground;
+import com.example.wanghanpc.loveweather.tools.Utility;
 import com.example.wanghanpc.loveweather.weatherGson.Weather;
 
 import java.io.Serializable;
@@ -25,12 +27,11 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
 
     private static final int PLACE_MODE_CHECK = 0;
     private static final int PLACE_MODE_EDIT = 1;
+    private static final int PLACE_MODE_EDIT_CLICK = 2;
+    private static final int PLACE_MODE_BACK_TO_CHECK = 3;
 
     private List<String> needToDelete = new ArrayList<>();
-    private RecyclerView recyclerView;
     private PlacesAdapter placesAdapter;
-    private LinearLayoutManager layoutManager;
-    private ItemTouchHelper itemTouchHelper;
     private PlaceItemTouchCallback placeItemTouchCallback;
     private TextView deleteTextButton;
     private TextView placeToolbarTitle;
@@ -49,17 +50,19 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
         getPlaceNameList();
         getWeatherListFromShared();
 
-        recyclerView = (RecyclerView) findViewById(R.id.place_item_recyclerView);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.place_item_recyclerView);
         placesAdapter = new PlacesAdapter(weatherList,placeNameList);
-        layoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(placesAdapter);
+        ImageView placeBackground = (ImageView) findViewById(R.id.place_background);
+        placeBackground.setImageResource(getBackground());
         deleteTextButton = (TextView) findViewById(R.id.delete_text_button);
         placeToolbarTitle = (TextView) findViewById(R.id.place_toolbar_title);
         actionButton = (FloatingActionButton) findViewById(R.id.place_add_button);
 
         placeItemTouchCallback = new PlaceItemTouchCallback(placesAdapter);
-        itemTouchHelper = new ItemTouchHelper(placeItemTouchCallback);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(placeItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
         initToolbar();
@@ -80,6 +83,19 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
             }
         });
         placesAdapter.setOnItemClickListener(this);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (!editStatus){
+                    if (dy > 0){
+                        actionButton.hide();
+                    }else {
+                        actionButton.show();
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -94,6 +110,8 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
         if (hasBeenOnRestart) {
             getPlaceNameList();
             getWeatherListFromShared();
+            editMode = PLACE_MODE_CHECK;
+            placesAdapter.setEditMode(editMode);
             placesAdapter.notifyDataSetChanged();
         }
         hasBeenOnRestart = false;
@@ -178,6 +196,7 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
         placeToolbarTitle.setText(String.valueOf(index));
         invalidateOptionsMenu();//刷新toolbar的menu按钮
         editMode = PLACE_MODE_EDIT;
+        actionButton.hide();
         placesAdapter.setEditMode(editMode);
         placeItemTouchCallback.setEditMode(editMode);
         setDeleteButtonVisible(index);
@@ -231,6 +250,7 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
         }
         initNavigationIcon(editStatus,allSelected);
         setDeleteButtonVisible(index);
+        placesAdapter.setEditMode(PLACE_MODE_EDIT_CLICK);
         placesAdapter.notifyDataSetChanged();
     }
 
@@ -277,6 +297,7 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
             }
             setDeleteButtonVisible(index);
             placeToolbarTitle.setText(String.valueOf(index));
+            placesAdapter.setEditMode(PLACE_MODE_EDIT_CLICK);
             placesAdapter.notifyDataSetChanged();
         }else {
             //返回天气详情页面
@@ -332,7 +353,8 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
         invalidateOptionsMenu();
         setDeleteButtonVisible(index);
 
-        editMode = PLACE_MODE_CHECK;
+        editMode = PLACE_MODE_BACK_TO_CHECK;
+        actionButton.show();
         placesAdapter.setEditMode(editMode);
         placeItemTouchCallback.setEditMode(editMode);
         this.placeNameList = placesAdapter.getPlaceNameList();
@@ -342,5 +364,14 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
     protected void onPause() {
         super.onPause();
         savePlaceNameList(placeNameList);
+    }
+
+    /**
+     * 获取背景资源
+     * @return
+     */
+    private int getBackground(){
+        Weather weather = weatherList.get(0);
+        return ReadyIconAndBackground.getWeatherBackground(weather.getNow().getCondCode());
     }
 }

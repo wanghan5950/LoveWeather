@@ -1,14 +1,19 @@
 package com.example.wanghanpc.loveweather;
 
+import android.animation.ValueAnimator;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.wanghanpc.loveweather.OtherEntityClass.ReadyIconAndBackground;
-import com.example.wanghanpc.loveweather.util.Utility;
+import com.example.wanghanpc.loveweather.tools.PxAndDp;
+import com.example.wanghanpc.loveweather.tools.Tools;
+import com.example.wanghanpc.loveweather.tools.Utility;
 import com.example.wanghanpc.loveweather.weatherGson.Weather;
 
 import java.util.Collections;
@@ -16,8 +21,11 @@ import java.util.List;
 
 public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder> implements PlaceItemTouchCallback.ItemTouchAdapter {
 
-    private static final int PLACES_MODE_CHECK = 0;
-    private int editMode = PLACES_MODE_CHECK;
+    private static final int PLACE_MODE_CHECK = 0;
+    private static final int PLACE_MODE_EDIT = 1;
+    private static final int PLACE_MODE_EDIT_CLICK = 2;
+    private static final int PLACE_MODE_BACK_TO_CHECK = 3;
+    private int editMode = PLACE_MODE_CHECK;
 
     private List<Weather> weatherList;
     private List<String> placeNameList;
@@ -34,6 +42,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder
         TextView placeItemForecast;
         ImageView placeItemIcon;
         ImageView placeCheckBox;
+        RelativeLayout placeItemLayout;
 
         private ViewHolder(View view){
             super(view);
@@ -46,6 +55,60 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder
             placeItemForecast = (TextView) view.findViewById(R.id.place_item_forecast);
             placeItemIcon = (ImageView) view.findViewById(R.id.place_item_icon);
             placeCheckBox = (ImageView) view.findViewById(R.id.place_item_check);
+            placeItemLayout = (RelativeLayout) view.findViewById(R.id.place_item_layout);
+        }
+
+        private void checkBoxAnimator(){
+            ValueAnimator valueAnimator = ValueAnimator.ofInt(PxAndDp.dip2px(-40), PxAndDp.dip2px(15));
+            valueAnimator.setDuration(300);
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    int currentValue = (Integer) animation.getAnimatedValue();
+                    placeCheckBox.setTranslationX(currentValue);
+                    placeCheckBox.requestLayout();
+                }
+            });
+            valueAnimator.start();
+        }
+        private void checkBoxAnimatorBack(){
+            ValueAnimator valueAnimator = ValueAnimator.ofInt(PxAndDp.dip2px(15), PxAndDp.dip2px(-40));
+            valueAnimator.setDuration(300);
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    int currentValue = (Integer) animation.getAnimatedValue();
+                    placeCheckBox.setTranslationX(currentValue);
+                    placeCheckBox.requestLayout();
+                }
+            });
+            valueAnimator.start();
+        }
+        private void placeItemAnimator(){
+            ValueAnimator valueAnimator = ValueAnimator.ofInt(PxAndDp.dip2px(0),PxAndDp.dip2px(45));
+            valueAnimator.setDuration(300);
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    int currentValue = (Integer) animation.getAnimatedValue();
+                    placeItemLayout.setTranslationX(currentValue);
+                    placeItemLayout.requestLayout();
+                }
+            });
+            valueAnimator.start();
+        }
+        private void placeItemAnimatorBack(){
+            ValueAnimator valueAnimator = ValueAnimator.ofInt(PxAndDp.dip2px(45),PxAndDp.dip2px(0));
+            valueAnimator.setDuration(300);
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    int currentValue = (Integer) animation.getAnimatedValue();
+                    placeItemLayout.setTranslationX(currentValue);
+                    placeItemLayout.requestLayout();
+                }
+            });
+            valueAnimator.start();
         }
     }
 
@@ -104,7 +167,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder
         String city = weather.getBasic().getParentCity() + "市";
         String date = weather.getUpdate().getLoc().substring(0,10);
         String time = weather.getUpdate().getLoc().substring(11) + "更新";
-        String week = Utility.getWeek(date)+",";
+        String week = Tools.getWeek(date)+",";
         String temp = weather.getNow().getTmp();
         String weatherInfo = weather.getNow().getCondTxt();
         int iconId = ReadyIconAndBackground.getLargeWeatherIcon(weather.getNow().getCondCode());
@@ -122,16 +185,27 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder
         holder.placeItemForecast.setText(weatherInfo);
         holder.placeItemIcon.setImageResource(iconId);
 
-        if (editMode == PLACES_MODE_CHECK){
-            holder.placeCheckBox.setVisibility(View.GONE);
+        if (editMode == PLACE_MODE_EDIT){
+            holder.placeItemAnimator();
+            holder.checkBoxAnimator();
+        }else if (editMode == PLACE_MODE_BACK_TO_CHECK){
+            holder.placeItemAnimatorBack();
+            holder.checkBoxAnimatorBack();
+        }else if (editMode == PLACE_MODE_EDIT_CLICK){
+            holder.placeItemLayout.setTranslationX(PxAndDp.dip2px(45));
+            holder.placeCheckBox.setTranslationX(PxAndDp.dip2px(15));
+        }
+        if (editMode == PLACE_MODE_CHECK){
+            holder.placeCheckBox.setVisibility(View.INVISIBLE);
         }else {
             holder.placeCheckBox.setVisibility(View.VISIBLE);
             if (weather.getSelected()){
                 holder.placeCheckBox.setImageResource(R.mipmap.selected_blue);
             }else {
-                holder.placeCheckBox.setImageResource(R.mipmap.unselected);
+                holder.placeCheckBox.setImageResource(R.mipmap.unselected_white);
             }
         }
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

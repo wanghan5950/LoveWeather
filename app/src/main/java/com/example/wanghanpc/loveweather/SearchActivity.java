@@ -24,8 +24,8 @@ import android.widget.Toast;
 import com.example.wanghanpc.loveweather.cityGson.City;
 import com.example.wanghanpc.loveweather.cityGson.CityBackResult;
 import com.example.wanghanpc.loveweather.cityGson.HotCityBackResult;
-import com.example.wanghanpc.loveweather.util.HttpUtil;
-import com.example.wanghanpc.loveweather.util.Utility;
+import com.example.wanghanpc.loveweather.tools.HttpUtil;
+import com.example.wanghanpc.loveweather.tools.Utility;
 
 import java.io.IOException;
 import java.util.ArrayList;

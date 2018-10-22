@@ -82,69 +82,12 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+        <android.support.v4.view.ViewPager
+            android:id="@+id/main_view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent">
-
-                    <ImageView
-                        android:id="@+id/last_page_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="40dp"
-                        android:src="@mipmap/last_page"
-                        android:visibility="gone"/>
-
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_below="@id/last_page_button"
-                        android:layout_marginTop="600dp"
-                        android:background="#00ffffff"/>
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true">
-
-                    <ImageView
-                        android:id="@+id/next_page_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginTop="40dp"
-                        android:src="@mipmap/next_page"
-                        android:visibility="gone"/>
-
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_below="@id/next_page_button"
-                        android:layout_marginTop="600dp"
-                        android:background="#00ffffff"/>
-
-                </RelativeLayout>
-
-            </RelativeLayout>
-
-            <android.support.v4.view.ViewPager
-                android:id="@+id/main_view_pager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-            </android.support.v4.view.ViewPager>
-
-        </FrameLayout>
+        </android.support.v4.view.ViewPager>
 
     </com.example.wanghanpc.loveweather.OtherEntityClass.MySwipeRefreshLayout>
 
@@ -155,5 +98,30 @@
         android:layout_gravity="center"
         android:indeterminateTint="#ffffff"
         android:visibility="visible"/>
+
+    <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
+
+        <!--<ImageView-->
+            <!--android:id="@+id/last_page_button"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="140dp"-->
+            <!--android:layout_marginLeft="5dp"-->
+            <!--android:src="@mipmap/last_page"-->
+            <!--android:visibility="visible"/>-->
+
+        <!--<ImageView-->
+            <!--android:id="@+id/next_page_button"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_marginTop="140dp"-->
+            <!--android:layout_marginRight="5dp"-->
+            <!--android:src="@mipmap/next_page"-->
+            <!--android:visibility="visible"/>-->
+
+    <!--</RelativeLayout>-->
 
 </android.support.design.widget.CoordinatorLayout>

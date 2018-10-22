@@ -11,8 +11,8 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.example.wanghanpc.loveweather.util.HttpUtil;
-import com.example.wanghanpc.loveweather.util.Utility;
+import com.example.wanghanpc.loveweather.tools.HttpUtil;
+import com.example.wanghanpc.loveweather.tools.Utility;
 import com.example.wanghanpc.loveweather.weatherGson.Weather;
 
 import java.io.IOException;

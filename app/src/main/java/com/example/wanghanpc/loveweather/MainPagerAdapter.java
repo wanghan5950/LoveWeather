@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.wanghanpc.loveweather.OtherEntityClass.ReadyIconAndBackground;
-import com.example.wanghanpc.loveweather.util.Utility;
+import com.example.wanghanpc.loveweather.tools.Tools;
 import com.example.wanghanpc.loveweather.weatherGson.DailyForecast;
 import com.example.wanghanpc.loveweather.weatherGson.Lifestyle;
 import com.example.wanghanpc.loveweather.weatherGson.Weather;
@@ -58,7 +58,7 @@ public class MainPagerAdapter extends PagerAdapter {
 
         String weatherCode = weather.getNow().getCondCode();
         if (ReadyIconAndBackground.weatherNightIconList.containsKey(weatherCode)){
-            if (judgeTimeIsDay(weather.getUpdate().getLoc())){
+            if (Tools.timeIsDay(weather.getUpdate().getLoc())){
                 nowDegreeIcon.setImageResource(ReadyIconAndBackground.getLargeWeatherIcon(weatherCode));
             }else {
                 nowDegreeIcon.setImageResource(ReadyIconAndBackground.getLargeNightIcon(weatherCode));
@@ -77,7 +77,7 @@ public class MainPagerAdapter extends PagerAdapter {
             ImageView weatherIcon1 = (ImageView) dailyView.findViewById(R.id.weather_icon_1);
             ImageView weatherIcon2 = (ImageView) dailyView.findViewById(R.id.weather_icon_2);
             TextView dailyTemp = (TextView) dailyView.findViewById(R.id.daily_item_temp);
-            dailyItemDate.setText(Utility.getWeek(dailyForecast.getDate()));
+            dailyItemDate.setText(Tools.getWeek(dailyForecast.getDate()));
             weatherIcon1.setImageResource(ReadyIconAndBackground.getWeatherIcon(dailyForecast.getCondCodeDay()));
             weatherIcon2.setImageResource(ReadyIconAndBackground.getWeatherIcon(dailyForecast.getCondCodeNight()));
             String temp = dailyForecast.getTempMin()+" ~ "+dailyForecast.getTempMax();
@@ -120,17 +120,5 @@ public class MainPagerAdapter extends PagerAdapter {
 //            return POSITION_UNCHANGED;
 //        }
         return POSITION_NONE;
-    }
-
-    /**
-     * 判断时间是白天还是晚上
-     */
-    private boolean judgeTimeIsDay (String timeAndDate){
-        String time = timeAndDate.substring(11,13);
-        int timeInt = Integer.parseInt(time);
-        if (timeInt >= 6 && timeInt <= 18){
-            return true;
-        }
-        return false;
     }
 }

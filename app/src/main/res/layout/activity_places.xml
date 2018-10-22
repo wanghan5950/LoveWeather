@@ -53,13 +53,14 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout
+    <ImageView
+        android:id="@+id/place_background"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#24000000"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:background="@drawable/cloudy_background">
 
-    </LinearLayout>
+    </ImageView>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/place_item_recyclerView"
@@ -76,9 +77,16 @@
         android:id="@+id/place_add_button"
         android:layout_gravity="bottom|end"
         android:layout_margin="15dp"
-        app:elevation="0dp"
         android:src="@mipmap/add"
         app:backgroundTint="#0094f7"
         app:rippleColor="#00549a"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#24000000"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

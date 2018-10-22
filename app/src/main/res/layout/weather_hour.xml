@@ -22,11 +22,10 @@
         android:textColor="#fff"
         android:gravity="center"/>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:orientation="horizontal">
+        android:layout_marginTop="15dp">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/hour_recyclerView"
@@ -35,6 +34,6 @@
 
         </android.support.v7.widget.RecyclerView>
 
-    </LinearLayout>
+    </FrameLayout>
 
 </LinearLayout>

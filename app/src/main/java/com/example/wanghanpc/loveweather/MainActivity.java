@@ -1,6 +1,7 @@
 package com.example.wanghanpc.loveweather;
 
 import android.Manifest;
+import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -32,21 +33,23 @@ import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.example.wanghanpc.loveweather.OtherEntityClass.MySwipeRefreshLayout;
 import com.example.wanghanpc.loveweather.OtherEntityClass.ReadyIconAndBackground;
+import com.example.wanghanpc.loveweather.tools.PxAndDp;
+import com.example.wanghanpc.loveweather.tools.Tools;
 import com.example.wanghanpc.loveweather.weatherGson.Weather;
-import com.example.wanghanpc.loveweather.util.Utility;
+import com.example.wanghanpc.loveweather.tools.Utility;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener{
+public class MainActivity extends BaseActivity {
 
     private int pagePosition = 0;
     private static String location;
     private TextView toolbarTitle;
     private TextView toolbarWeek;
     private TextView toolbarTime;
-    private ImageView lastPage;
-    private ImageView nextPage;
+//    private ImageView lastPage;
+//    private ImageView nextPage;
     private MySwipeRefreshLayout swipeRefreshLayout;
     private CoordinatorLayout backgroundImage;
     private ViewPager viewPager;
@@ -66,8 +69,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
         toolbarWeek = (TextView) findViewById(R.id.toolbar_week);
         toolbarTime = (TextView) findViewById(R.id.toolbar_time);
-        lastPage = (ImageView) findViewById(R.id.last_page_button);
-        nextPage = (ImageView) findViewById(R.id.next_page_button);
+//        lastPage = (ImageView) findViewById(R.id.last_page_button);
+//        nextPage = (ImageView) findViewById(R.id.next_page_button);
         swipeRefreshLayout = (MySwipeRefreshLayout) findViewById(R.id.refresh_layout);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         backgroundImage = (CoordinatorLayout) findViewById(R.id.main_layout);
@@ -79,9 +82,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         judgePermission();
         initToolbar();
         setSwipeRefreshLayoutListener();
-        lastPage.setOnClickListener(this);
-        nextPage.setOnClickListener(this);
     }
+
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        if (pagePosition == 0){
+//            nextButtonAnimator();
+//        }
+//    }
 
     /**
      * 根据PlaceActivity和SearchActivity返回的数据，更新信息或跳转到指定页
@@ -152,12 +161,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if (placeNameList.size() > 1 && positionOffsetPixels == 0){
-                    setPageButtonState(pagePosition);
-                }else {
-                    lastPage.setVisibility(View.INVISIBLE);
-                    nextPage.setVisibility(View.INVISIBLE);
-                }
+//                if (placeNameList.size() > 1 && positionOffsetPixels == 0){
+//                    setPageButtonState(pagePosition);
+//                }else {
+//                    lastPage.setVisibility(View.INVISIBLE);
+//                    nextPage.setVisibility(View.INVISIBLE);
+//                }
             }
             @Override
             public void onPageSelected(int position) {
@@ -189,21 +198,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         progressBar.setVisibility(View.INVISIBLE);
     }
 
-    /**
-     * 页面按钮的显示和隐藏
-     */
-    private void setPageButtonState(int pagePosition){
-        if (pagePosition == 0){
-            lastPage.setVisibility(View.INVISIBLE);
-            nextPage.setVisibility(View.VISIBLE);
-        }else if (pagePosition == weatherList.size() - 1){
-            lastPage.setVisibility(View.VISIBLE);
-            nextPage.setVisibility(View.INVISIBLE);
-        }else {
-            lastPage.setVisibility(View.VISIBLE);
-            nextPage.setVisibility(View.VISIBLE);
-        }
-    }
+//    /**
+//     * 页面按钮的显示和隐藏
+//     */
+//    private void setPageButtonState(int pagePosition){
+//        if (pagePosition == 0){
+//            lastPage.setVisibility(View.INVISIBLE);
+//            nextPage.setVisibility(View.VISIBLE);
+////            nextButtonAnimator();
+//        }else if (pagePosition == weatherList.size() - 1){
+//            lastPage.setVisibility(View.VISIBLE);
+//            nextPage.setVisibility(View.INVISIBLE);
+////            lastButtonAnimator();
+//        }else {
+//            lastPage.setVisibility(View.VISIBLE);
+//            nextPage.setVisibility(View.VISIBLE);
+//        }
+//    }
 
     /**
      * 判断PlaceNameList中的内容
@@ -280,26 +291,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         String updateTime = weatherList.get(position).getUpdate().getLoc();
         String date = updateTime.substring(0,10);
         String time = updateTime.substring(11)+"更新";
-        String week = Utility.getWeek(date)+",";
+        String week = Tools.getWeek(date)+",";
         String weatherId = weatherList.get(position).getNow().getCondCode();
         toolbarWeek.setText(week);
         toolbarTime.setText(time);
         toolbarTitle.setText(title);
         backgroundImage.setBackgroundResource(ReadyIconAndBackground.getWeatherBackground(weatherId));
-    }
-
-    /**
-     * 其他按钮点击事件
-     * @param v
-     */
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.last_page_button:
-                viewPager.setCurrentItem(pagePosition - 1);
-            case R.id.next_page_button:
-                viewPager.setCurrentItem(pagePosition + 1);
-        }
     }
 
     /**
@@ -482,4 +479,29 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         super.onDestroy();
         locationClient.stop();
     }
+
+//    private void lastButtonAnimator(){
+//        ValueAnimator valueAnimator = ValueAnimator.ofInt(PxAndDp.dip2px(5),PxAndDp.dip2px(0),PxAndDp.dip2px(5));
+//        valueAnimator.setDuration(2000);
+//        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//            @Override
+//            public void onAnimationUpdate(ValueAnimator animation) {
+//                int currentValue = (Integer) animation.getAnimatedValue();
+//                lastPage.setTranslationX(currentValue);
+//                lastPage.requestLayout();
+//            }
+//        });
+//    }
+//    private void nextButtonAnimator(){
+//        ValueAnimator valueAnimator = ValueAnimator.ofInt(200,0,200,0,200);
+//        valueAnimator.setDuration(2000);
+//        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//            @Override
+//            public void onAnimationUpdate(ValueAnimator animation) {
+//                int currentValue = (Integer) animation.getAnimatedValue();
+//                nextPage.setTranslationX(currentValue);
+//                nextPage.requestLayout();
+//            }
+//        });
+//    }
 }
