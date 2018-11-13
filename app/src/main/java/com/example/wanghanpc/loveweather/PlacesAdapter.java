@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.wanghanpc.loveweather.OtherEntityClass.ReadyIconAndBackground;
+import com.example.wanghanpc.loveweather.cityGson.City;
 import com.example.wanghanpc.loveweather.tools.PxAndDp;
 import com.example.wanghanpc.loveweather.tools.Tools;
 import com.example.wanghanpc.loveweather.tools.Utility;
@@ -28,7 +29,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder
     private int editMode = PLACE_MODE_CHECK;
 
     private List<Weather> weatherList;
-    private List<String> placeNameList;
+    private List<City> placeNameList;
     private OnItemClickListener placeOnItemClickListener;
 
     static class ViewHolder extends RecyclerView.ViewHolder{
@@ -112,7 +113,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder
         }
     }
 
-    public PlacesAdapter(List<Weather> weatherList, List<String> placeNameList){
+    public PlacesAdapter(List<Weather> weatherList, List<City> placeNameList){
         this.weatherList = weatherList;
         this.placeNameList = placeNameList;
     }
@@ -121,7 +122,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder
         return weatherList;
     }
 
-    public List<String> getPlaceNameList(){
+    public List<City> getPlaceNameList(){
         return placeNameList;
     }
 

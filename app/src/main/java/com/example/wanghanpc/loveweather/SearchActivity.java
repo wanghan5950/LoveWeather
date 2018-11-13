@@ -43,7 +43,6 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     private static CityBackResult cityBackResult;
     private ListView listView;
     private List<String> cityNameList = new ArrayList<>();
-    private List<String> hotCityNameList = new ArrayList<>();
     private List<City> hotCitiesList = new ArrayList<>();
     private ArrayAdapter<String> adapter;
     private String cityText;
@@ -57,7 +56,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        getPlaceNameList();
+        getCityListFromDatabase();
         prepareAllTextView();
 
         linearLayout = (LinearLayout) findViewById(R.id.allTextVIew_layout);
@@ -90,7 +89,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         super.onStart();
         if (hasBeenOnRestart) {
             placeNameList.clear();
-            getPlaceNameList();
+            getCityListFromDatabase();
         }
         hasBeenOnRestart = false;
     }
@@ -102,7 +101,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String selectedCity = cityNameList.get(position);
+                City selectedCity = cityBackResult.getCityList().get(position);
                 prepareNewCityInformation(selectedCity);
             }
         });
@@ -111,7 +110,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     /**
      * 查询新增城市的天气数据
      */
-    private void prepareNewCityInformation(String city){
+    private void prepareNewCityInformation(City city){
         if (placeNameList.contains(city)){
             Toast.makeText(SearchActivity.this,"已注册",Toast.LENGTH_SHORT).show();
         }else {
@@ -120,7 +119,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
             if (networkInfo != null && networkInfo.isAvailable()){
                 progressBar.setVisibility(View.VISIBLE);
                 placeNameList.add(city);
-                requestWeather(city);
+                requestWeather(city.getCityId());
             }else {
                 Toast.makeText(SearchActivity.this,"请检查网络",Toast.LENGTH_SHORT).show();
             }
@@ -170,39 +169,10 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         });
     }
 
-    /**
-     * 请求城市搜索数据
-     */
-    private void requestCityList(final String searchName){
-        String cityUrl = "https://search.heweather.com/find?&location=" + searchName + "&key=e7b4b21007f048a9a4fe2cb236ce5569" + "&group=cn";
-        HttpUtil.sendOkHttpRequest(cityUrl, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(SearchActivity.this,"获取城市列表失败1",Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                final String responseText = response.body().string();
-                final CityBackResult cityBackResult = Utility.handleCityResponse(responseText);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (cityBackResult != null && "ok".equals(cityBackResult.getStatus())){
-                            SearchActivity.cityBackResult = cityBackResult;
-                            showCityList();
-                        }else {
-                            Toast.makeText(SearchActivity.this,"获取城市列表失败2",Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            }
-        });
+    @Override
+    protected void updateCity(CityBackResult result) {
+        SearchActivity.cityBackResult = result;
+        showCityList();
     }
 
     /**
@@ -231,7 +201,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                     public void run() {
                         if (hotCityBackResult != null && "ok".equals(hotCityBackResult.getStatus())){
                             hotCitiesList = hotCityBackResult.getHotCityList();
-                            setHotCityList();
+                            setHotCityList(hotCitiesList);
                             showHotCities();
                         }else {
                             Toast.makeText(SearchActivity.this,"获取热门城市失败2",Toast.LENGTH_SHORT).show();
@@ -245,31 +215,15 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     /**
      * 保存热门城市列表
      */
-    private void setHotCityList(){
-        hotCityNameList.clear();
-        for (City city : hotCitiesList){
-            hotCityNameList.add(city.getLocationName());
-        }
-        SharedPreferences.Editor editor = getSharedPreferences("hotCityNameList",MODE_PRIVATE).edit();
-        editor.putInt("hotCityNameListSize",hotCityNameList.size());
-        for (int i = 0; i < hotCityNameList.size(); i++){
-            editor.putString("item_"+i,hotCityNameList.get(i));
-        }
-        editor.apply();
+    private void setHotCityList(List<City> hotCityList){
+        databaseModel.saveHotToDatabase(hotCityList);
     }
 
     /**
      * 获取缓存的热门城市列表
      */
     private void getHotCityList(){
-        SharedPreferences preferences = getSharedPreferences("hotCityNameList",MODE_PRIVATE);
-        int index = preferences.getInt("hotCityNameListSize",0);
-        for (int i = 0; i < index; i ++){
-            String hotCity = preferences.getString("item_"+i,null);
-            if (!hotCityNameList.contains(hotCity) && hotCity != null){
-                hotCityNameList.add(hotCity);
-            }
-        }
+        hotCitiesList = databaseModel.getHotFromDatabase();
     }
 
     /**
@@ -278,9 +232,10 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     private void showCityList(){
         cityNameList.clear();
         if (cityBackResult.getCityList() != null && cityBackResult.getCityList().size() != 0) {
-            for (City city : cityBackResult.getCityList()) {
-                cityNameList.add(city.getLocationName());
-            }
+            int size = cityBackResult.getCityList().size();
+            List<City> list = cityBackResult.getCityList();
+            for (int i = 0; i < size; i++)
+                cityNameList.add(list.get(i).getLocationName());
         }
         adapter.notifyDataSetChanged();
     }
@@ -289,9 +244,9 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
      * 显示热门城市列表
      */
     private void showHotCities(){
-        if (hotCityNameList.size() != 0){
+        if (hotCitiesList.size() != 0){
             for (int i = 0; i < textViewList.size(); i++){
-                textViewList.get(i).setText(hotCityNameList.get(i));
+                textViewList.get(i).setText(hotCitiesList.get(i).getLocationName());
             }
         }else {
             requestHotCity();
@@ -401,7 +356,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     public void onClick(View v) {
         for (int i = 0; i < textViewList.size(); i++){
             if (textViewList.get(i).equals(v)){
-                prepareNewCityInformation(hotCityNameList.get(i));
+                prepareNewCityInformation(hotCitiesList.get(i));
             }
         }
     }
@@ -409,6 +364,11 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     @Override
     protected void onPause() {
         super.onPause();
-        savePlaceNameList(placeNameList);
+        saveCityListToDatabase(placeNameList);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 }

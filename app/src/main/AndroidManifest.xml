@@ -24,9 +24,10 @@
             android:value="Vo4Q5qjl9EGpzcnTZK6sob5GYaLE3aX1" />
         <meta-data
             android:name="android.max_aspect"
-            android:value="2.1"/>
+            android:value="2.1" />
 
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -77,6 +78,13 @@
         <activity android:name=".BaseActivity">
 
         </activity>
+
+        <service
+            android:name=".service.BaseService"
+            android:enabled="true"
+            android:exported="true">
+
+        </service>
     </application>
 
 </manifest>

@@ -2,7 +2,9 @@ package com.example.wanghanpc.loveweather.cityGson;
 
 import com.google.gson.annotations.SerializedName;
 
-public class City {
+import java.io.Serializable;
+
+public class City implements Serializable{
 
     @SerializedName("cid")
     private String cityId;
@@ -16,7 +18,8 @@ public class City {
     @SerializedName("admin_area")
     private String adminArea;
 
-    private String cnty;
+    @SerializedName("cnty")
+    private String country;
 
     private String lat;
 
@@ -28,7 +31,7 @@ public class City {
     @SerializedName("type")
     private String cityType;
 
-    private String getCityId() {
+    public String getCityId() {
         return cityId;
     }
 
@@ -60,12 +63,12 @@ public class City {
         this.adminArea = adminArea;
     }
 
-    public String getCnty() {
-        return cnty;
+    public String getCountry() {
+        return country;
     }
 
-    public void setCnty(String cnty) {
-        this.cnty = cnty;
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     public String getLat() {
@@ -98,6 +101,20 @@ public class City {
 
     public void setCityType(String cityType) {
         this.cityType = cityType;
+    }
+
+    @Override
+    public int hashCode() {
+        return cityId.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null){
+            return false;
+        }
+        City city = (City)obj;
+        return cityId.equals(city.cityId);
     }
 }
 

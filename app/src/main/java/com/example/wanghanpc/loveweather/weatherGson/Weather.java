@@ -96,6 +96,11 @@ public class Weather implements Serializable{
             return false;
         }
         Weather weather = (Weather) obj;
-        return weather.basic.getLocation() != null && basic.getLocation().equals(weather.basic.getLocation());
+        return basic.getCityId().equals(weather.basic.getCityId());
+    }
+
+    @Override
+    public int hashCode() {
+        return basic.getCityId().hashCode();
     }
 }

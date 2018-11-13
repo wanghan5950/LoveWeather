@@ -1,13 +1,8 @@
 package com.example.wanghanpc.loveweather;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.preference.PreferenceManager;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +11,9 @@ import android.widget.Toast;
 
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.example.wanghanpc.loveweather.cityGson.City;
+import com.example.wanghanpc.loveweather.cityGson.CityBackResult;
+import com.example.wanghanpc.loveweather.tools.DatabaseModel;
 import com.example.wanghanpc.loveweather.tools.HttpUtil;
 import com.example.wanghanpc.loveweather.tools.Utility;
 import com.example.wanghanpc.loveweather.weatherGson.Weather;
@@ -36,19 +34,19 @@ import okhttp3.Response;
 
 public class BaseActivity extends AppCompatActivity {
 
-    protected List<String> placeNameList = new ArrayList<>();
+    protected List<City> placeNameList = new ArrayList<>();
     protected List<Weather> weatherList = new ArrayList<>();
     protected LocationClient locationClient;
     protected Toolbar toolbar;
-    protected IntentFilter intentFilter;
-    protected LocalReceiver localReceiver;
-    protected LocalBroadcastManager localBroadcastManager;
     protected Weather weatherResult;
+    protected DatabaseModel databaseModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        databaseModel = new DatabaseModel(this);
+        databaseModel.onCreateDatabase();
 
         locationClient = new LocationClient(getApplicationContext());
     }
@@ -56,36 +54,24 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        localBroadcastManager = LocalBroadcastManager.getInstance(this);
-        intentFilter = new IntentFilter();
-        intentFilter.addAction("com.example.wanghanpc.loveWeather.LOCAL_BROADCAST");
-        localReceiver = new LocalReceiver();
-        localBroadcastManager.registerReceiver(localReceiver,intentFilter);
     }
 
     /**
-     * 保存城市名列表
+     * 保存城市列表到数据库
      */
-    protected void savePlaceNameList (List<String> placeNameList){
-        SharedPreferences.Editor editor = getSharedPreferences("placeNameList",MODE_PRIVATE).edit();
-        editor.putInt("listSize",placeNameList.size());
-        for (int i = 0; i < placeNameList.size(); i++){
-            editor.putString("item_"+i,placeNameList.get(i));
-        }
-        editor.apply();
+    protected void saveCityListToDatabase(List<City> cityList){
+        databaseModel.saveToDatabase(cityList);
     }
 
     /**
-     * 获取城市名列表
+     * 从数据库中获取城市列表
      */
-    protected void getPlaceNameList(){
-        SharedPreferences preferences = getSharedPreferences("placeNameList",MODE_PRIVATE);
-        int index = preferences.getInt("listSize",0);
-        for (int i = 0; i < index; i++){
-            String place = preferences.getString("item_"+i,null);
-            if (!placeNameList.contains(place) && place != null) {
-                placeNameList.add(place);
-            }
+    protected void getCityListFromDatabase(){
+        List<City> cityList = databaseModel.getFromDatabase();
+        int size = cityList.size();
+        for (int i = 0; i < size; i++){
+            if (!placeNameList.contains(cityList.get(i)))
+                placeNameList.add(cityList.get(i));
         }
     }
 
@@ -132,14 +118,13 @@ public class BaseActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         if (weather != null && "ok".equals(weather.getStatus())){
-                            String city = weather.getBasic().getLocation();
+                            String cityId = weather.getBasic().getCityId();
                             SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(BaseActivity.this).edit();
-                            editor.putString(city,responseText);
+                            editor.putString(cityId,responseText);
                             editor.apply();
                             weatherResult = weather;
-                            Intent intent = new Intent("com.example.wanghanpc.loveWeather.LOCAL_BROADCAST");
-                            localBroadcastManager.sendBroadcast(intent);
-                            Log.d("BaseActivity","------------------------查询成功，发出广播");
+                            Log.d("BaseActivity","-------------------------获取天气成功");
+                            updateWeatherUI();
                         }else {
                             Toast.makeText(BaseActivity.this,"查询天气失败02",Toast.LENGTH_SHORT).show();
                         }
@@ -149,16 +134,50 @@ public class BaseActivity extends AppCompatActivity {
         });
     }
 
-    protected class LocalReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.d("BaseActivity","------------------------接收到广播");
-            updateWeatherUI();
-        }
+    /**
+     * 请求城市搜索数据
+     */
+    protected void requestCityList(final String searchName){
+        String cityUrl = "https://search.heweather.com/find?&location=" + searchName + "&key=e7b4b21007f048a9a4fe2cb236ce5569";
+        HttpUtil.sendOkHttpRequest(cityUrl, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(BaseActivity.this,"获取城市列表失败1",Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String responseText = response.body().string();
+                final CityBackResult cityBackResult = Utility.handleCityResponse(responseText);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (cityBackResult != null && "ok".equals(cityBackResult.getStatus())){
+                            updateCity(cityBackResult);
+                        }else {
+                            Toast.makeText(BaseActivity.this,"获取城市列表失败2",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
     }
 
     /**
-     * 进行更新UI的操作
+     * 获取城市成功后调用
+     * @param result
+     */
+    protected void updateCity(CityBackResult result){
+
+    }
+
+    /**
+     * 获取天气成功后调用
      */
     protected void updateWeatherUI(){
 
@@ -167,6 +186,10 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        localBroadcastManager.unregisterReceiver(localReceiver);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 }

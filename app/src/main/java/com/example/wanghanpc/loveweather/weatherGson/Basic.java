@@ -30,7 +30,9 @@ public class Basic {
     private String country;
 
     private String lat;
+
     private String lon;
+
     private String tz;
 
     public String getCityId() {

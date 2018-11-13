@@ -1,7 +1,6 @@
 package com.example.wanghanpc.loveweather;
 
 import android.Manifest;
-import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -24,7 +23,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,7 +31,8 @@ import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.example.wanghanpc.loveweather.OtherEntityClass.MySwipeRefreshLayout;
 import com.example.wanghanpc.loveweather.OtherEntityClass.ReadyIconAndBackground;
-import com.example.wanghanpc.loveweather.tools.PxAndDp;
+import com.example.wanghanpc.loveweather.cityGson.City;
+import com.example.wanghanpc.loveweather.cityGson.CityBackResult;
 import com.example.wanghanpc.loveweather.tools.Tools;
 import com.example.wanghanpc.loveweather.weatherGson.Weather;
 import com.example.wanghanpc.loveweather.tools.Utility;
@@ -44,12 +43,10 @@ import java.util.List;
 public class MainActivity extends BaseActivity {
 
     private int pagePosition = 0;
-    private static String location;
+    private City myCity;
     private TextView toolbarTitle;
     private TextView toolbarWeek;
     private TextView toolbarTime;
-//    private ImageView lastPage;
-//    private ImageView nextPage;
     private MySwipeRefreshLayout swipeRefreshLayout;
     private CoordinatorLayout backgroundImage;
     private ViewPager viewPager;
@@ -69,8 +66,6 @@ public class MainActivity extends BaseActivity {
         toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
         toolbarWeek = (TextView) findViewById(R.id.toolbar_week);
         toolbarTime = (TextView) findViewById(R.id.toolbar_time);
-//        lastPage = (ImageView) findViewById(R.id.last_page_button);
-//        nextPage = (ImageView) findViewById(R.id.next_page_button);
         swipeRefreshLayout = (MySwipeRefreshLayout) findViewById(R.id.refresh_layout);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         backgroundImage = (CoordinatorLayout) findViewById(R.id.main_layout);
@@ -84,14 +79,6 @@ public class MainActivity extends BaseActivity {
         setSwipeRefreshLayoutListener();
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        if (pagePosition == 0){
-//            nextButtonAnimator();
-//        }
-//    }
-
     /**
      * 根据PlaceActivity和SearchActivity返回的数据，更新信息或跳转到指定页
      * @param requestCode
@@ -104,12 +91,12 @@ public class MainActivity extends BaseActivity {
             case 1:
                 if (resultCode == RESULT_OK){
                     pagePosition = data.getIntExtra("position",pagePosition);
-                    placeNameList = (List<String>)data.getSerializableExtra("placeNameList");
+                    placeNameList = (List<City>)data.getSerializableExtra("placeNameList");
                 }
             case 2:
                 if (resultCode == RESULT_OK){
                     pagePosition = data.getIntExtra("position",pagePosition);
-                    getPlaceNameList();
+                    getCityListFromDatabase();
                 }
         }
         if (placeNameList.size() == 0){
@@ -138,7 +125,7 @@ public class MainActivity extends BaseActivity {
                 NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
                 if (networkInfo != null && networkInfo.isAvailable()){
                     startRefresh = true;
-                    requestWeather(placeNameList.get(pagePosition));
+                    requestWeather(placeNameList.get(pagePosition).getCityId());
                 }else {
                     Toast.makeText(MainActivity.this,"请检查网络",Toast.LENGTH_SHORT).show();
                     swipeRefreshLayout.setRefreshing(false);
@@ -161,12 +148,6 @@ public class MainActivity extends BaseActivity {
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//                if (placeNameList.size() > 1 && positionOffsetPixels == 0){
-//                    setPageButtonState(pagePosition);
-//                }else {
-//                    lastPage.setVisibility(View.INVISIBLE);
-//                    nextPage.setVisibility(View.INVISIBLE);
-//                }
             }
             @Override
             public void onPageSelected(int position) {
@@ -198,40 +179,23 @@ public class MainActivity extends BaseActivity {
         progressBar.setVisibility(View.INVISIBLE);
     }
 
-//    /**
-//     * 页面按钮的显示和隐藏
-//     */
-//    private void setPageButtonState(int pagePosition){
-//        if (pagePosition == 0){
-//            lastPage.setVisibility(View.INVISIBLE);
-//            nextPage.setVisibility(View.VISIBLE);
-////            nextButtonAnimator();
-//        }else if (pagePosition == weatherList.size() - 1){
-//            lastPage.setVisibility(View.VISIBLE);
-//            nextPage.setVisibility(View.INVISIBLE);
-////            lastButtonAnimator();
-//        }else {
-//            lastPage.setVisibility(View.VISIBLE);
-//            nextPage.setVisibility(View.VISIBLE);
-//        }
-//    }
-
     /**
      * 判断PlaceNameList中的内容
      */
     private void judgeListInformation(){
         progressBar.setVisibility(View.VISIBLE);
-        getPlaceNameList();
+//        getPlaceNameList();
+        getCityListFromDatabase();
         if (placeNameList.size() == 0) {
-            if (location != null){
-                placeNameList.add(0,location);
+            if (myCity != null){
+                placeNameList.add(0,myCity);
                 Log.d("MainActivity","------------------------添加成功1");
                 judgeWeatherInformation();
             }
         }else {
-            if (location != null){
-                if (!placeNameList.contains(location)){
-                    placeNameList.add(0,location);
+            if (myCity != null){
+                if (!placeNameList.contains(myCity)){
+                    placeNameList.add(0,myCity);
                     Log.d("MainActivity","------------------------添加成功2");
                 }
             }
@@ -246,8 +210,10 @@ public class MainActivity extends BaseActivity {
     private void judgeWeatherInformation(){
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         weatherList.clear();
-        for (String placeName : placeNameList) {
-            String weatherString = preferences.getString(placeName,null);
+        int size = placeNameList.size();
+        for (int i = 0; i < size; i++){
+            String cityId = placeNameList.get(i).getCityId();
+            String weatherString = preferences.getString(cityId,null);
             if (weatherString != null){
                 Weather weather = Utility.handleWeatherResponse(weatherString);
                 if (!weatherList.contains(weather)){
@@ -255,7 +221,7 @@ public class MainActivity extends BaseActivity {
                     Log.d("MainActivity","------------------------天气添加成功");
                 }
             }else {
-                requestWeather(placeName);
+                requestWeather(cityId);
                 Log.d("MainActivity","------------------------开始查询");
             }
         }
@@ -305,32 +271,35 @@ public class MainActivity extends BaseActivity {
     public class MyLocationListener extends BDAbstractLocationListener {
         @Override
         public void onReceiveLocation(BDLocation location){
-            //因为定位的市是“XX区，所以要截取前面的内容
-            String locationCounty = location.getDistrict();
-            String locationCity = location.getCity();
-            String locationForUse;
-            if (locationCounty.length() > 2){
-                if (locationCounty.contains("县")){
-                    locationForUse = locationCounty.substring(0,locationCounty.indexOf("县"));
-                } else {
-                    locationForUse = locationCity.substring(0,locationCity.indexOf("市"));
-                }
-            }else {
-                locationForUse = locationCounty;
-            }
-            MainActivity.location = locationForUse;
+            String latAndLong = location.getLongitude()+","+location.getLatitude();
+            requestCityList(latAndLong);
+//            //因为定位的市是“XX区，所以要截取前面的内容
+//            String locationCounty = location.getDistrict();
+//            String locationCity = location.getCity();
+//            String locationForUse;
+//            if (locationCounty.length() > 2){
+//                if (locationCounty.contains("县")){
+//                    locationForUse = locationCounty.substring(0,locationCounty.indexOf("县"));
+//                } else {
+//                    locationForUse = locationCity.substring(0,locationCity.indexOf("市"));
+//                }
+//            }else {
+//                locationForUse = locationCounty;
+//            }
+//            MainActivity.location = locationForUse;
             Log.d("MainActivity","------------------------定位成功");
-            judgeListInformation();
         }
 
         @Override
         public void onLocDiagnosticMessage(int locType, int type, String message) {
             super.onLocDiagnosticMessage(locType, type, message);
-//            if (type >= 1 && type <= 3){
-//                Log.d("MainActivity","-------------------"+String.valueOf(type));
-//                Toast.makeText(MainActivity.this, String.valueOf(type),Toast.LENGTH_SHORT).show();
-//            }
         }
+    }
+
+    @Override
+    protected void updateCity(CityBackResult result) {
+        myCity = result.getCityList().get(0);
+        judgeListInformation();
     }
 
     /**
@@ -471,7 +440,12 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        savePlaceNameList(placeNameList);
+        saveCityListToDatabase(placeNameList);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     @Override
@@ -479,29 +453,4 @@ public class MainActivity extends BaseActivity {
         super.onDestroy();
         locationClient.stop();
     }
-
-//    private void lastButtonAnimator(){
-//        ValueAnimator valueAnimator = ValueAnimator.ofInt(PxAndDp.dip2px(5),PxAndDp.dip2px(0),PxAndDp.dip2px(5));
-//        valueAnimator.setDuration(2000);
-//        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//            @Override
-//            public void onAnimationUpdate(ValueAnimator animation) {
-//                int currentValue = (Integer) animation.getAnimatedValue();
-//                lastPage.setTranslationX(currentValue);
-//                lastPage.requestLayout();
-//            }
-//        });
-//    }
-//    private void nextButtonAnimator(){
-//        ValueAnimator valueAnimator = ValueAnimator.ofInt(200,0,200,0,200);
-//        valueAnimator.setDuration(2000);
-//        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//            @Override
-//            public void onAnimationUpdate(ValueAnimator animation) {
-//                int currentValue = (Integer) animation.getAnimatedValue();
-//                nextPage.setTranslationX(currentValue);
-//                nextPage.requestLayout();
-//            }
-//        });
-//    }
 }

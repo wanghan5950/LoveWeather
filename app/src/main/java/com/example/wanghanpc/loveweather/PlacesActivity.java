@@ -16,11 +16,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.wanghanpc.loveweather.OtherEntityClass.ReadyIconAndBackground;
+import com.example.wanghanpc.loveweather.cityGson.City;
 import com.example.wanghanpc.loveweather.tools.Utility;
 import com.example.wanghanpc.loveweather.weatherGson.Weather;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItemClickListener {
@@ -47,7 +49,7 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_places);
 
-        getPlaceNameList();
+        getCityListFromDatabase();
         getWeatherListFromShared();
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.place_item_recyclerView);
@@ -108,11 +110,10 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
     protected void onStart() {
         super.onStart();
         if (hasBeenOnRestart) {
-            getPlaceNameList();
+            getCityListFromDatabase();
             getWeatherListFromShared();
             editMode = PLACE_MODE_CHECK;
             placesAdapter.setEditMode(editMode);
-//            placesAdapter.notifyDataSetChanged();
         }
         hasBeenOnRestart = false;
     }
@@ -122,8 +123,9 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
      */
     private void getWeatherListFromShared(){
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        for (String placeName : placeNameList) {
-            String weatherString = preferences.getString(placeName, null);
+        for (City city : placeNameList) {
+            String cityId = city.getCityId();
+            String weatherString = preferences.getString(cityId, null);
             if (weatherString != null) {
                 Weather weather = Utility.handleWeatherResponse(weatherString);
                 if (!weatherList.contains(weather)){
@@ -251,7 +253,6 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
         initNavigationIcon(editStatus,allSelected);
         setDeleteButtonVisible(index);
         placesAdapter.setEditMode(PLACE_MODE_EDIT_CLICK);
-//        placesAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -263,11 +264,16 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
             Weather weather = placesAdapter.getWeatherList().get(i-1);
             if (weather.getSelected()){
                 placesAdapter.getWeatherList().remove(weather);
-                needToDelete.add(weather.getBasic().getLocation());
+                needToDelete.add(weather.getBasic().getCityId());
             }
         }
-        for (String city : needToDelete){
-            placeNameList.remove(city);
+        int size = needToDelete.size();
+        for (int i = 0; i < size; i++){
+            for (Iterator iterator = placeNameList.iterator(); iterator.hasNext();){
+                City city = (City)iterator.next();
+                if (city.getCityId().equals(needToDelete.get(i)))
+                    iterator.remove();
+            }
         }
         exitEditMode();
     }
@@ -298,7 +304,6 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
             setDeleteButtonVisible(index);
             placeToolbarTitle.setText(String.valueOf(index));
             placesAdapter.setEditMode(PLACE_MODE_EDIT_CLICK);
-//            placesAdapter.notifyDataSetChanged();
         }else {
             //返回天气详情页面
             Intent intent = new Intent();
@@ -356,7 +361,6 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
         editMode = PLACE_MODE_BACK_TO_CHECK;
         actionButton.show();
         placesAdapter.setEditMode(editMode);
-//        placesAdapter.notifyDataSetChanged();
         placeItemTouchCallback.setEditMode(editMode);
         this.placeNameList = placesAdapter.getPlaceNameList();
     }
@@ -364,7 +368,12 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
     @Override
     protected void onPause() {
         super.onPause();
-        savePlaceNameList(placeNameList);
+        saveCityListToDatabase(placeNameList);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     /**

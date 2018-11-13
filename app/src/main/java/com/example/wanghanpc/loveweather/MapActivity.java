@@ -34,19 +34,12 @@ import com.baidu.mapapi.model.LatLng;
 import com.example.wanghanpc.loveweather.OtherEntityClass.ReadyIconAndBackground;
 import com.example.wanghanpc.loveweather.cityGson.City;
 import com.example.wanghanpc.loveweather.cityGson.CityBackResult;
-import com.example.wanghanpc.loveweather.tools.HttpUtil;
 import com.example.wanghanpc.loveweather.tools.Tools;
-import com.example.wanghanpc.loveweather.tools.Utility;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 public class MapActivity extends BaseActivity {
 
@@ -56,7 +49,7 @@ public class MapActivity extends BaseActivity {
     private BaiduMap baiduMap;
     private double myLatitude;
     private double myLongitude;
-    private String latAndLong;
+    private String longAndLat;
     private TextView mapBarLocation;
     private TextView mapBarProvince;
     private TextView mapBarCity;
@@ -108,7 +101,7 @@ public class MapActivity extends BaseActivity {
         mapBarLayout.setVisibility(View.GONE);
         mapProgressBarLayout.setVisibility(View.GONE);
 
-        getPlaceNameList();
+        getCityListFromDatabase();
         initToolbar();
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
@@ -125,17 +118,29 @@ public class MapActivity extends BaseActivity {
         mapBarLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String place = weatherResult.getBasic().getLocation();
-                if (placeNameList.contains(place)){
-                    Toast.makeText(MapActivity.this,"已注册",Toast.LENGTH_SHORT).show();
+                if (weatherResult.getBasic().getCountry().equals("中国")) {
+                    City city = new City();
+                    city.setCityId(weatherResult.getBasic().getCityId());
+                    city.setLocationName(weatherResult.getBasic().getLocation());
+                    city.setParentCity(weatherResult.getBasic().getParentCity());
+                    city.setAdminArea(weatherResult.getBasic().getAdminArea());
+                    if (placeNameList.contains(city)) {
+                        Toast.makeText(MapActivity.this, "已注册", Toast.LENGTH_SHORT).show();
+                    } else {
+                        placeNameList.add(city);
+                        Toast.makeText(MapActivity.this, "添加完成", Toast.LENGTH_SHORT).show();
+                    }
                 }else {
-                    placeNameList.add(place);
-//                    setPlaceNameListToShared();
-//                    savePlaceNameList(placeNameList);
-                    Toast.makeText(MapActivity.this,"添加完成",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MapActivity.this,"无法添加国外城市",Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mapView.onResume();
     }
 
     /**
@@ -154,9 +159,9 @@ public class MapActivity extends BaseActivity {
                         mapBarLayout.setVisibility(View.INVISIBLE);
                         Log.d("MapActivity","--------------------------使用已定的位置");
                         signLocationOnMap(myLatitude,myLongitude);
-                        latAndLong = String.valueOf(myLatitude) + "," + String.valueOf(myLongitude);
+                        longAndLat = String.valueOf(myLongitude) + "," + String.valueOf(myLatitude);
                         mapProgressBarLayout.setVisibility(View.VISIBLE);
-                        requestWeather(latAndLong);
+                        requestWeather(longAndLat);
                     default:
                 }
                 return true;
@@ -182,10 +187,10 @@ public class MapActivity extends BaseActivity {
             if (bdLocation.getLocType() == BDLocation.TypeGpsLocation || bdLocation.getLocType() == BDLocation.TypeNetWorkLocation){
                 Log.d("MapActivity","--------------------------定位成功");
                 locateToMyLocation(bdLocation);
-                latAndLong = String.valueOf(myLatitude) + "," + String.valueOf(myLongitude);
-                Log.d("MapActivity","==============我的经纬度是" + latAndLong);
+                longAndLat = String.valueOf(myLongitude) + "," + String.valueOf(myLatitude);
+                Log.d("MapActivity","==============我的经纬度是" + longAndLat);
                 mapProgressBarLayout.setVisibility(View.VISIBLE);
-                requestWeather(latAndLong);
+                requestWeather(longAndLat);
             }
         }
     }
@@ -199,10 +204,10 @@ public class MapActivity extends BaseActivity {
             public void onMapLongClick(LatLng latLng) {
                 mapBarLayout.setVisibility(View.INVISIBLE);
                 signLocationOnMap(latLng.latitude,latLng.longitude);
-                latAndLong = String.valueOf(latLng.latitude) + "," + String.valueOf(latLng.longitude);
-                Log.d("MapActivity","==============经纬度是" + latAndLong);
+                longAndLat = String.valueOf(latLng.longitude) + "," + String.valueOf(latLng.latitude);
+                Log.d("MapActivity","==============经纬度是" + longAndLat);
                 mapProgressBarLayout.setVisibility(View.VISIBLE);
-                requestWeather(latAndLong);
+                requestWeather(longAndLat);
             }
         });
     }
@@ -252,14 +257,14 @@ public class MapActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Double lat = Double.parseDouble(cityBackResult.getCityList().get(position).getLat());
                 Double lon = Double.parseDouble(cityBackResult.getCityList().get(position).getLon());
-                latAndLong = cityBackResult.getCityList().get(position).getLat() + "," + cityBackResult.getCityList().get(position).getLon();
+                longAndLat = cityBackResult.getCityList().get(position).getLon() + "," + cityBackResult.getCityList().get(position).getLat();
                 listView.setVisibility(View.GONE);
                 mapView.setVisibility(View.VISIBLE);
                 hideInput();
                 editText.setText("");
                 signLocationOnMap(lat,lon);
                 mapProgressBarLayout.setVisibility(View.VISIBLE);
-                requestWeather(latAndLong);
+                requestWeather(longAndLat);
             }
         });
     }
@@ -276,63 +281,53 @@ public class MapActivity extends BaseActivity {
     private void showWeatherInfo(){
         mapProgressBarLayout.setVisibility(View.GONE);
         mapBarLayout.setVisibility(View.VISIBLE);
-        String location = weatherResult.getBasic().getLocation();
-        String province = weatherResult.getBasic().getAdminArea() + "省";
-        String city = ","+weatherResult.getBasic().getParentCity() + "市";
-        String date = weatherResult.getUpdate().getLoc().substring(0,10);
-        String time = weatherResult.getUpdate().getLoc().substring(11) + "更新";
-        String week = Tools.getWeek(date)+",";
-        String temp = weatherResult.getNow().getTmp();
-        String forecast = weatherResult.getNow().getCondTxt();
-        int iconId = ReadyIconAndBackground.getLargeWeatherIcon(weatherResult.getNow().getCondCode());
-        mapBarLocation.setText(location);
-        if (weatherResult.getBasic().getAdminArea().equals(weatherResult.getBasic().getParentCity())
-                && weatherResult.getBasic().getParentCity().equals(weatherResult.getBasic().getLocation())){
-            mapBarCity.setText(city);
+        if (weatherResult.getBasic().getCountry().equals("中国")) {
+            String location = weatherResult.getBasic().getLocation();
+            String province = weatherResult.getBasic().getAdminArea() + "省";
+            String city = "," + weatherResult.getBasic().getParentCity() + "市";
+            String date = weatherResult.getUpdate().getLoc().substring(0,10);
+            String time = weatherResult.getUpdate().getLoc().substring(11) + "更新";
+            String week = Tools.getWeek(date) + ",";
+            String temp = weatherResult.getNow().getTmp();
+            String forecast = weatherResult.getNow().getCondTxt();
+            int iconId = ReadyIconAndBackground.getLargeWeatherIcon(weatherResult.getNow().getCondCode());
+            mapBarLocation.setText(location);
+            if (weatherResult.getBasic().getAdminArea().equals(weatherResult.getBasic().getParentCity())
+                    && weatherResult.getBasic().getParentCity().equals(weatherResult.getBasic().getLocation())) {
+                mapBarCity.setText(city);
+            } else {
+                mapBarProvince.setText(province);
+                mapBarCity.setText(city);
+            }
+            mapBarIcon.setImageResource(iconId);
+            mapBarDate.setText(week);
+            mapBarTime.setText(time);
+            mapBarTemp.setText(temp);
+            mapBarForecast.setText(forecast);
         }else {
-            mapBarProvince.setText(province);
-            mapBarCity.setText(city);
+            String location = weatherResult.getBasic().getLocation();
+            String country = weatherResult.getBasic().getCountry();
+            String date = weatherResult.getUpdate().getLoc().substring(0,10);
+            String time = weatherResult.getUpdate().getLoc().substring(11) + "更新";
+            String week = Tools.getWeek(date) + ",";
+            String temp = weatherResult.getNow().getTmp();
+            String forecast = weatherResult.getNow().getCondTxt();
+            int iconId = ReadyIconAndBackground.getLargeWeatherIcon(weatherResult.getNow().getCondCode());
+            mapBarLocation.setText(location);
+            mapBarProvince.setText(country);
+            mapBarCity.setText("");
+            mapBarIcon.setImageResource(iconId);
+            mapBarDate.setText(week);
+            mapBarTime.setText(time);
+            mapBarTemp.setText(temp);
+            mapBarForecast.setText(forecast);
         }
-        mapBarIcon.setImageResource(iconId);
-        mapBarDate.setText(week);
-        mapBarTime.setText(time);
-        mapBarTemp.setText(temp);
-        mapBarForecast.setText(forecast);
     }
 
-    /**
-     * 请求城市搜索数据
-     */
-    private void requestCityList(final String searchName){
-        String cityUrl = "https://search.heweather.com/find?&location=" + searchName + "&key=e7b4b21007f048a9a4fe2cb236ce5569" + "&group=cn";
-        HttpUtil.sendOkHttpRequest(cityUrl, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(MapActivity.this,"获取城市列表失败1",Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                final String responseText = response.body().string();
-                final CityBackResult cityBackResult = Utility.handleCityResponse(responseText);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (cityBackResult != null && "ok".equals(cityBackResult.getStatus())){
-                            MapActivity.cityBackResult = cityBackResult;
-                            showCityList();
-                        }else {
-                            Toast.makeText(MapActivity.this,"获取城市列表失败2",Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            }
-        });
+    @Override
+    protected void updateCity(CityBackResult result) {
+        MapActivity.cityBackResult = result;
+        showCityList();
     }
 
     /**
@@ -341,8 +336,10 @@ public class MapActivity extends BaseActivity {
     private void showCityList(){
         cityNameList.clear();
         if (cityBackResult.getCityList() != null && cityBackResult.getCityList().size() != 0) {
-            for (City city : cityBackResult.getCityList()) {
-                cityNameList.add(city.getLocationName());
+            List<City> list = cityBackResult.getCityList();
+            int size = list.size();
+            for (int i = 0; i < size; i++){
+                cityNameList.add(list.get(i).getLocationName());
             }
         }
         adapter.notifyDataSetChanged();
@@ -366,7 +363,7 @@ public class MapActivity extends BaseActivity {
     /**
      * 标记位置
      */
-    private void signLocationOnMap(double latitude, double longitude){
+    private void signLocationOnMap(double longitude, double latitude){
         MyLocationData.Builder builder = new MyLocationData.Builder();
         builder.latitude(latitude);
         builder.longitude(longitude);
@@ -387,13 +384,12 @@ public class MapActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         mapView.onPause();
-        savePlaceNameList(placeNameList);
+        saveCityListToDatabase(placeNameList);
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        mapView.onResume();
+    protected void onStop() {
+        super.onStop();
     }
 
     @Override

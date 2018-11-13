@@ -2,13 +2,11 @@ package com.example.wanghanpc.loveweather.service;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.example.wanghanpc.loveweather.tools.HttpUtil;
@@ -16,8 +14,6 @@ import com.example.wanghanpc.loveweather.tools.Utility;
 import com.example.wanghanpc.loveweather.weatherGson.Weather;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -27,10 +23,7 @@ import okhttp3.Response;
  * 自动更新天气服务
  */
 
-public class AutoUpdateService extends Service {
-
-    private List<String> placeNameList = new ArrayList<>();
-    private LocalBroadcastManager localBroadcastManager;
+public class AutoUpdateService extends BaseService {
 
     public AutoUpdateService() {
     }
@@ -48,7 +41,6 @@ public class AutoUpdateService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        localBroadcastManager = LocalBroadcastManager.getInstance(this);
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
         int hour = 8 * 60 * 60 * 1000;
         long triggerAtTime = SystemClock.elapsedRealtime() + hour;
@@ -66,31 +58,17 @@ public class AutoUpdateService extends Service {
      */
     private void sendBroadcast(){
         Intent intent = new Intent("com.loveWeather.broadcast.weather.new");
-        localBroadcastManager.sendBroadcast(intent);
+        broadcastManager.sendBroadcast(intent);
     }
 
     /**
      * 更新天气信息
      */
     private void autoUpdateWeather(){
-        getPlaceNameListFromShared();
-        for (String place : placeNameList){
-            requestWeather(place);
-        }
-    }
-
-    /**
-     * 获取城市名列表
-     */
-    private void getPlaceNameListFromShared(){
-        SharedPreferences preferences = getSharedPreferences("placeNameList",MODE_PRIVATE);
-        int index = preferences.getInt("listSize",0);
-        for (int i = 0; i < index; i++){
-            String place = preferences.getString("item_"+i,null);
-            if (!placeNameList.contains(place) && place != null) {
-                placeNameList.add(place);
-            }
-        }
+        getCityListFromDatabase();
+        int size = placeNameList.size();
+        for (int i = 0; i < size; i++)
+            requestWeather(placeNameList.get(i).getCityId());
     }
 
     private void requestWeather(String location){
