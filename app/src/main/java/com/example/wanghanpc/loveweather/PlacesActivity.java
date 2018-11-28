@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItemClickListener {
+public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItemClickListener,PlaceItemTouchCallback.ItemTouchAdapterInterface {
 
     private static final int PLACE_MODE_CHECK = 0;  //点击回到主页
     private static final int PLACE_MODE_EDIT = 1;  //编辑状态
@@ -195,7 +195,7 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
     private void startToEdit(){
         editStatus = true;
         initNavigationIcon(editStatus,allSelected);
-        placeToolbarTitle.setText(String.valueOf(index));
+        placeToolbarTitle.setText("选择位置");
         invalidateOptionsMenu();//刷新toolbar的menu按钮
         editMode = PLACE_MODE_EDIT;
         actionButton.hide();
@@ -247,7 +247,7 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
                 placesAdapter.getWeatherList().get(i).setSelected(false);
             }
             index = 0;
-            placeToolbarTitle.setText(String.valueOf(index));
+            placeToolbarTitle.setText("选择位置");
             allSelected = false;
         }
         initNavigationIcon(editStatus,allSelected);
@@ -271,8 +271,9 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
         for (int i = 0; i < size; i++){
             for (Iterator iterator = placeNameList.iterator(); iterator.hasNext();){
                 City city = (City)iterator.next();
-                if (city.getCityId().equals(needToDelete.get(i)))
+                if (city.getCityId().equals(needToDelete.get(i))){
                     iterator.remove();
+                }
             }
         }
         exitEditMode();
@@ -302,7 +303,11 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
                 toolbar.setNavigationIcon(R.mipmap.unselected);
             }
             setDeleteButtonVisible(index);
-            placeToolbarTitle.setText(String.valueOf(index));
+            if (index == 0){
+                placeToolbarTitle.setText("选择位置");
+            }else {
+                placeToolbarTitle.setText(String.valueOf(index));
+            }
             placesAdapter.setEditMode(PLACE_MODE_EDIT_CLICK);
         }else {
             //返回天气详情页面
@@ -363,6 +368,22 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
         placesAdapter.setEditMode(editMode);
         placeItemTouchCallback.setEditMode(editMode);
         this.placeNameList = placesAdapter.getPlaceNameList();
+    }
+
+    @Override
+    public void onMove(int fromPosition, int toPosition) {
+
+    }
+
+    @Override
+    public void onSwiped(int position) {
+        placeNameList.remove(position);
+        weatherList.remove(position);
+    }
+
+    @Override
+    public void onClearView(int position) {
+
     }
 
     @Override

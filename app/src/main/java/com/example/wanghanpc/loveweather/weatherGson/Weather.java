@@ -7,6 +7,8 @@ import java.util.List;
 
 public class Weather implements Serializable{
 
+    private static final long serialVersionUID = 7510428078119872479L;
+
     private String status;
 
     private Basic basic;

@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -67,7 +68,9 @@ public class MainActivity extends BaseActivity {
         toolbarWeek = (TextView) findViewById(R.id.toolbar_week);
         toolbarTime = (TextView) findViewById(R.id.toolbar_time);
         swipeRefreshLayout = (MySwipeRefreshLayout) findViewById(R.id.refresh_layout);
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,R.color.colorPrimaryDark);
+        swipeRefreshLayout.setProgressViewOffset(true,0,1);
+        swipeRefreshLayout.setColorSchemeColors(Color.GRAY,Color.BLUE);
         backgroundImage = (CoordinatorLayout) findViewById(R.id.main_layout);
         viewPager = (ViewPager) findViewById(R.id.main_view_pager);
         progressBar = (ProgressBar) findViewById(R.id.main_progress_bar);
@@ -253,16 +256,18 @@ public class MainActivity extends BaseActivity {
      * @param position
      */
     private void initToolbarInformation(int position){
-        String title = weatherList.get(position).getBasic().getLocation();
-        String updateTime = weatherList.get(position).getUpdate().getLoc();
-        String date = updateTime.substring(0,10);
-        String time = updateTime.substring(11)+"更新";
-        String week = Tools.getWeek(date)+",";
-        String weatherId = weatherList.get(position).getNow().getCondCode();
-        toolbarWeek.setText(week);
-        toolbarTime.setText(time);
-        toolbarTitle.setText(title);
-        backgroundImage.setBackgroundResource(ReadyIconAndBackground.getWeatherBackground(weatherId));
+        if (position < weatherList.size()){
+            String title = weatherList.get(position).getBasic().getLocation();
+            String updateTime = weatherList.get(position).getUpdate().getLoc();
+            String date = updateTime.substring(0,10);
+            String time = updateTime.substring(11)+"更新";
+            String week = Tools.getWeek(date)+",";
+            String weatherId = weatherList.get(position).getNow().getCondCode();
+            toolbarWeek.setText(week);
+            toolbarTime.setText(time);
+            toolbarTitle.setText(title);
+            backgroundImage.setBackgroundResource(ReadyIconAndBackground.getWeatherBackground(weatherId));
+        }
     }
 
     /**

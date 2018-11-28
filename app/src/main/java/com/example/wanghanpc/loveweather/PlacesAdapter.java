@@ -1,8 +1,8 @@
 package com.example.wanghanpc.loveweather;
 
 import android.animation.ValueAnimator;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +14,12 @@ import com.example.wanghanpc.loveweather.OtherEntityClass.ReadyIconAndBackground
 import com.example.wanghanpc.loveweather.cityGson.City;
 import com.example.wanghanpc.loveweather.tools.PxAndDp;
 import com.example.wanghanpc.loveweather.tools.Tools;
-import com.example.wanghanpc.loveweather.tools.Utility;
 import com.example.wanghanpc.loveweather.weatherGson.Weather;
 
 import java.util.Collections;
 import java.util.List;
 
-public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder> implements PlaceItemTouchCallback.ItemTouchAdapter {
+public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder> implements PlaceItemTouchCallback.ItemTouchAdapterInterface {
 
     private static final int PLACE_MODE_CHECK = 0;
     private static final int PLACE_MODE_EDIT = 1;
@@ -146,21 +145,25 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder
 
     @Override
     public void onSwiped(int position) {
+        notifyItemRemoved(position);
+        weatherList.remove(position);
+        placeNameList.remove(position);
     }
 
     @Override
-    public void saveWeatherList() {
+    public void onClearView(int position) {
 
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent,int viewType){
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.place_item,parent,false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position){
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position){
         final Weather weather = weatherList.get(holder.getAdapterPosition());
 
         String location = weather.getBasic().getLocation();

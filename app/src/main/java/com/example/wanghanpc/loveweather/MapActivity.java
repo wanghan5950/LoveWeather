@@ -158,7 +158,7 @@ public class MapActivity extends BaseActivity {
                     case R.id.locate:
                         mapBarLayout.setVisibility(View.INVISIBLE);
                         Log.d("MapActivity","--------------------------使用已定的位置");
-                        signLocationOnMap(myLatitude,myLongitude);
+                        signLocationOnMap(myLongitude,myLatitude);
                         longAndLat = String.valueOf(myLongitude) + "," + String.valueOf(myLatitude);
                         mapProgressBarLayout.setVisibility(View.VISIBLE);
                         requestWeather(longAndLat);
@@ -203,7 +203,7 @@ public class MapActivity extends BaseActivity {
             @Override
             public void onMapLongClick(LatLng latLng) {
                 mapBarLayout.setVisibility(View.INVISIBLE);
-                signLocationOnMap(latLng.latitude,latLng.longitude);
+                signLocationOnMap(latLng.longitude,latLng.latitude);
                 longAndLat = String.valueOf(latLng.longitude) + "," + String.valueOf(latLng.latitude);
                 Log.d("MapActivity","==============经纬度是" + longAndLat);
                 mapProgressBarLayout.setVisibility(View.VISIBLE);
@@ -262,7 +262,7 @@ public class MapActivity extends BaseActivity {
                 mapView.setVisibility(View.VISIBLE);
                 hideInput();
                 editText.setText("");
-                signLocationOnMap(lat,lon);
+                signLocationOnMap(lon,lat);
                 mapProgressBarLayout.setVisibility(View.VISIBLE);
                 requestWeather(longAndLat);
             }
@@ -355,7 +355,7 @@ public class MapActivity extends BaseActivity {
         update = MapStatusUpdateFactory.zoomTo(6);
         baiduMap.animateMapStatus(update);
         Log.d("MapActivity","-------------------------找到位置");
-        signLocationOnMap(bdLocation.getLatitude(),bdLocation.getLongitude());
+        signLocationOnMap(bdLocation.getLongitude(),bdLocation.getLatitude());
         myLatitude = bdLocation.getLatitude();
         myLongitude = bdLocation.getLongitude();
     }

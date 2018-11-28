@@ -6,6 +6,8 @@ import java.io.Serializable;
 
 public class City implements Serializable{
 
+    private static final long serialVersionUID = 5845098686465379495L;
+
     @SerializedName("cid")
     private String cityId;
 

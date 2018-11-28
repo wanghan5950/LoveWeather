@@ -30,7 +30,7 @@ public class Utility {
     }
 
     /**
-     *解析返回的城市数据
+     * 解析返回的城市数据
      */
     public static CityBackResult handleCityResponse(String response){
         try {
