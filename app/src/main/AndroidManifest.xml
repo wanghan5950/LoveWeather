@@ -27,7 +27,7 @@
             android:value="2.1" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,7 +36,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PlacesActivity"
+            android:name=".activities.PlacesActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme" />
 
@@ -46,15 +46,15 @@
             android:process=":remote" />
 
         <activity
-            android:name=".SettingActivity"
+            android:name=".activities.SettingActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".SearchActivity"
+            android:name=".activities.SearchActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".MapActivity"
+            android:name=".activities.MapActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme" />
 
@@ -64,7 +64,7 @@
             android:exported="true" />
 
         <activity
-            android:name=".AboutActivity"
+            android:name=".activities.AboutActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme" />
 
@@ -75,7 +75,7 @@
 
         </service>
 
-        <activity android:name=".BaseActivity">
+        <activity android:name=".activities.BaseActivity">
 
         </activity>
 
@@ -85,6 +85,18 @@
             android:exported="true">
 
         </service>
+
+        <activity
+            android:name=".activities.NewsActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme">
+
+        </activity>
+        <activity android:name=".activities.NewsContentActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme">
+
+        </activity>
     </application>
 
 </manifest>

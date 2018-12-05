@@ -14,11 +14,11 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
-import com.example.wanghanpc.loveweather.MainActivity;
-import com.example.wanghanpc.loveweather.OtherEntityClass.ReadyIconAndBackground;
+import com.example.wanghanpc.loveweather.activities.MainActivity;
+import com.example.wanghanpc.loveweather.tools.ReadyIconAndBackground;
 import com.example.wanghanpc.loveweather.R;
-import com.example.wanghanpc.loveweather.tools.Utility;
-import com.example.wanghanpc.loveweather.weatherGson.Weather;
+import com.example.wanghanpc.loveweather.tools.ParseData;
+import com.example.wanghanpc.loveweather.gson.weatherGson.Weather;
 
 /**
  * 通知服务，接受自动更新服务的广播后推送通知
@@ -86,7 +86,7 @@ public class NotificationService extends BaseService {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = preferences.getString(placeNameList.get(0).getCityId(),null);
         if (weatherString != null){
-            weatherForNotification = Utility.handleWeatherResponse(weatherString);
+            weatherForNotification = ParseData.handleWeatherResponse(weatherString);
         }
     }
 

@@ -1,7 +1,5 @@
 package com.example.wanghanpc.loveweather.tools;
 
-import android.content.Context;
-
 public class PxAndDp {
 
     /**

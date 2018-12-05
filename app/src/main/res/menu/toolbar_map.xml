@@ -5,7 +5,7 @@
     <item
         android:id="@+id/locate"
         android:icon="@mipmap/locate"
-        android:title="定位"
+        android:title="@string/location"
         app:showAsAction="always" />
 
 </menu>

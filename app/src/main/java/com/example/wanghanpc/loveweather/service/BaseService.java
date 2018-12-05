@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 
-import com.example.wanghanpc.loveweather.cityGson.City;
-import com.example.wanghanpc.loveweather.tools.DatabaseModel;
+import com.example.wanghanpc.loveweather.gson.cityGson.City;
+import com.example.wanghanpc.loveweather.model.DatabaseModel;
 
 import java.util.ArrayList;
 import java.util.List;

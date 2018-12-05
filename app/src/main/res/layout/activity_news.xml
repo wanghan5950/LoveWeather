@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".activities.NewsActivity"
+    android:background="#fff"
+    android:fitsSystemWindows="true">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:elevation="0dp">
+
+        <!--<android.support.v7.widget.Toolbar-->
+            <!--android:id="@+id/news_toolbar"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:theme="@style/mainToolbarStyle"-->
+            <!--android:background="#fff">-->
+
+        <!--</android.support.v7.widget.Toolbar>-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/news_tabLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="6"
+                android:background="#fff"
+                app:tabMode="scrollable"
+                app:tabIndicatorHeight="2dp"
+                app:tabIndicatorColor="@color/colorAccent"
+                app:tabTextColor="#505050"
+                app:tabSelectedTextColor="#000000"
+                app:tabPaddingTop="5dp"
+                app:tabPaddingBottom="5dp"
+                app:tabPaddingStart="5dp"
+                app:tabPaddingEnd="5dp">
+
+                <!--<android.support.design.widget.TabItem-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="头条"/>-->
+                <!--<android.support.design.widget.TabItem-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="社会"/>-->
+                <!--<android.support.design.widget.TabItem-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="国内"/>-->
+                <!--<android.support.design.widget.TabItem-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="国际"/>-->
+                <!--<android.support.design.widget.TabItem-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="娱乐"/>-->
+                <!--<android.support.design.widget.TabItem-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="体育"/>-->
+                <!--<android.support.design.widget.TabItem-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="军事"/>-->
+                <!--<android.support.design.widget.TabItem-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="科技"/>-->
+                <!--<android.support.design.widget.TabItem-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="财经"/>-->
+                <!--<android.support.design.widget.TabItem-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="时尚"/>-->
+
+            </android.support.design.widget.TabLayout>
+
+            <ImageView
+                android:id="@+id/backButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:src="@mipmap/news_blue"
+                android:background="@drawable/ripple_button_background"
+                android:scaleType="center" />
+
+        </LinearLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <com.example.wanghanpc.loveweather.myDefined.MySwipeRefreshLayout
+        android:id="@+id/news_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/news_viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android.support.v4.view.ViewPager>
+
+    </com.example.wanghanpc.loveweather.myDefined.MySwipeRefreshLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#24000000"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

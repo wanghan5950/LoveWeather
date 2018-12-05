@@ -9,9 +9,9 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.example.wanghanpc.loveweather.tools.HttpUtil;
-import com.example.wanghanpc.loveweather.tools.Utility;
-import com.example.wanghanpc.loveweather.weatherGson.Weather;
+import com.example.wanghanpc.loveweather.tools.SendOkHttp;
+import com.example.wanghanpc.loveweather.tools.ParseData;
+import com.example.wanghanpc.loveweather.gson.weatherGson.Weather;
 
 import java.io.IOException;
 
@@ -73,7 +73,7 @@ public class AutoUpdateService extends BaseService {
 
     private void requestWeather(String location){
         String weatherUrl = "https://free-api.heweather.com/s6/weather?location=" + location + "&key=e7b4b21007f048a9a4fe2cb236ce5569";
-        HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
+        SendOkHttp.sendOkHttpRequest(weatherUrl, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
@@ -82,7 +82,7 @@ public class AutoUpdateService extends BaseService {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final String responseText = response.body().string();
-                final Weather weather = Utility.handleWeatherResponse(responseText);
+                final Weather weather = ParseData.handleWeatherResponse(responseText);
                 if (weather != null && "ok".equals(weather.getStatus())){
                     String city = weather.getBasic().getLocation();
                     SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(AutoUpdateService.this).edit();
