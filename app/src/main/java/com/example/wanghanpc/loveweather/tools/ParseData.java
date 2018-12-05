@@ -2,7 +2,6 @@ package com.example.wanghanpc.loveweather.tools;
 
 import com.example.wanghanpc.loveweather.gson.cityGson.CityBackResult;
 import com.example.wanghanpc.loveweather.gson.cityGson.HotCityBackResult;
-import com.example.wanghanpc.loveweather.gson.newsGson.News;
 import com.example.wanghanpc.loveweather.gson.weatherGson.Weather;
 import com.google.gson.Gson;
 

@@ -1,7 +1,6 @@
 package com.example.wanghanpc.loveweather.activities;
 
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -173,39 +172,4 @@ public class NewsActivity extends AppCompatActivity implements NewsFragment.Cont
         finish();
         overridePendingTransition(R.anim.activity_next_enter,R.anim.activity_next_exit);
     }
-
-    private void updateNews(){
-
-    }
-
-//    private void requestNews(String type){
-//        String newsUrl = "http://v.juhe.cn/toutiao/index?type="+type+"&key=bdcab1dfba80f8a9707c4ac849ed56c4";
-//        SendOkHttp.sendOkHttpRequest(newsUrl, new Callback() {
-//            @Override
-//            public void onFailure(Call call, IOException e) {
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        Toast.makeText(NewsActivity.this,"加载新闻失败01",Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//            }
-//            @Override
-//            public void onResponse(Call call, Response response) throws IOException {
-//                final String responseText = response.body().string();
-//                final News news = new Gson().fromJson(responseText,News.class);
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        if (news != null && news.getReason().equals("成功的返回")){
-//                            mainNews = news;
-//                            updateNews();
-//                        }else {
-//                            Toast.makeText(NewsActivity.this,"加载新闻失败02",Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                });
-//            }
-//        });
-//    }
 }
