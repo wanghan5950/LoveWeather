@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.PlacesActivity"
-    android:background="#fff"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:background="#fff">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -53,14 +53,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <ImageView
-        android:id="@+id/place_background"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-    </ImageView>
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/place_item_recyclerView"
         android:layout_width="match_parent"
@@ -76,8 +68,8 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="15dp"
         android:src="@mipmap/add"
-        app:backgroundTint="#0094f7"
-        app:rippleColor="#00549a"/>
+        app:backgroundTint="#E91E63"
+        app:rippleColor="#880E4F"/>
 
     <LinearLayout
         android:layout_width="match_parent"

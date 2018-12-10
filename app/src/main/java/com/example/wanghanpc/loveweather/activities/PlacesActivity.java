@@ -59,9 +59,8 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
         placesAdapter = new PlacesAdapter(weatherList,placeNameList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(placesAdapter);
-        ImageView placeBackground = (ImageView) findViewById(R.id.place_background);
-        placeBackground.setImageResource(getBackground());
         deleteTextButton = (TextView) findViewById(R.id.delete_text_button);
         placeToolbarTitle = (TextView) findViewById(R.id.place_toolbar_title);
         actionButton = (FloatingActionButton) findViewById(R.id.place_add_button);
@@ -398,14 +397,5 @@ public class PlacesActivity extends BaseActivity implements PlacesAdapter.OnItem
     @Override
     protected void onStop() {
         super.onStop();
-    }
-
-    /**
-     * 获取背景资源
-     * @return
-     */
-    private int getBackground(){
-        Weather weather = weatherList.get(0);
-        return ReadyIconAndBackground.getWeatherBackground(weather.getNow().getCondCode());
     }
 }

@@ -210,9 +210,10 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder
             if (weather.getSelected()){
                 holder.placeCheckBox.setImageResource(R.mipmap.selected_blue);
             }else {
-                holder.placeCheckBox.setImageResource(R.mipmap.unselected_white);
+                holder.placeCheckBox.setImageResource(R.mipmap.unselected);
             }
         }
+        holder.placeItemLayout.setBackgroundResource(getBackground(position));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -246,5 +247,14 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder
     public void setEditMode(int editMode){
         this.editMode = editMode;
         notifyDataSetChanged();
+    }
+
+    /**
+     * 获取背景资源
+     * @return
+     */
+    private int getBackground(int position){
+        Weather weather = weatherList.get(position);
+        return ReadyIconAndBackground.getItemBackground(weather.getNow().getCondCode());
     }
 }

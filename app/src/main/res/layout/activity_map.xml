@@ -83,7 +83,7 @@
             android:textSize="18sp"
             android:textColor="#505050"
             android:layout_marginTop="10dp"
-            android:layout_marginLeft="15dp" />
+            android:layout_marginStart="15dp" />
 
         <TextView
             android:id="@+id/map_bar_province"
@@ -92,7 +92,7 @@
             android:textSize="12sp"
             android:textColor="#505050"
             android:layout_below="@id/map_bar_location"
-            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
             android:layout_marginTop="3dp" />
 
         <TextView
@@ -102,7 +102,7 @@
             android:textSize="12sp"
             android:textColor="#505050"
             android:layout_below="@id/map_bar_location"
-            android:layout_toRightOf="@id/map_bar_province"
+            android:layout_toEndOf="@id/map_bar_province"
             android:layout_marginTop="3dp" />
 
         <TextView
@@ -111,7 +111,7 @@
             android:layout_height="wrap_content"
             android:textSize="12sp"
             android:textColor="#505050"
-            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
             android:layout_marginTop="3dp"
             android:layout_below="@id/map_bar_province" />
 
@@ -122,29 +122,29 @@
             android:textSize="12sp"
             android:textColor="#505050"
             android:layout_below="@id/map_bar_province"
-            android:layout_toRightOf="@id/map_bar_date"
+            android:layout_toEndOf="@id/map_bar_date"
             android:layout_marginTop="3dp" />
 
         <TextView
             android:id="@+id/map_bar_temp"
-            android:layout_width="50dp"
+            android:layout_width="65dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:gravity="right"
             android:textSize="40sp"
-            android:layout_toLeftOf="@id/map_temp_sign"
+            android:layout_toStartOf="@id/map_temp_sign"
             android:textColor="#505050" />
 
         <TextView
             android:id="@+id/map_temp_sign"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_marginTop="5dp"
             android:text="°"
             android:textSize="30sp"
             android:textColor="#505050"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:visibility="visible" />
 
         <ImageView
@@ -152,17 +152,17 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginTop="5dp"
-            android:layout_toLeftOf="@id/map_bar_temp" />
+            android:layout_toStartOf="@id/map_bar_temp" />
 
         <TextView
             android:id="@+id/map_bar_forecast"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/map_bar_temp"
-            android:layout_marginRight="15dp"
+            android:layout_marginEnd="15dp"
             android:textColor="#505050"
             android:textSize="12sp"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentEnd="true" />
 
     </RelativeLayout>
 

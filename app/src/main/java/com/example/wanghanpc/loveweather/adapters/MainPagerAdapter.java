@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.wanghanpc.loveweather.activities.MainActivity;
+import com.example.wanghanpc.loveweather.gson.weatherGson.Hourly;
 import com.example.wanghanpc.loveweather.tools.ReadyIconAndBackground;
 import com.example.wanghanpc.loveweather.R;
 import com.example.wanghanpc.loveweather.tools.Tools;
@@ -21,10 +22,11 @@ import com.example.wanghanpc.loveweather.gson.weatherGson.Weather;
 
 import java.util.List;
 
-public class MainPagerAdapter extends PagerAdapter {
+public class MainPagerAdapter extends PagerAdapter{
 
     private Context context;
     private List<Weather> weathersList;
+    private LinearLayoutManager layoutManager;
 
     public MainPagerAdapter(Context context, List<Weather> weathersList) {
         this.context = context;
@@ -45,10 +47,12 @@ public class MainPagerAdapter extends PagerAdapter {
         LinearLayout suggestionLayout = (LinearLayout) view.findViewById(R.id.suggestion_layout);
 
         Weather weather = weathersList.get(position);
+
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.hour_recyclerView);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
         MainHourlyAdapter hourlyAdapter = new MainHourlyAdapter(weather.getHourlyList());
         recyclerView.setAdapter(hourlyAdapter);
 
@@ -104,7 +108,6 @@ public class MainPagerAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object){
-
         container.removeView((View)object);
     }
 

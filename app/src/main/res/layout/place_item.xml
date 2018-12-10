@@ -22,25 +22,24 @@
         android:layout_marginRight="12dp"
         android:layout_marginTop="7dp"
         android:layout_marginBottom="5dp"
-        android:background="@drawable/place_item_background"
-        android:elevation="1dp">
+        android:elevation="3dp">
 
         <TextView
             android:id="@+id/place_item_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:textSize="22sp"
-            android:textColor="#505050" />
+            android:textColor="#fff" />
 
         <TextView
             android:id="@+id/place_item_province"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="12sp"
-            android:textColor="#505050"
-            android:layout_marginLeft="10dp"
+            android:textColor="#fff"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="3dp"
             android:layout_below="@id/place_item_location" />
 
@@ -49,70 +48,70 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="12sp"
-            android:textColor="#505050"
+            android:textColor="#fff"
             android:layout_below="@id/place_item_location"
             android:layout_marginTop="3dp"
-            android:layout_toRightOf="@id/place_item_province" />
+            android:layout_toEndOf="@id/place_item_province" />
 
         <TextView
             android:id="@+id/place_item_week"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/place_item_province"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="3dp"
             android:layout_marginBottom="10dp"
             android:textSize="12sp"
-            android:textColor="#505050" />
+            android:textColor="#fff" />
 
         <TextView
             android:id="@+id/place_item_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/place_item_province"
-            android:layout_toRightOf="@id/place_item_week"
+            android:layout_toEndOf="@id/place_item_week"
             android:layout_marginTop="3dp"
             android:textSize="12sp"
-            android:textColor="#505050" />
+            android:textColor="#fff" />
 
         <TextView
             android:id="@+id/place_item_temp"
-            android:layout_width="50dp"
+            android:layout_width="65dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:gravity="right"
             android:textSize="40sp"
-            android:layout_toLeftOf="@id/temp_sign"
-            android:textColor="#505050" />
+            android:layout_toStartOf="@id/temp_sign"
+            android:textColor="#fff" />
 
         <TextView
             android:id="@+id/temp_sign"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:text="°"
             android:textSize="30sp"
-            android:textColor="#505050"
-            android:layout_alignParentRight="true"/>
+            android:textColor="#fff"
+            android:layout_alignParentEnd="true"/>
 
         <ImageView
             android:id="@+id/place_item_icon"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_toLeftOf="@id/place_item_temp" />
+            android:layout_marginEnd="5dp"
+            android:layout_toStartOf="@id/place_item_temp" />
 
         <TextView
             android:id="@+id/place_item_forecast"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/place_item_temp"
-            android:layout_marginRight="10dp"
-            android:textColor="#505050"
+            android:layout_marginEnd="10dp"
+            android:textColor="#fff"
             android:textSize="12sp"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentEnd="true" />
 
     </RelativeLayout>
 

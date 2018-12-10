@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TempCurveView">
+        <attr name="textSize" format="dimension"/>
+        <attr name="textColor" format="color"/>
+        <attr name="lineWidth" format="dimension"/>
+        <attr name="dotRadius" format="dimension"/>
+        <attr name="textDotDistance" format="dimension"/>
+    </declare-styleable>
+</resources>

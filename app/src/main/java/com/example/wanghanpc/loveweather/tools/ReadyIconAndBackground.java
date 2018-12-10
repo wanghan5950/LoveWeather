@@ -16,6 +16,7 @@ public class ReadyIconAndBackground {
     private static Map<String,Integer> largeWeatherIconList = new HashMap<>();
     private static Map<String,Integer> largeNightIconList = new HashMap<>();
     private static Map<String,Integer> backgroundList = new HashMap<>();
+    private static Map<String,Integer> itemBackgroundList = new HashMap<>();
     private static Map<String,Integer> suggestionIconList = new HashMap<>();
     private static Map<String,Integer> windDirectionIconList = new HashMap<>();
     private static Map<String,String> lifeStyleTextList = new HashMap<>();
@@ -66,6 +67,18 @@ public class ReadyIconAndBackground {
             return backgroundList.get(weatherId);
         }
         return R.drawable.sunny_background;
+    }
+
+    /**
+     * 获取item背景颜色
+     * @param weatherId
+     * @return
+     */
+    public static int getItemBackground(String weatherId){
+        if (weatherId != null && itemBackgroundList.containsKey(weatherId)){
+            return itemBackgroundList.get(weatherId);
+        }
+        return R.drawable.item_sunny_background;
     }
 
     /**
@@ -249,6 +262,52 @@ public class ReadyIconAndBackground {
         backgroundList.put("504",R.drawable.storm_background);
         backgroundList.put("507",R.drawable.storm_background);
         backgroundList.put("508",R.drawable.storm_background);
+
+        itemBackgroundList.put("100",R.drawable.item_sunny_background);
+        itemBackgroundList.put("101",R.drawable.item_sun_cloud_background);
+        itemBackgroundList.put("102",R.drawable.item_sun_cloud_background);
+        itemBackgroundList.put("103",R.drawable.item_sun_cloud_background);
+        itemBackgroundList.put("104",R.drawable.item_cloudy_background);
+        itemBackgroundList.put("300",R.drawable.item_thundershower_background);
+        itemBackgroundList.put("301",R.drawable.item_thundershower_background);
+        itemBackgroundList.put("302",R.drawable.item_thundershower_background);
+        itemBackgroundList.put("303",R.drawable.item_thundershower_background);
+        itemBackgroundList.put("304",R.drawable.item_thundershower_background);
+        itemBackgroundList.put("305",R.drawable.item_rain_background);
+        itemBackgroundList.put("306",R.drawable.item_rain_background);
+        itemBackgroundList.put("307",R.drawable.item_rain_background);
+        itemBackgroundList.put("308",R.drawable.item_rain_background);
+        itemBackgroundList.put("309",R.drawable.item_rain_background);
+        itemBackgroundList.put("310",R.drawable.item_rainstorm_background);
+        itemBackgroundList.put("311",R.drawable.item_rainstorm_background);
+        itemBackgroundList.put("312",R.drawable.item_rainstorm_background);
+        itemBackgroundList.put("313",R.drawable.item_rain_snow_background);
+        itemBackgroundList.put("314",R.drawable.item_rain_background);
+        itemBackgroundList.put("315",R.drawable.item_rain_background);
+        itemBackgroundList.put("316",R.drawable.item_rain_background);
+        itemBackgroundList.put("317",R.drawable.item_rainstorm_background);
+        itemBackgroundList.put("318",R.drawable.item_rainstorm_background);
+        itemBackgroundList.put("399",R.drawable.item_rain_background);
+        itemBackgroundList.put("400",R.drawable.item_snow_background);
+        itemBackgroundList.put("401",R.drawable.item_snow_background);
+        itemBackgroundList.put("402",R.drawable.item_snow_background);
+        itemBackgroundList.put("403",R.drawable.item_snow_background);
+        itemBackgroundList.put("404",R.drawable.item_rain_snow_background);
+        itemBackgroundList.put("405",R.drawable.item_rain_snow_background);
+        itemBackgroundList.put("406",R.drawable.item_rain_snow_background);
+        itemBackgroundList.put("407",R.drawable.item_snow_background);
+        itemBackgroundList.put("408",R.drawable.item_snow_background);
+        itemBackgroundList.put("409",R.drawable.item_snow_background);
+        itemBackgroundList.put("410",R.drawable.item_snow_background);
+        itemBackgroundList.put("499",R.drawable.item_snow_background);
+        itemBackgroundList.put("500",R.drawable.item_fog_background);
+        itemBackgroundList.put("501",R.drawable.item_fog_background);
+        itemBackgroundList.put("509",R.drawable.item_fog_background);
+        itemBackgroundList.put("502",R.drawable.item_haze_background);
+        itemBackgroundList.put("503",R.drawable.item_storm_background);
+        itemBackgroundList.put("504",R.drawable.item_storm_background);
+        itemBackgroundList.put("507",R.drawable.item_storm_background);
+        itemBackgroundList.put("508",R.drawable.item_storm_background);
 
         suggestionIconList.put("comf",R.drawable.comfort_index);
         suggestionIconList.put("drsg",R.drawable.dressing_index);
