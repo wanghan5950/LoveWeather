@@ -1,6 +1,7 @@
 package com.example.wanghanpc.loveweather.adapters;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.wanghanpc.loveweather.activities.MainActivity;
-import com.example.wanghanpc.loveweather.gson.weatherGson.Hourly;
 import com.example.wanghanpc.loveweather.tools.ReadyIconAndBackground;
 import com.example.wanghanpc.loveweather.R;
 import com.example.wanghanpc.loveweather.tools.Tools;
@@ -26,7 +26,6 @@ public class MainPagerAdapter extends PagerAdapter{
 
     private Context context;
     private List<Weather> weathersList;
-    private LinearLayoutManager layoutManager;
 
     public MainPagerAdapter(Context context, List<Weather> weathersList) {
         this.context = context;
@@ -38,8 +37,9 @@ public class MainPagerAdapter extends PagerAdapter{
         return weathersList.size();
     }
 
+    @NonNull
     @Override
-    public Object instantiateItem(ViewGroup container, int position){
+    public Object instantiateItem(@NonNull ViewGroup container, int position){
         View view = View.inflate(context, R.layout.main_page,null);
         view.setTag(position);
         //加载布局
@@ -49,7 +49,7 @@ public class MainPagerAdapter extends PagerAdapter{
         Weather weather = weathersList.get(position);
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.hour_recyclerView);
-        layoutManager = new LinearLayoutManager(context);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
@@ -107,17 +107,17 @@ public class MainPagerAdapter extends PagerAdapter{
     }
 
     @Override
-    public void destroyItem(ViewGroup container, int position, Object object){
+    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object){
         container.removeView((View)object);
     }
 
     @Override
-    public boolean isViewFromObject(View view, Object object){
+    public boolean isViewFromObject(@NonNull View view, @NonNull Object object){
         return view == object;
     }
 
     @Override
-    public int getItemPosition(Object object){
+    public int getItemPosition(@NonNull Object object){
         View view = (View)object;
         int currentPage = ((MainActivity)context).getPagePosition();
         if (currentPage == (Integer)view.getTag()){

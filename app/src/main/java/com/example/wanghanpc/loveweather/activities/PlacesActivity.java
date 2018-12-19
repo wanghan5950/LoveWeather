@@ -12,10 +12,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.example.wanghanpc.loveweather.tools.ReadyIconAndBackground;
 import com.example.wanghanpc.loveweather.R;
 import com.example.wanghanpc.loveweather.adapters.PlaceItemTouchCallback;
 import com.example.wanghanpc.loveweather.adapters.PlacesAdapter;

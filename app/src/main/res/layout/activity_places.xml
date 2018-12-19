@@ -71,12 +71,12 @@
         app:backgroundTint="#E91E63"
         app:rippleColor="#880E4F"/>
 
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#24000000"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    </LinearLayout>
+    </View>
 
 </android.support.design.widget.CoordinatorLayout>

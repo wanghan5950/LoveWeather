@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
                 android:background="@drawable/edit_text_background"
-                android:drawableLeft="@mipmap/search_gray"
+                android:drawableStart="@mipmap/search_gray"
                 android:drawablePadding="5dp"
                 android:hint="搜索城市"
                 android:textColorHint="#bfbfbf"
@@ -39,12 +39,12 @@
 
         </android.support.v7.widget.Toolbar>
 
-        <LinearLayout
+        <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#24000000">
 
-        </LinearLayout>
+        </View>
 
     </android.support.design.widget.AppBarLayout>
 
@@ -70,10 +70,10 @@
         android:id="@+id/map_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="85dp"
-        android:background="@drawable/place_item_background_2"
+        android:background="@drawable/item_sunny_background"
         android:layout_margin="10dp"
         android:layout_gravity="bottom"
-        android:elevation="1dp"
+        android:elevation="2dp"
         android:visibility="visible">
 
         <TextView
@@ -81,7 +81,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
-            android:textColor="#505050"
+            android:textColor="#fff"
             android:layout_marginTop="10dp"
             android:layout_marginStart="15dp" />
 
@@ -90,7 +90,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="12sp"
-            android:textColor="#505050"
+            android:textColor="#fff"
             android:layout_below="@id/map_bar_location"
             android:layout_marginStart="15dp"
             android:layout_marginTop="3dp" />
@@ -100,7 +100,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="12sp"
-            android:textColor="#505050"
+            android:textColor="#fff"
             android:layout_below="@id/map_bar_location"
             android:layout_toEndOf="@id/map_bar_province"
             android:layout_marginTop="3dp" />
@@ -110,7 +110,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="12sp"
-            android:textColor="#505050"
+            android:textColor="#fff"
             android:layout_marginStart="15dp"
             android:layout_marginTop="3dp"
             android:layout_below="@id/map_bar_province" />
@@ -120,7 +120,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="12sp"
-            android:textColor="#505050"
+            android:textColor="#fff"
             android:layout_below="@id/map_bar_province"
             android:layout_toEndOf="@id/map_bar_date"
             android:layout_marginTop="3dp" />
@@ -133,7 +133,7 @@
             android:gravity="right"
             android:textSize="40sp"
             android:layout_toStartOf="@id/map_temp_sign"
-            android:textColor="#505050" />
+            android:textColor="#fff" />
 
         <TextView
             android:id="@+id/map_temp_sign"
@@ -143,7 +143,7 @@
             android:layout_marginTop="5dp"
             android:text="°"
             android:textSize="30sp"
-            android:textColor="#505050"
+            android:textColor="#fff"
             android:layout_alignParentEnd="true"
             android:visibility="visible" />
 
@@ -160,7 +160,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/map_bar_temp"
             android:layout_marginEnd="15dp"
-            android:textColor="#505050"
+            android:textColor="#fff"
             android:textSize="12sp"
             android:layout_alignParentEnd="true" />
 
@@ -172,16 +172,16 @@
         android:layout_height="85dp"
         android:layout_margin="10dp"
         android:layout_gravity="bottom"
-        android:elevation="1dp"
-        android:background="@drawable/place_item_background_2"
-        android:visibility="gone">
+        android:elevation="2dp"
+        android:background="#00ffffff"
+        android:visibility="visible">
 
         <ProgressBar
             android:id="@+id/map_bar_progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:indeterminateTint="#1296db"/>
+            android:indeterminateTint="#E91E63"/>
 
     </RelativeLayout>
 

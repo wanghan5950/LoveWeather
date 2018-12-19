@@ -6,12 +6,12 @@
     android:orientation="vertical"
     android:layout_margin="15dp">
 
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#5affffff">
 
-    </LinearLayout>
+    </View>
 
     <TextView
         android:layout_width="match_parent"

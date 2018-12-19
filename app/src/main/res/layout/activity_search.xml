@@ -39,12 +39,12 @@
 
         </android.support.v7.widget.Toolbar>
 
-        <LinearLayout
+        <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#24000000">
 
-        </LinearLayout>
+        </View>
 
     </android.support.design.widget.AppBarLayout>
 

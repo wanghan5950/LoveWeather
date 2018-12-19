@@ -50,6 +50,7 @@ public class AutoUpdateService extends BaseService {
         manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,triggerAtTime,pendingIntent);
         autoUpdateWeather();
         sendBroadcast();
+        Log.d("AutoUpdateService","--------------------startCommand");
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -59,6 +60,7 @@ public class AutoUpdateService extends BaseService {
     private void sendBroadcast(){
         Intent intent = new Intent("com.loveWeather.broadcast.weather.new");
         broadcastManager.sendBroadcast(intent);
+        Log.d("AutoUpdateService","-------------------发出广播");
     }
 
     /**

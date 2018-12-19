@@ -30,7 +30,7 @@
                 android:text="设置"
                 android:textSize="20sp"
                 android:textColor="#000000"
-                android:layout_marginLeft="0dp"/>
+                android:layout_marginStart="0dp"/>
 
         </android.support.v7.widget.Toolbar>
 
@@ -42,12 +42,12 @@
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
+        <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#24000000">
 
-        </LinearLayout>
+        </View>
 
         <LinearLayout
             android:id="@+id/setting_update_button"
@@ -63,25 +63,25 @@
                 android:text="自动更新天气"
                 android:textSize="18sp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="20dp"/>
+                android:layout_marginStart="20dp"/>
 
             <Switch
                 android:id="@+id/setting_update_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginRight="20dp"/>
+                android:layout_marginEnd="20dp"/>
 
         </LinearLayout>
 
-        <LinearLayout
+        <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#12000000"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp">
 
-        </LinearLayout>
+        </View>
 
         <LinearLayout
             android:id="@+id/setting_notice_button"
@@ -95,8 +95,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="20dp"
-                android:text="天气推送"
+                android:layout_marginStart="20dp"
+                android:text="天气通知"
                 android:textSize="18sp"/>
 
             <Switch
@@ -104,18 +104,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginRight="20dp"/>
+                android:layout_marginEnd="20dp"/>
 
         </LinearLayout>
 
-        <LinearLayout
+        <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#12000000"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp">
 
-        </LinearLayout>
+        </View>
 
         <LinearLayout
             android:id="@+id/setting_about_button"
@@ -131,25 +131,25 @@
                 android:layout_gravity="center_vertical"
                 android:text="关于"
                 android:textSize="18sp"
-                android:layout_marginLeft="20dp" />
+                android:layout_marginStart="20dp" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/next"
                 android:layout_gravity="center_vertical"
-                android:layout_marginRight="30dp"/>
+                android:layout_marginEnd="30dp"/>
 
         </LinearLayout>
 
-        <LinearLayout
+        <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#12000000"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp">
 
-        </LinearLayout>
+        </View>
 
         <LinearLayout
             android:id="@+id/setting_feedback_button"
@@ -165,18 +165,18 @@
                 android:layout_gravity="center_vertical"
                 android:text="意见反馈"
                 android:textSize="18sp"
-                android:layout_marginLeft="20dp" />
+                android:layout_marginStart="20dp" />
 
         </LinearLayout>
 
-        <LinearLayout
+        <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#12000000"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp">
 
-        </LinearLayout>
+        </View>
 
     </LinearLayout>
 

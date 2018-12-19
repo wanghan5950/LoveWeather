@@ -17,7 +17,6 @@ import com.example.wanghanpc.loveweather.R;
 public class NewsContentActivity extends AppCompatActivity {
 
     private static final String URL_DATA = "URL_DATA";
-    private Toolbar toolbar;
     private FrameLayout webViewContainer;
     private WebView webView;
     private String url;
@@ -40,7 +39,7 @@ public class NewsContentActivity extends AppCompatActivity {
     }
 
     private void initToolbar(){
-        toolbar = (Toolbar) findViewById(R.id.news_content_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.news_content_toolbar);
         toolbar.inflateMenu(R.menu.toolar_news_content);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);

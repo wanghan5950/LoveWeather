@@ -55,17 +55,18 @@ public class MainActivity extends BaseActivity {
     private ViewPager viewPager;
     private MainPagerAdapter pagerAdapter;
     private ProgressBar progressBar;
-    private Boolean viewPagerIsCreated = false;
-    private Boolean startRefresh = false;
+    private boolean viewPagerIsCreated = false;
+    private boolean startRefresh = false;
+    private boolean isFirstCreated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        isFirstCreated = true;
 
-        ReadyIconAndBackground.initWeatherIconAndBackground();
         setNotificationChannel();
-        //初始化控件
+
         toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
         toolbarWeek = (TextView) findViewById(R.id.toolbar_week);
         toolbarTime = (TextView) findViewById(R.id.toolbar_time);
@@ -79,9 +80,24 @@ public class MainActivity extends BaseActivity {
 
         locationClient.registerLocationListener(new MyLocationListener());
 
-        judgePermission();
         initToolbar();
         setSwipeRefreshLayoutListener();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isFirstCreated){
+            ReadyIconAndBackground.initWeatherIconAndBackground();
+            judgePermission();
+            isFirstCreated = false;
+        }
     }
 
     /**
@@ -104,7 +120,7 @@ public class MainActivity extends BaseActivity {
                     getCityListFromDatabase();
                 }
         }
-        if (placeNameList.size() == 0){
+        if (placeNameList.size() <= 1){
             requestLocation();
             judgeListInformation();
         }
@@ -193,7 +209,6 @@ public class MainActivity extends BaseActivity {
      */
     private void judgeListInformation(){
         progressBar.setVisibility(View.VISIBLE);
-//        getPlaceNameList();
         getCityListFromDatabase();
         if (placeNameList.size() == 0) {
             if (myCity != null){

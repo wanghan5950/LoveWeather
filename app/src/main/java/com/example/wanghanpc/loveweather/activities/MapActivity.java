@@ -20,7 +20,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.mapapi.SDKInitializer;
@@ -36,7 +35,6 @@ import com.example.wanghanpc.loveweather.R;
 import com.example.wanghanpc.loveweather.gson.cityGson.City;
 import com.example.wanghanpc.loveweather.gson.cityGson.CityBackResult;
 import com.example.wanghanpc.loveweather.tools.Tools;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -157,8 +155,6 @@ public class MapActivity extends BaseActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.locate:
-                        mapBarLayout.setVisibility(View.INVISIBLE);
-                        Log.d("MapActivity","--------------------------使用已定的位置");
                         signLocationOnMap(myLongitude,myLatitude);
                         longAndLat = String.valueOf(myLongitude) + "," + String.valueOf(myLatitude);
                         mapProgressBarLayout.setVisibility(View.VISIBLE);
@@ -186,10 +182,8 @@ public class MapActivity extends BaseActivity {
         @Override
         public void onReceiveLocation(BDLocation bdLocation) {
             if (bdLocation.getLocType() == BDLocation.TypeGpsLocation || bdLocation.getLocType() == BDLocation.TypeNetWorkLocation){
-                Log.d("MapActivity","--------------------------定位成功");
                 locateToMyLocation(bdLocation);
                 longAndLat = String.valueOf(myLongitude) + "," + String.valueOf(myLatitude);
-                Log.d("MapActivity","==============我的经纬度是" + longAndLat);
                 mapProgressBarLayout.setVisibility(View.VISIBLE);
                 requestWeather(longAndLat);
             }
@@ -203,10 +197,8 @@ public class MapActivity extends BaseActivity {
         baiduMap.setOnMapLongClickListener(new BaiduMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-                mapBarLayout.setVisibility(View.INVISIBLE);
                 signLocationOnMap(latLng.longitude,latLng.latitude);
                 longAndLat = String.valueOf(latLng.longitude) + "," + String.valueOf(latLng.latitude);
-                Log.d("MapActivity","==============经纬度是" + longAndLat);
                 mapProgressBarLayout.setVisibility(View.VISIBLE);
                 requestWeather(longAndLat);
             }
@@ -280,7 +272,7 @@ public class MapActivity extends BaseActivity {
      * 在mapBar上显示天气信息
      */
     private void showWeatherInfo(){
-        mapProgressBarLayout.setVisibility(View.GONE);
+        mapProgressBarLayout.setVisibility(View.INVISIBLE);
         mapBarLayout.setVisibility(View.VISIBLE);
         if (weatherResult.getBasic().getCountry().equals("中国")) {
             String location = weatherResult.getBasic().getLocation();
@@ -291,6 +283,7 @@ public class MapActivity extends BaseActivity {
             String week = Tools.getWeek(date) + ",";
             String temp = weatherResult.getNow().getTmp();
             String forecast = weatherResult.getNow().getCondTxt();
+            String background = weatherResult.getNow().getCondCode();
             int iconId = ReadyIconAndBackground.getLargeWeatherIcon(weatherResult.getNow().getCondCode());
             mapBarLocation.setText(location);
             if (weatherResult.getBasic().getAdminArea().equals(weatherResult.getBasic().getParentCity())
@@ -305,6 +298,7 @@ public class MapActivity extends BaseActivity {
             mapBarTime.setText(time);
             mapBarTemp.setText(temp);
             mapBarForecast.setText(forecast);
+            mapBarLayout.setBackgroundResource(ReadyIconAndBackground.getItemBackground(background));
         }else {
             String location = weatherResult.getBasic().getLocation();
             String country = weatherResult.getBasic().getCountry();
@@ -313,6 +307,7 @@ public class MapActivity extends BaseActivity {
             String week = Tools.getWeek(date) + ",";
             String temp = weatherResult.getNow().getTmp();
             String forecast = weatherResult.getNow().getCondTxt();
+            String background = weatherResult.getNow().getCondCode();
             int iconId = ReadyIconAndBackground.getLargeWeatherIcon(weatherResult.getNow().getCondCode());
             mapBarLocation.setText(location);
             mapBarProvince.setText(country);
@@ -322,6 +317,7 @@ public class MapActivity extends BaseActivity {
             mapBarTime.setText(time);
             mapBarTemp.setText(temp);
             mapBarForecast.setText(forecast);
+            mapBarLayout.setBackgroundResource(ReadyIconAndBackground.getItemBackground(background));
         }
     }
 
@@ -355,7 +351,6 @@ public class MapActivity extends BaseActivity {
         baiduMap.animateMapStatus(update);
         update = MapStatusUpdateFactory.zoomTo(6);
         baiduMap.animateMapStatus(update);
-        Log.d("MapActivity","-------------------------找到位置");
         signLocationOnMap(bdLocation.getLongitude(),bdLocation.getLatitude());
         myLatitude = bdLocation.getLatitude();
         myLongitude = bdLocation.getLongitude();
@@ -370,7 +365,6 @@ public class MapActivity extends BaseActivity {
         builder.longitude(longitude);
         MyLocationData locationData = builder.build();
         baiduMap.setMyLocationData(locationData);
-        Log.d("MapActivity","----------------------------标记成功");
     }
 
     /**

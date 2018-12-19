@@ -179,6 +179,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.ViewHolder
         holder.placeItemLocation.setText(location);
         if (weather.getBasic().getAdminArea().equals(weather.getBasic().getParentCity())
                 && weather.getBasic().getParentCity().equals(weather.getBasic().getLocation())){
+            holder.placeItemProvince.setText("");
             holder.placeItemCity.setText(city);
         }else {
             holder.placeItemProvince.setText(province);

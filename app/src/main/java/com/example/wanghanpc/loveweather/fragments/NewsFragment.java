@@ -35,7 +35,6 @@ public class NewsFragment extends Fragment implements NewsItemAdapter.OnItemClic
     private boolean isFirstLoad = false;
     public static final String ARG_PAGE = "ARG_PAGE";
     private static final String URL_DATA = "URL_DATA";
-    private int pagePosition;
     private String pageTitle;
     private RecyclerView recyclerView;
     private List<DataItem> dataItemList;
@@ -53,7 +52,7 @@ public class NewsFragment extends Fragment implements NewsItemAdapter.OnItemClic
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         controlRefresh = (ControlRefresh)getActivity();
-        pagePosition = getArguments().getInt(ARG_PAGE);
+        int pagePosition = getArguments().getInt(ARG_PAGE);
         Log.d("NewsFragment","pagePosition------------------------"+String.valueOf(pagePosition));
         pageTitle = pageTitles[pagePosition];
         Log.d("NewsFragment","pageTitle----------------------"+pageTitle);

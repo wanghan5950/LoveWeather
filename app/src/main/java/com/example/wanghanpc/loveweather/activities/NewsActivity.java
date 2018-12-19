@@ -19,14 +19,12 @@ import java.util.List;
 
 public class NewsActivity extends AppCompatActivity implements NewsFragment.ControlRefresh{
 
-    private ImageView backToMainButton;
     private MySwipeRefreshLayout swipeRefreshLayout;
     private String[] titles = {"头条","社会","国内","国际","娱乐","体育","军事","科技","财经","时尚"};
     private List<String> titleList = new ArrayList<>();
     private List<NewsFragment> fragmentList = new ArrayList<>();
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    private NewsFragmentPagerAdapter fragmentPagerAdapter;
     private int pagePosition;
 
     @Override
@@ -36,7 +34,7 @@ public class NewsActivity extends AppCompatActivity implements NewsFragment.Cont
 
         titleList.addAll(Arrays.asList(titles));
 
-        backToMainButton = (ImageView) findViewById(R.id.backButton);
+        ImageView backToMainButton = (ImageView) findViewById(R.id.backButton);
         swipeRefreshLayout = (MySwipeRefreshLayout) findViewById(R.id.news_refresh);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,R.color.colorPrimaryDark);
 
@@ -95,7 +93,7 @@ public class NewsActivity extends AppCompatActivity implements NewsFragment.Cont
      * 初始化viewPager
      */
     private void initViewPager(){
-        fragmentPagerAdapter = new NewsFragmentPagerAdapter(getSupportFragmentManager(),fragmentList,titleList);
+        NewsFragmentPagerAdapter fragmentPagerAdapter = new NewsFragmentPagerAdapter(getSupportFragmentManager(), fragmentList, titleList);
         viewPager.setAdapter(fragmentPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

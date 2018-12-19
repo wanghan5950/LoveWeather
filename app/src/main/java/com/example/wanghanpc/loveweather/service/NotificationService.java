@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.example.wanghanpc.loveweather.activities.MainActivity;
 import com.example.wanghanpc.loveweather.tools.ReadyIconAndBackground;
@@ -48,6 +49,7 @@ public class NotificationService extends BaseService {
         intentFilter.addAction("com.loveWeather.broadcast.weather.new");
         broadcastReceiver = new LocalBroadcastReceiver();
         broadcastManager.registerReceiver(broadcastReceiver, intentFilter);
+        Log.d("NotificationService","---------------------注册完成");
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -61,7 +63,7 @@ public class NotificationService extends BaseService {
                 Intent intent = new Intent(NotificationService.this, MainActivity.class);
                 PendingIntent pendingIntent = PendingIntent.getActivity(NotificationService.this,0,intent,0);
                 NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                String title = weatherForNotification.getBasic().getLocation();
+                String title = weatherForNotification.getBasic().getLocation() + " " + weatherForNotification.getNow().getCondTxt();
                 String content = weatherForNotification.getLifestyleList().get(1).getTxt();
                 Bitmap icon = BitmapFactory.decodeResource(getResources(),ReadyIconAndBackground.getWeatherIcon(weatherForNotification.getNow().getCondCode()));
                 Notification notification = new NotificationCompat.Builder(NotificationService.this,"weatherNotification")
@@ -74,6 +76,7 @@ public class NotificationService extends BaseService {
                         .setContentIntent(pendingIntent)
                         .build();
                 manager.notify(1,notification);
+                Log.d("NotificationService","---------------------发送完成");
             }
         }).start();
     }
