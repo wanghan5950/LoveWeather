@@ -66,7 +66,6 @@ public class NewsActivity extends AppCompatActivity implements NewsFragment.Cont
     @Override
     protected void onResume() {
         super.onResume();
-
     }
 
     /**

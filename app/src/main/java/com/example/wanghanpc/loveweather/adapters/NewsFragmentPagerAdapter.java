@@ -3,13 +3,13 @@ package com.example.wanghanpc.loveweather.adapters;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.example.wanghanpc.loveweather.fragments.NewsFragment;
 
 import java.util.List;
 
-public class NewsFragmentPagerAdapter extends FragmentPagerAdapter {
+public class NewsFragmentPagerAdapter extends FragmentStatePagerAdapter{
 
     private List<String> titleList;
     private List<NewsFragment> fragments;

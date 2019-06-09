@@ -3,6 +3,7 @@ package com.example.wanghanpc.loveweather.tools;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * 其它工具
@@ -28,7 +29,7 @@ public class Tools {
      */
     public static String getWeek(String time){
         String Week = "";
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         Calendar c = Calendar.getInstance();
         try {
             c.setTime(format.parse(time));

@@ -17,6 +17,7 @@ import com.example.wanghanpc.loveweather.model.DatabaseModel;
 import com.example.wanghanpc.loveweather.tools.SendOkHttp;
 import com.example.wanghanpc.loveweather.tools.ParseData;
 import com.example.wanghanpc.loveweather.gson.weatherGson.Weather;
+import com.umeng.message.PushAgent;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,6 +46,9 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        //【友盟+】Push后台进行日活统计及多维度推送的必调用方法
+        PushAgent.getInstance(this).onAppStart();
+
         databaseModel = new DatabaseModel(this);
         databaseModel.onCreateDatabase();
 

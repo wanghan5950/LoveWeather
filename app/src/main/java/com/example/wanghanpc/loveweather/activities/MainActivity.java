@@ -63,6 +63,7 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         isFirstCreated = true;
 
         setNotificationChannel();
@@ -383,6 +384,10 @@ public class MainActivity extends BaseActivity {
                 overridePendingTransition(R.anim.activity_pre_enter,R.anim.activity_pre_exit);
             }
         });
+    }
+
+    private void shareWeather(){
+
     }
 
     /**
